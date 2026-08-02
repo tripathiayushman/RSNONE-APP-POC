@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSN One — Mobile App Mockups · Figma Canvas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap');
+
+/* ================================================================
+   RSN ONE — FOUNDATIONS  (mirror these as Figma styles)
+   color/*  gradient/*  effect/*  text/*  space/*
+   ================================================================ */
+:root{
+  /* color styles */
+  --walnut:#2a1a16;        /* color/walnut        bg primary   */
+  --walnut-deep:#190f0c;   /* color/walnut-deep   bg deepest   */
+  --cream:#ede4d3;         /* color/cream         text primary */
+  --cream-dim:#a89a80;     /* color/cream-dim     text muted   */
+  --hairline:#4a3129;      /* color/hairline      borders      */
+  --brass:#c98f7f;         /* color/brass         accent       */
+  --rose-deep:#9c5d52;     /* color/rose-deep     accent dark  */
+  --rose-glow:#e0a596;     /* color/rose-glow     accent light */
+
+  /* gradient styles — nothing in the app is a flat fill */
+  --g-screen: radial-gradient(ellipse at 20% 0%, #35211a 0%, var(--walnut) 45%, var(--walnut-deep) 100%);
+  --g-screen-salon: radial-gradient(ellipse at 50% 0%, #201310 0%, #110a07 48%, #060302 100%);
+  --g-plate-hero:
+      linear-gradient(180deg, rgba(25,15,12,0) 35%, rgba(25,15,12,0.95) 100%),
+      radial-gradient(ellipse at 25% 15%, rgba(224,165,150,0.30), transparent 55%),
+      radial-gradient(ellipse at 80% 80%, rgba(156,93,82,0.25), transparent 50%),
+      linear-gradient(150deg, #3d2620 0%, #241713 55%, #150d0a 100%);
+  --g-plate:
+      radial-gradient(ellipse at 30% 18%, rgba(224,165,150,0.16), transparent 60%),
+      linear-gradient(160deg, #3d281f 0%, #1c110c 60%, #150d0a 100%);
+  --g-card:
+      radial-gradient(ellipse at 30% 15%, rgba(224,165,150,0.12), transparent 55%),
+      linear-gradient(165deg, #3d281f 0%, #211410 55%, #160e0a 100%);
+  --g-plate-salon:
+      radial-gradient(ellipse at 30% 18%, rgba(201,143,127,0.13), transparent 60%),
+      linear-gradient(160deg, #241511 0%, #100908 60%, #070403 100%);
+  --g-cta: linear-gradient(160deg, #e0a596 0%, #c98f7f 42%, #9c5d52 100%);
+  --g-cta-press: linear-gradient(160deg, #c98f7f 0%, #9c5d52 55%, #7e4a40 100%);
+  --g-panel: linear-gradient(165deg, rgba(61,40,31,0.55) 0%, rgba(28,17,12,0.30) 75%);
+  --g-sheet: linear-gradient(180deg, #26160f 0%, #190f0c 100%);
+
+  /* effect styles */
+  --sh-hero:  inset 0 0 60px rgba(0,0,0,0.50), 0 20px 40px rgba(0,0,0,0.40);   /* effect/plate-hero  */
+  --sh-card:  inset 0 0 30px rgba(0,0,0,0.50), 0 6px 16px rgba(0,0,0,0.35);    /* effect/card        */
+  --sh-thumb: inset 0 0 20px rgba(0,0,0,0.60), 0 4px 12px rgba(0,0,0,0.30);    /* effect/thumb       */
+  --sh-cta:   0 10px 26px rgba(201,143,127,0.16), inset 0 1px 0 rgba(255,255,255,0.22); /* effect/cta-lift */
+  --sh-sheet: 0 -24px 60px rgba(0,0,0,0.60);                                   /* effect/sheet       */
+
+  --serif-d:'Cormorant Garamond', serif;
+  --serif-b:'EB Garamond', serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ================================================================
+   CANVAS  (the Figma "page" backdrop — not part of the app UI)
+   ================================================================ */
+body.canvas{
+  background:#0c0705;
+  font-family:var(--serif-b);
+  color:var(--cream);
+  padding:56px 64px 120px;
+}
+.canvas-head{ max-width:1080px; margin-bottom:72px; }
+.canvas-head .mark-lg{
+  font-family:var(--serif-d); font-weight:300; font-size:44px; letter-spacing:0.14em; color:var(--cream);
+}
+.canvas-head .sub{ margin-top:10px; font-style:italic; color:var(--cream-dim); font-size:16px; max-width:620px; line-height:1.6;}
+.canvas-head .meta{ margin-top:18px; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--brass);}
+
+.band{ margin-bottom:110px; }
+.band-head{ display:flex; align-items:baseline; gap:18px; border-bottom:1px solid var(--hairline); padding-bottom:14px; margin-bottom:40px; max-width:1080px;}
+.band-head .n{ font-family:var(--serif-d); font-size:15px; color:var(--brass); letter-spacing:0.08em;}
+.band-head h2{ font-family:var(--serif-d); font-weight:400; font-size:26px; letter-spacing:0.04em; }
+.band-head .note{ font-style:italic; color:var(--cream-dim); font-size:13px; margin-left:auto;}
+
+.row{ display:flex; gap:56px; align-items:flex-start; width:max-content; padding-bottom:8px;}
+.row + .flow-label{ margin-top:64px; }
+.flow-label{ font-size:11px; letter-spacing:0.26em; text-transform:uppercase; color:var(--cream-dim); margin:0 0 20px 2px;}
+.flow-label b{ color:var(--brass); font-weight:400; }
+
+.frame{ flex:0 0 auto; }
+.frame-label{ font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#6f5d4c; margin-bottom:12px; display:flex; gap:12px;}
+.frame-label i{ font-style:normal; color:#54453a; }
+
+/* Foundation / component sheets */
+.sheet{ width:860px; background:linear-gradient(170deg,#1d110d 0%, #140c09 100%); border:1px solid #33211b; padding:44px 48px 52px; box-shadow:0 30px 80px rgba(0,0,0,0.45);}
+.sheet.narrow{ width:600px; }
+.sheet-title{ font-family:var(--serif-d); font-weight:400; font-size:21px; letter-spacing:0.03em; margin-bottom:6px;}
+.sheet-note{ font-style:italic; font-size:13px; color:var(--cream-dim); margin-bottom:32px;}
+.spec-grid{ display:flex; flex-wrap:wrap; gap:36px 44px; }
+.spec{ }
+.spec-label{ font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:#87755f; margin-top:12px; line-height:1.7;}
+.spec-label em{ display:block; font-style:normal; color:#5c4c3e; letter-spacing:0.08em; text-transform:none; font-size:11px;}
+
+.swatch{ width:118px; }
+.swatch .chipbox{ height:84px; border:1px solid rgba(255,255,255,0.06); box-shadow:inset 0 0 24px rgba(0,0,0,0.25);}
+.gr-demo{ width:150px; height:190px; border:1px solid var(--hairline); box-shadow:var(--sh-card);}
+.fx-demo{ width:150px; height:110px; background:var(--g-card); border:1px solid var(--hairline);}
+.type-specimen{ border-top:1px solid #2c1c16; padding:22px 0; display:flex; align-items:baseline; gap:40px;}
+.type-specimen:last-child{ border-bottom:1px solid #2c1c16;}
+.type-specimen .demo{ flex:1; }
+.type-specimen .spec-label{ width:270px; margin-top:0; flex:0 0 auto;}
+.space-bar{ background:linear-gradient(90deg, var(--rose-deep), var(--brass)); height:14px; box-shadow:0 4px 10px rgba(0,0,0,0.4);}
+
+/* ================================================================
+   PHONE ARTBOARDS — 390 wide, 844 viewport (screens scroll longer)
+   ================================================================ */
+.screen{
+  width:390px; min-height:844px;
+  background:var(--g-screen);
+  color:var(--cream);
+  font-family:var(--serif-b);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+  border:1px solid rgba(255,255,255,0.05);
+  box-shadow:0 40px 90px rgba(0,0,0,0.55);
+}
+.screen.h-fixed{ height:844px; min-height:844px; }
+.screen.salon{ background:var(--g-screen-salon); }
+
+.status{ height:44px; flex:0 0 auto; }
+.grow{ flex:1 1 auto; }
+.mt-a{ margin-top:auto; }
+.px24{ padding-left:24px; padding-right:24px; }
+.tcenter{ text-align:center; }
+
+/* — top bar — */
+.topbar{ display:flex; align-items:center; justify-content:space-between; padding:8px 24px 20px; border-bottom:1px solid var(--hairline); flex:0 0 auto;}
+.topbar .mark{ font-family:var(--serif-d); font-size:20px; letter-spacing:0.28em; font-weight:500;}
+.topbar .icons{ display:flex; gap:18px; font-size:15px; color:var(--cream-dim);}
+.topbar .icons .on{ color:var(--brass); }
+.topbar.sub .back{ font-size:16px; color:var(--cream-dim); width:40px;}
+.topbar.sub .ttl{ font-family:var(--serif-d); font-size:17px; font-weight:500; letter-spacing:0.10em; text-transform:none;}
+.topbar.sub .spacer{ width:40px; text-align:right; color:var(--cream-dim); font-size:15px;}
+.topbar.quiet{ border-bottom:none; }
+
+/* — type blocks — */
+.eyebrow{ padding:28px 24px 0; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--brass);}
+.eyebrow.tight{ padding-top:22px; }
+.hero{ padding:14px 24px 30px; }
+.hero h1, .h1{ font-family:var(--serif-d); font-weight:300; font-size:44px; line-height:1.08; letter-spacing:0.01em;}
+.display-md{ font-family:var(--serif-d); font-weight:300; font-size:32px; line-height:1.12; letter-spacing:0.01em;}
+.hero .sub, .sub{ margin-top:14px; font-size:15px; font-style:italic; color:var(--cream-dim); line-height:1.6; max-width:280px;}
+.sub.wide{ max-width:320px; }
+.body-text{ font-size:15px; line-height:1.65; color:var(--cream); }
+.body-text.dim{ color:var(--cream-dim); }
+.note{ font-size:13px; font-style:italic; color:var(--cream-dim); line-height:1.6;}
+.micro{ font-size:10px; letter-spacing:0.10em; text-transform:uppercase; color:var(--cream-dim);}
+.price{ font-size:14px; letter-spacing:0.03em; color:var(--brass);}
+
+.section-title{ display:flex; justify-content:space-between; align-items:baseline; padding:44px 24px 18px;}
+.section-title.tight{ padding-top:30px; }
+.section-title h2{ font-family:var(--serif-d); font-weight:400; font-size:22px; letter-spacing:0.02em;}
+.section-title a{ font-size:11px; letter-spacing:0.10em; text-transform:uppercase; color:var(--brass); text-decoration:none;}
+
+/* — plates (image placeholders) — */
+.plate{ background:var(--g-plate); border:1px solid var(--hairline); box-shadow:var(--sh-thumb); position:relative; overflow:hidden; flex-shrink:0;}
+.plate::before{ content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(115deg, rgba(255,255,255,0.02) 0px, transparent 2px, transparent 40px);}
+.plate-hero{ margin:22px 24px 0; height:420px; background:var(--g-plate-hero); box-shadow:var(--sh-hero);}
+.plate-wide{ margin:0 24px; height:230px; background:var(--g-plate-hero); box-shadow:var(--sh-card);}
+.plate-thumb{ width:74px; height:90px; }
+.plate-sq{ width:56px; height:56px; }
+.plate-cap{ position:absolute; bottom:20px; left:20px; right:20px; display:flex; justify-content:space-between; align-items:flex-end;}
+.plate-cap .plate-no{ font-size:11px; letter-spacing:0.15em; color:var(--cream-dim); text-transform:uppercase;}
+.plate-cap .cta-line{ color:var(--cream); }
+.plate-tag{ position:absolute; top:14px; left:14px; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--cream-dim);}
+
+/* — numbered lots — */
+.catalogue{ padding:0 24px; }
+.lot{ display:flex; gap:16px; padding:20px 0; border-top:1px solid var(--hairline); align-items:center;}
+.lot.last, .catalogue .lot:last-child{ border-bottom:1px solid var(--hairline);}
+.lot-num{ font-family:var(--serif-d); font-size:13px; color:var(--brass); width:28px; flex-shrink:0;}
+.lot-info{ flex:1; min-width:0; }
+.lot-info .name{ font-size:17px; font-weight:500; margin-bottom:4px;}
+.lot-info .meta{ font-size:12px; color:var(--cream-dim); font-style:italic;}
+.lot-info .meta.up{ font-style:normal; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; margin-top:6px;}
+.lot-side{ text-align:right; display:flex; flex-direction:column; gap:8px; align-items:flex-end;}
+.lot .price{ white-space:nowrap; }
+
+/* — product cards / grids — */
+.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:0 24px 40px;}
+.grid2 .card{ aspect-ratio:3/4; background:var(--g-card); border:1px solid var(--hairline); display:flex; align-items:flex-end; padding:14px; box-shadow:var(--sh-card); position:relative; overflow:hidden;}
+.grid2 .card::before{ content:''; position:absolute; inset:0; background-image:repeating-linear-gradient(115deg, rgba(255,255,255,0.02) 0px, transparent 2px, transparent 40px);}
+.grid2 .card span{ font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--cream-dim); position:relative;}
+.grid2 .card .count{ position:absolute; top:12px; right:12px; font-family:var(--serif-d); font-size:12px; color:var(--brass);}
+.pgrid{ display:grid; grid-template-columns:1fr 1fr; gap:26px 14px; padding:0 24px;}
+.pcard .plate{ aspect-ratio:3/4; width:100%; background:var(--g-card); box-shadow:var(--sh-card);}
+.pcard .name{ font-size:15px; font-weight:500; margin-top:12px;}
+.pcard .meta{ font-size:12px; font-style:italic; color:var(--cream-dim); margin-top:3px;}
+.pcard .price{ margin-top:6px; font-size:13px;}
+
+/* — pull-quote — */
+.quote-block{ margin:50px 24px; padding:36px 0; border-top:1px solid var(--brass); border-bottom:1px solid var(--brass); text-align:center;}
+.quote-block p{ font-family:var(--serif-d); font-style:italic; font-size:20px; line-height:1.5; color:var(--cream);}
+.quote-block span{ display:block; margin-top:14px; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--cream-dim); font-style:normal;}
+.quote-block.roomy{ margin:64px 24px; }
+
+/* — buttons — */
+.btn{ display:flex; align-items:center; justify-content:center; height:52px; font-family:var(--serif-b); font-size:12px; letter-spacing:0.14em; text-transform:uppercase; cursor:default; text-align:center;}
+.btn-primary{ background:var(--g-cta); color:var(--walnut-deep); box-shadow:var(--sh-cta); font-weight:500;}
+.btn-primary.pressed{ background:var(--g-cta-press); box-shadow:inset 0 2px 8px rgba(0,0,0,0.25);}
+.btn-primary.disabled{ background:none; border:1px solid var(--hairline); color:var(--cream-dim); box-shadow:none; opacity:0.55; font-weight:400;}
+.btn-secondary{ border:1px solid var(--brass); color:var(--brass); background:linear-gradient(160deg, rgba(201,143,127,0.10), rgba(201,143,127,0.02));}
+.btn-secondary.pressed{ background:linear-gradient(160deg, rgba(201,143,127,0.22), rgba(156,93,82,0.10)); color:var(--rose-glow);}
+.btn-secondary.disabled{ border-color:var(--hairline); color:var(--cream-dim); background:none; opacity:0.55;}
+.btn-ghost{ border:1px solid var(--hairline); color:var(--cream); background:linear-gradient(160deg, rgba(61,40,31,0.35), rgba(61,40,31,0.05));}
+.cta-line{ display:inline-block; font-size:12px; letter-spacing:0.10em; text-transform:uppercase; border-bottom:1px solid var(--brass); padding-bottom:3px; color:var(--cream);}
+.cta-line.brass{ color:var(--brass); }
+.btn-block{ margin:0 24px; }
+.btn-row{ display:flex; gap:12px; padding:0 24px;}
+.btn-row .btn{ flex:1; }
+
+/* — forms — */
+.form{ padding:0 24px; }
+.field{ padding-top:22px; }
+.field label{ display:block; font-size:11px; letter-spacing:0.20em; text-transform:uppercase; color:var(--cream-dim); margin-bottom:10px;}
+.field .control{ border-bottom:1px solid var(--hairline); padding:4px 0 12px; font-size:16px; color:var(--cream); display:flex; justify-content:space-between; align-items:center; min-height:34px;}
+.field .ph{ font-style:italic; color:var(--cream-dim); opacity:0.75;}
+.field.focus label{ color:var(--brass); }
+.field.focus .control{ border-bottom-color:var(--brass); }
+.caret{ display:inline-block; width:1px; height:18px; background:var(--brass); margin-left:2px; vertical-align:middle;}
+.field.error .control{ border-bottom-color:var(--rose-deep); }
+.field-note{ margin-top:8px; font-size:12px; font-style:italic; color:var(--cream-dim);}
+.field.error .field-note{ color:var(--rose-deep); }
+.divider-or{ display:flex; align-items:center; gap:16px; padding:30px 24px; color:var(--cream-dim); font-size:11px; letter-spacing:0.18em; text-transform:uppercase;}
+.divider-or::before, .divider-or::after{ content:''; height:1px; background:var(--hairline); flex:1;}
+.searchbar{ margin:24px 24px 8px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--brass); padding-bottom:12px;}
+.searchbar .glyph{ color:var(--brass); font-size:16px;}
+.searchbar .q{ font-size:18px; font-family:var(--serif-d); font-weight:400; color:var(--cream); flex:1;}
+.searchbar .q .ph{ font-style:italic; color:var(--cream-dim); font-family:var(--serif-b); font-size:16px;}
+.searchbar .cancel{ font-size:11px; letter-spacing:0.10em; text-transform:uppercase; color:var(--cream-dim);}
+
+/* — chips · tags · toggles · steppers · swatches · dots — */
+.chiprow{ display:flex; gap:10px; padding:18px 24px 0; flex-wrap:wrap;}
+.chip{ font-size:10px; letter-spacing:0.12em; text-transform:uppercase; border:1px solid var(--hairline); padding:8px 12px; color:var(--cream-dim); background:linear-gradient(160deg, rgba(61,40,31,0.30), transparent);}
+.chip.active{ border-color:var(--brass); color:var(--brass);}
+.tag{ display:inline-block; font-size:9px; letter-spacing:0.14em; text-transform:uppercase; border:1px solid var(--hairline); color:var(--cream-dim); padding:4px 8px; white-space:nowrap;}
+.tag.brass{ border-color:var(--brass); color:var(--brass);}
+.tag.rose{ border-color:var(--rose-deep); color:var(--rose-glow);}
+.toggle{ width:40px; height:22px; border:1px solid var(--hairline); padding:3px; display:flex; flex:0 0 auto;}
+.toggle .knob{ width:14px; height:14px; background:linear-gradient(160deg,#6b584a,#463629); box-shadow:0 2px 5px rgba(0,0,0,0.4);}
+.toggle.on{ border-color:var(--brass); }
+.toggle.on .knob{ margin-left:auto; background:var(--g-cta);}
+.checkrow, .radiorow{ display:flex; align-items:center; gap:14px; padding:15px 0; border-top:1px solid var(--hairline); font-size:15px;}
+.checkrow .lbl, .radiorow .lbl{ flex:1; }
+.checkrow .sub-lbl, .radiorow .sub-lbl{ display:block; font-size:12px; font-style:italic; color:var(--cream-dim); margin-top:3px;}
+.box, .rad{ width:16px; height:16px; border:1px solid var(--hairline); display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+.box.on, .rad.on{ border-color:var(--brass); }
+.box.on::after, .rad.on::after{ content:''; width:8px; height:8px; background:var(--g-cta); display:block;}
+.qty{ display:flex; border:1px solid var(--hairline); background:linear-gradient(160deg, rgba(61,40,31,0.30), transparent);}
+.qty span{ width:30px; height:30px; display:flex; align-items:center; justify-content:center; font-size:14px;}
+.qty .op{ color:var(--cream-dim); }
+.qty span + span{ border-left:1px solid var(--hairline);}
+.swatches{ display:flex; gap:14px; }
+.sw{ width:24px; height:24px; border:1px solid var(--hairline); box-shadow:inset 0 0 8px rgba(0,0,0,0.5);}
+.sw.active{ outline:1px solid var(--brass); outline-offset:3px;}
+.sw.walnut{ background:linear-gradient(150deg,#4a3025,#241511);}
+.sw.oxblood{ background:linear-gradient(150deg,#5c2620,#2a100d);}
+.sw.noir{ background:linear-gradient(150deg,#2a2422,#0c0908);}
+.sw.saddle{ background:linear-gradient(150deg,#6b4a2e,#33200f);}
+.dots{ display:flex; gap:8px; }
+.dots i{ width:5px; height:5px; border:1px solid var(--cream-dim); display:block;}
+.dots i.on{ background:var(--brass); border-color:var(--brass);}
+.range{ position:relative; height:26px; margin:18px 0 4px;}
+.range .rail{ position:absolute; top:12px; left:0; right:0; height:1px; background:var(--hairline);}
+.range .fill{ position:absolute; top:11.5px; left:18%; right:30%; height:2px; background:var(--g-cta);}
+.range .handle{ position:absolute; top:6px; width:13px; height:13px; background:var(--g-cta); box-shadow:0 3px 8px rgba(0,0,0,0.5);}
+
+/* — rows · lists · kv — */
+.linkrow{ display:flex; align-items:center; gap:14px; padding:19px 0; border-top:1px solid var(--hairline); font-size:16px;}
+.linkrow .lbl{ flex:1; }
+.linkrow .val{ font-size:13px; color:var(--cream-dim); font-style:italic;}
+.linkrow .chev{ color:var(--cream-dim); font-size:14px;}
+.linkrow .lnum{ font-family:var(--serif-d); font-size:13px; color:var(--brass); width:28px; flex-shrink:0;}
+.group-lbl{ padding:34px 24px 6px; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--brass);}
+.kv{ display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; font-size:14px;}
+.kv .k{ color:var(--cream-dim); font-style:italic;}
+.kv .v{ letter-spacing:0.03em; }
+.kv.total{ border-top:1px solid var(--hairline); margin-top:8px; padding-top:16px;}
+.kv.total .k{ font-style:normal; color:var(--cream); font-size:15px;}
+.kv.total .v{ font-family:var(--serif-d); font-size:20px; color:var(--brass);}
+.accordion{ border-top:1px solid var(--hairline); }
+.acc-head{ display:flex; justify-content:space-between; align-items:center; padding:19px 0;}
+.acc-head .t{ font-family:var(--serif-d); font-size:18px; font-weight:400; letter-spacing:0.02em;}
+.acc-head .ic{ color:var(--cream-dim); font-size:16px; font-family:var(--serif-d);}
+.acc-body{ padding:0 0 22px; font-size:14px; line-height:1.7; color:var(--cream-dim);}
+.acc-body b{ color:var(--cream); font-weight:500; }
+
+/* — cards (address / payment / panel) — */
+.panel{ border:1px solid var(--hairline); background:var(--g-panel); box-shadow:0 8px 20px rgba(0,0,0,0.25); padding:18px; position:relative;}
+.panel.sel{ border-color:var(--brass); }
+.panel + .panel{ margin-top:14px; }
+.panel .head{ display:flex; align-items:center; gap:12px; margin-bottom:8px;}
+.panel .head .nm{ font-size:16px; font-weight:500; flex:1;}
+.panel .body{ font-size:13px; font-style:italic; color:var(--cream-dim); line-height:1.65;}
+.panel .foot{ margin-top:12px; display:flex; gap:20px;}
+.panel .foot a{ font-size:11px; letter-spacing:0.10em; text-transform:uppercase; color:var(--brass); text-decoration:none; border-bottom:1px solid var(--brass); padding-bottom:2px;}
+
+/* — checkout steps — */
+.steps{ display:flex; align-items:center; gap:10px; padding:26px 24px 0; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--cream-dim);}
+.steps .st{ display:flex; gap:7px; align-items:center;}
+.steps .st .n{ font-family:var(--serif-d); font-size:12px; letter-spacing:0.05em;}
+.steps .st.on{ color:var(--brass); }
+.steps .st.done{ color:var(--cream); }
+.steps .ln{ flex:1; height:1px; background:var(--hairline);}
+.steps .st.done + .ln, .steps .ln.done{ background:var(--brass); }
+
+/* — timeline — */
+.timeline{ padding:6px 0 0; }
+.tl-item{ display:flex; gap:18px; position:relative; padding-bottom:26px;}
+.tl-item::before{ content:''; position:absolute; left:4px; top:14px; bottom:0; width:1px; background:var(--hairline);}
+.tl-item.done::before{ background:var(--brass); }
+.tl-item:last-child::before{ display:none; }
+.tl-node{ width:9px; height:9px; margin-top:5px; border:1px solid var(--cream-dim); flex:0 0 auto; background:transparent;}
+.tl-item.done .tl-node{ background:var(--g-cta); border-color:var(--brass); box-shadow:0 0 12px rgba(201,143,127,0.35);}
+.tl-body .t{ font-size:15px; font-weight:500;}
+.tl-body .d{ font-size:12px; font-style:italic; color:var(--cream-dim); margin-top:3px;}
+
+/* — notifications — */
+.notif{ display:flex; gap:14px; padding:18px 0; border-top:1px solid var(--hairline); align-items:flex-start;}
+.ndot{ width:6px; height:6px; margin-top:7px; background:var(--g-cta); flex:0 0 auto; box-shadow:0 0 10px rgba(201,143,127,0.4);}
+.ndot.read{ background:none; border:1px solid var(--hairline); box-shadow:none;}
+.nbody{ flex:1; }
+.nbody .t{ font-size:15px; line-height:1.45;}
+.nbody.read .t{ color:var(--cream-dim); }
+.nbody .m{ font-size:12px; font-style:italic; color:var(--cream-dim); margin-top:4px; display:flex; gap:10px; align-items:center;}
+.ntime{ font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--cream-dim); padding-top:3px;}
+
+/* — modal sheet — */
+.scrim{ position:absolute; inset:0; background:rgba(10,5,3,0.68); z-index:2;}
+.sheet-modal{ position:absolute; bottom:0; left:0; right:0; background:var(--g-sheet); border-top:1px solid var(--brass); box-shadow:var(--sh-sheet); z-index:3; padding:10px 24px 34px;}
+.sheet-modal .grab{ width:26px; height:2px; background:var(--brass); margin:8px auto 22px; opacity:0.8;}
+.sheet-modal .sheet-h{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;}
+.sheet-modal .sheet-h h3{ font-family:var(--serif-d); font-weight:400; font-size:24px;}
+.sheet-modal .sheet-h a{ font-size:11px; letter-spacing:0.10em; text-transform:uppercase; color:var(--cream-dim);}
+
+/* — bottom nav — */
+.navbar{ background:var(--walnut-deep); border-top:1px solid var(--hairline); display:flex; justify-content:space-around; padding:14px 0 20px; flex:0 0 auto; margin-top:auto;}
+.navbar div{ font-size:10px; letter-spacing:0.10em; text-transform:uppercase; color:var(--cream-dim); text-align:center; position:relative; padding-top:8px;}
+.navbar div.active{ color:var(--brass); }
+.navbar div.active::before{ content:''; position:absolute; top:0; left:50%; margin-left:-1.5px; width:3px; height:3px; background:var(--brass);}
+.salon .navbar{ background:#050302; }
+
+/* onboarding footer */
+.ob-foot{ padding:0 24px 40px; }
+.ob-foot .dots{ justify-content:center; margin-bottom:26px;}
+.skip{ text-align:center; margin-top:18px; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--cream-dim);}
+</style>
+</head>
+<body class="canvas">
+
+<header class="canvas-head">
+  <div class="mark-lg">RSN One</div>
+  <p class="sub">Customer-facing mobile app — Figma mockup canvas. Three bands mirror the three Figma pages: Foundations, Components, Screens. Artboards are 390&thinsp;×&thinsp;844 (iPhone 14/15); screens that scroll are shown at full run of content with the viewport implied.</p>
+  <div class="meta">The House Registry · Autumn MMXXVI · 32 frames</div>
+</header>
+
+<!-- ================================================================
+     BAND 1 — FOUNDATIONS
+     ================================================================ -->
+<section class="band" id="foundations">
+  <div class="band-head"><span class="n">Page 1</span><h2>Foundations</h2><span class="note">recreate as Figma color · text · effect styles before any component work</span></div>
+
+  <div class="row" id="rowF">
+    <div class="frame">
+      <div class="frame-label"><span>1.01 · Colour Styles</span><i>color/*</i></div>
+      <div class="sheet">
+        <div class="sheet-title">Palette — walnut, cream, brass</div>
+        <div class="sheet-note">Eight styles, no more. Brass is the only accent in the entire application — it is punctuation, never decoration.</div>
+        <div class="spec-grid">
+          <div class="swatch"><div class="chipbox" style="background:#2a1a16"></div><div class="spec-label">color/walnut<em>#2a1a16 · bg primary</em></div></div>
+          <div class="swatch"><div class="chipbox" style="background:#190f0c"></div><div class="spec-label">color/walnut-deep<em>#190f0c · bg deepest, nav</em></div></div>
+          <div class="swatch"><div class="chipbox" style="background:#ede4d3"></div><div class="spec-label">color/cream<em>#ede4d3 · text primary</em></div></div>
+          <div class="swatch"><div class="chipbox" style="background:#a89a80"></div><div class="spec-label">color/cream-dim<em>#a89a80 · text muted</em></div></div>
+          <div class="swatch"><div class="chipbox" style="background:#4a3129"></div><div class="spec-label">color/hairline<em>#4a3129 · 1px borders</em></div></div>
+          <div class="swatch"><div class="chipbox" style="background:#c98f7f"></div><div class="spec-label">color/brass<em>#c98f7f · accent</em></div></div>
+          <div class="swatch"><div class="chipbox" style="background:#9c5d52"></div><div class="spec-label">color/rose-deep<em>#9c5d52 · accent dark</em></div></div>
+          <div class="swatch"><div class="chipbox" style="background:#e0a596"></div><div class="spec-label">color/rose-glow<em>#e0a596 · accent light</em></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="frame-label"><span>1.02 · Gradient Styles</span><i>gradient/* — nothing is ever a flat fill</i></div>
+      <div class="sheet">
+        <div class="sheet-title">Surface gradients</div>
+        <div class="sheet-note">Every background, card and image placeholder moves from a lit warm rose-brown into near-black walnut, ~150–165° or radial from a top corner.</div>
+        <div class="spec-grid">
+          <div><div class="gr-demo" style="background:var(--g-screen)"></div><div class="spec-label">gradient/screen<em>radial 20% 0% · #35211a → walnut 45% → walnut-deep</em></div></div>
+          <div><div class="gr-demo" style="background:var(--g-plate-hero); box-shadow:var(--sh-hero)"></div><div class="spec-label">gradient/plate-hero<em>rose glows 30/25% + 150° linear + bottom scrim</em></div></div>
+          <div><div class="gr-demo" style="background:var(--g-plate)"></div><div class="spec-label">gradient/plate<em>160° · #3d281f → #1c110c 60% → #150d0a</em></div></div>
+          <div><div class="gr-demo" style="background:var(--g-card)"></div><div class="spec-label">gradient/card<em>165° · #3d281f → #211410 55% → #160e0a</em></div></div>
+          <div><div class="gr-demo" style="background:var(--g-cta); border:none"></div><div class="spec-label">gradient/cta<em>160° · rose-glow → brass 42% → rose-deep</em></div></div>
+          <div><div class="gr-demo" style="background:var(--g-screen-salon)"></div><div class="spec-label">gradient/screen-salon<em>radial 50% 0% · #201310 → #110a07 → #060302</em></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="frame-label"><span>1.03 · Effect Styles</span><i>effect/* — surfaces are lit, never flat</i></div>
+      <div class="sheet narrow">
+        <div class="sheet-title">Shadows</div>
+        <div class="sheet-note">Each surface pairs a soft inner shadow with a drop beneath — one Figma effect style per pairing.</div>
+        <div class="spec-grid">
+          <div><div class="fx-demo" style="box-shadow:var(--sh-hero)"></div><div class="spec-label">effect/plate-hero<em>inner 0·0·60 50% + drop 0·20·40 40%</em></div></div>
+          <div><div class="fx-demo" style="box-shadow:var(--sh-card)"></div><div class="spec-label">effect/card<em>inner 0·0·30 50% + drop 0·6·16 35%</em></div></div>
+          <div><div class="fx-demo" style="box-shadow:var(--sh-thumb)"></div><div class="spec-label">effect/thumb<em>inner 0·0·20 60% + drop 0·4·12 30%</em></div></div>
+          <div><div class="fx-demo" style="background:var(--g-cta); box-shadow:var(--sh-cta); border:none"></div><div class="spec-label">effect/cta-lift<em>brass drop 0·10·26 16% + inner top light</em></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="frame-label"><span>1.04 · Text Styles</span><i>text/* — serif-led, two families only</i></div>
+      <div class="sheet">
+        <div class="sheet-title">Type</div>
+        <div class="sheet-note">Cormorant Garamond for display, EB Garamond for body. Italic is the voice of captions; uppercase letter-spaced Garamond is the voice of the system.</div>
+        <div>
+          <div class="type-specimen"><div class="spec-label">text/hero-h1<em>Cormorant Light 300 · 44/48 · ls 1%</em></div><div class="demo h1">Objects worth keeping.</div></div>
+          <div class="type-specimen"><div class="spec-label">text/display-md<em>Cormorant Light 300 · 32/36 · ls 1%</em></div><div class="demo display-md">The Meridian Minaudière</div></div>
+          <div class="type-specimen"><div class="spec-label">text/section-h2<em>Cormorant Regular 400 · 22/26</em></div><div class="demo" style="font-family:var(--serif-d);font-size:22px">Recently Acquired</div></div>
+          <div class="type-specimen"><div class="spec-label">text/item-title<em>EB Garamond Medium 500 · 17/22</em></div><div class="demo" style="font-size:17px;font-weight:500">The Bordeaux Tote</div></div>
+          <div class="type-specimen"><div class="spec-label">text/body<em>EB Garamond 400 · 15/24</em></div><div class="demo body-text">Chosen, not manufactured — each piece is recorded at the bench and sealed at the desk.</div></div>
+          <div class="type-specimen"><div class="spec-label">text/caption-italic<em>EB Garamond Italic 400 · 12/18 · cream-dim</em></div><div class="demo" style="font-size:12px;font-style:italic;color:var(--cream-dim)">Full-grain calfskin, Italy</div></div>
+          <div class="type-specimen"><div class="spec-label">text/eyebrow<em>EB Garamond 400 · 11 · caps · ls 22% · brass</em></div><div class="demo" style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--brass)">The Autumn Registry</div></div>
+          <div class="type-specimen"><div class="spec-label">text/plate-no<em>EB Garamond 400 · 11 · caps · ls 15% · cream-dim</em></div><div class="demo" style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--cream-dim)">Plate No. 014</div></div>
+          <div class="type-specimen"><div class="spec-label">text/lot-number<em>Cormorant 400 · 13 · brass</em></div><div class="demo" style="font-family:var(--serif-d);font-size:13px;color:var(--brass)">01&nbsp;&nbsp;02&nbsp;&nbsp;03</div></div>
+          <div class="type-specimen"><div class="spec-label">text/button<em>EB Garamond 500 · 12 · caps · ls 14%</em></div><div class="demo" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;font-weight:500">Add to Bag — $3,650</div></div>
+          <div class="type-specimen"><div class="spec-label">text/nav-micro<em>EB Garamond 400 · 10 · caps · ls 10%</em></div><div class="demo micro">Registry&nbsp;&nbsp;&nbsp;Archive&nbsp;&nbsp;&nbsp;Bag&nbsp;&nbsp;&nbsp;Account</div></div>
+          <div class="type-specimen"><div class="spec-label">text/price<em>EB Garamond 400 · 14 · ls 3% · brass</em></div><div class="demo price">$4,200</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="frame-label"><span>1.05 · Spacing &amp; Rules</span><i>space/* · radius 0 everywhere</i></div>
+      <div class="sheet narrow">
+        <div class="sheet-title">Spacing scale &amp; construction rules</div>
+        <div class="sheet-note">Side margin is always 24. Sections are divided by 1px hairlines, not gaps or cards. Corner radius is 0 on every element — the catalogue is cut square.</div>
+        <div class="spec-grid" style="flex-direction:column; gap:14px; display:flex;">
+          <div><div class="space-bar" style="width:4px"></div><div class="spec-label">space/1 · 4</div></div>
+          <div><div class="space-bar" style="width:8px"></div><div class="spec-label">space/2 · 8</div></div>
+          <div><div class="space-bar" style="width:12px"></div><div class="spec-label">space/3 · 12 — inner gaps</div></div>
+          <div><div class="space-bar" style="width:16px"></div><div class="spec-label">space/4 · 16 — lot gap</div></div>
+          <div><div class="space-bar" style="width:20px"></div><div class="spec-label">space/5 · 20 — lot padding</div></div>
+          <div><div class="space-bar" style="width:24px"></div><div class="spec-label">space/6 · 24 — page margin</div></div>
+          <div><div class="space-bar" style="width:32px"></div><div class="spec-label">space/7 · 32</div></div>
+          <div><div class="space-bar" style="width:44px"></div><div class="spec-label">space/8 · 44 — section head top</div></div>
+          <div><div class="space-bar" style="width:56px"></div><div class="spec-label">space/9 · 56 — quote block margin</div></div>
+        </div>
+        <div style="margin-top:36px; border-top:1px solid var(--hairline); padding-top:24px;">
+          <div style="height:1px; background:var(--hairline);"></div><div class="spec-label">rule/hairline · 1px · color/hairline — the section divider</div>
+          <div style="height:1px; background:var(--brass); margin-top:22px;"></div><div class="spec-label">rule/brass · 1px · color/brass — quote borders, CTA underlines, focus lines</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     BAND 2 — COMPONENTS
+     ================================================================ -->
+<style>
+.demo-strip{ width:390px; background:var(--g-screen); border:1px solid #2c1c16; padding:6px 24px 10px; box-shadow:0 16px 40px rgba(0,0,0,0.4);}
+.demo-strip.pad{ padding-top:20px; padding-bottom:26px; }
+.demo-strip.noside{ padding-left:0; padding-right:0; }
+.spec-col{ display:flex; flex-direction:column; gap:26px; }
+.btn-demo{ width:280px; }
+</style>
+<section class="band" id="components">
+  <div class="band-head"><span class="n">Page 2</span><h2>Components</h2><span class="note">every screen in Band 3 is assembled from these — no one-off shapes</span></div>
+
+  <div class="row" id="rowCmp">
+    <div class="frame">
+      <div class="frame-label"><span>2.01 · Buttons</span><i>cmp/button · variant × state</i></div>
+      <div class="sheet narrow">
+        <div class="sheet-title">Buttons</div>
+        <div class="sheet-note">One filled CTA per screen at most. Primary carries gradient/cta with effect/cta-lift; everything quieter is a hairline or an underline.</div>
+        <div class="spec-col">
+          <div><div class="btn btn-primary btn-demo">Add to Bag — $3,650</div><div class="spec-label">button · primary / default</div></div>
+          <div><div class="btn btn-primary pressed btn-demo">Add to Bag — $3,650</div><div class="spec-label">button · primary / pressed <em>gradient/cta-press, inner shadow</em></div></div>
+          <div><div class="btn btn-primary disabled btn-demo">Add to Bag</div><div class="spec-label">button · primary / disabled <em>hairline stroke · 55%</em></div></div>
+          <div><div class="btn btn-secondary btn-demo">Present Invitation</div><div class="spec-label">button · secondary / default <em>1px brass stroke, 10% brass wash</em></div></div>
+          <div><div class="btn btn-secondary pressed btn-demo">Present Invitation</div><div class="spec-label">button · secondary / pressed</div></div>
+          <div><div class="btn btn-ghost btn-demo">Browse the Archive</div><div class="spec-label">button · ghost / default <em>1px hairline stroke</em></div></div>
+          <div><span class="cta-line">Enter Collection</span><div class="spec-label">button · text-underline <em>brass underline, cream label — inline CTA</em></div></div>
+          <div><span class="cta-line brass">View All</span><div class="spec-label">button · text-underline / brass <em>section-header link</em></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="frame-label"><span>2.02 · Catalogue Pieces</span><i>cmp/lot-row · cmp/product-card · cmp/section-header</i></div>
+      <div class="sheet">
+        <div class="sheet-title">Lot row · product card · section header</div>
+        <div class="sheet-note">The numbered lot is the house signature — reuse it for catalogue, bag, wishlist, orders, reserved pieces. Numbers are data: position in the current register.</div>
+        <div class="spec-grid">
+          <div>
+            <div class="demo-strip">
+              <div class="section-title" style="padding:20px 0 14px;"><h2>Recently Acquired</h2><a>View All</a></div>
+            </div>
+            <div class="spec-label">section-header <em>text/section-h2 + text-underline/brass · 44 top / 18 bottom</em></div>
+            <div class="demo-strip" style="margin-top:26px;">
+              <div class="lot"><div class="lot-num">01</div><div class="plate plate-thumb"></div><div class="lot-info"><div class="name">The Bordeaux Tote</div><div class="meta">Full-grain calfskin, Italy</div></div><div class="price">$4,200</div></div>
+              <div class="lot last"><div class="lot-num">02</div><div class="plate plate-thumb"></div><div class="lot-info"><div class="name">Signet, 18k Yellow</div><div class="meta">Hand-engraved</div></div><div class="lot-side"><span class="price">$2,850</span><span class="tag brass">Reserved</span></div></div>
+            </div>
+            <div class="spec-label">lot-row · default / with-tag <em>hairline top rule · thumb 74×90 gradient/plate + effect/thumb</em></div>
+          </div>
+          <div>
+            <div style="display:flex; gap:14px;">
+              <div class="pcard" style="width:164px;"><div class="plate"><div class="plate-tag">Lot 07</div></div><div class="name">The Attaché, Slim</div><div class="meta">Bridle leather, England</div><div class="price">$3,900</div></div>
+              <div class="pcard" style="width:164px;"><div class="plate" style="background:var(--g-plate-hero)"><div class="plate-cap" style="bottom:12px;left:12px;right:12px;"><div class="plate-no">Plate No. 021</div></div></div><div class="name">Vetiver de Minuit</div><div class="meta">Extrait de parfum, 50 ml</div><div class="price">$480</div></div>
+            </div>
+            <div class="spec-label">product-card · lot-tag / plate-caption <em>3:4 gradient/card + effect/card · caption like an archive plate</em></div>
+            <div style="margin-top:30px;">
+              <div class="quote-block" style="margin:0; width:342px;"><p>"Buy the best and you only cry once."</p><span>— House Philosophy</span></div>
+              <div class="spec-label">pull-quote <em>1px brass rule top+bottom · Cormorant italic 20 · caps attribution</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="frame-label"><span>2.03 · Forms &amp; Controls</span><i>cmp/input · cmp/chip · cmp/tag · cmp/controls</i></div>
+      <div class="sheet">
+        <div class="sheet-title">Inputs &amp; small controls</div>
+        <div class="sheet-note">Fields are a label and a hairline — no boxes. Focus turns the line and label brass. Squares, never circles: the catalogue is cut square, down to its checkboxes.</div>
+        <div class="spec-grid">
+          <div style="width:330px;">
+            <div class="field"><label>Email</label><div class="control"><span class="ph">adeline@—</span></div></div>
+            <div class="spec-label">input / default</div>
+            <div class="field focus"><label>Email</label><div class="control"><span>adeline@marchetti.it<span class="caret"></span></span></div></div>
+            <div class="spec-label">input / focus <em>brass label + brass line + caret</em></div>
+            <div class="field error"><label>Invitation reference</label><div class="control"><span>RSN–00—</span></div><div class="field-note">The house does not recognise this reference.</div></div>
+            <div class="spec-label">input / error <em>rose-deep line + italic note</em></div>
+            <div class="searchbar" style="margin:30px 0 0;"><span class="glyph">⚲</span><div class="q"><span class="ph">Search the archive…</span></div><span class="cancel">Cancel</span></div>
+            <div class="spec-label">search-bar <em>brass baseline · Cormorant query type</em></div>
+          </div>
+          <div style="width:330px;">
+            <div class="chiprow" style="padding:10px 0 0;"><span class="chip active">Calfskin ✕</span><span class="chip">Suede</span><span class="chip">Bridle</span></div>
+            <div class="spec-label">chip · active / default</div>
+            <div style="display:flex; gap:10px; margin-top:22px; flex-wrap:wrap;"><span class="tag brass">In Transit</span><span class="tag">Delivered</span><span class="tag brass">Salon — Invited</span><span class="tag rose">Edition of 9</span></div>
+            <div class="spec-label">tag · brass / quiet / rose</div>
+            <div style="display:flex; gap:22px; align-items:center; margin-top:24px;"><span class="toggle on"><span class="knob"></span></span><span class="toggle"><span class="knob"></span></span><span class="qty"><span class="op">−</span><span>1</span><span class="op">+</span></span></div>
+            <div class="spec-label">toggle · on / off &nbsp;·&nbsp; quantity-stepper</div>
+            <div style="margin-top:24px; display:flex; gap:26px; align-items:center;">
+              <span class="box on"></span><span class="box"></span><span class="rad on"></span><span class="rad"></span>
+              <span class="swatches"><span class="sw walnut active"></span><span class="sw oxblood"></span><span class="sw noir"></span></span>
+              <span class="dots"><i class="on"></i><i></i><i></i><i></i></span>
+            </div>
+            <div class="spec-label">checkbox · radio · finish-swatch (active = brass outline, offset 3) · pager-dots</div>
+            <div class="range" style="margin-top:26px;"><div class="rail"></div><div class="fill"></div><div class="handle" style="left:18%"></div><div class="handle" style="right:30%"></div></div>
+            <div class="spec-label">range-slider <em>hairline rail · brass fill · square handles</em></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame">
+      <div class="frame-label"><span>2.04 · Structure</span><i>cmp/nav-bar · cmp/steps · cmp/timeline · cmp/panel · cmp/notification</i></div>
+      <div class="sheet">
+        <div class="sheet-title">Navigation &amp; records</div>
+        <div class="sheet-note">The nav bar is fixed, Walnut Deep, hairline-topped. Active tab is brass with a 3px brass point above — the only moving light in the chrome.</div>
+        <div class="spec-grid">
+          <div>
+            <div class="demo-strip noside" style="padding:0;"><div class="navbar" style="margin-top:0;"><div class="active">Registry</div><div>Archive</div><div>Bag</div><div>Account</div></div></div>
+            <div class="spec-label">nav-bar / registry-active <em>10px caps ls 10% · brass active + point</em></div>
+            <div class="demo-strip pad" style="margin-top:26px;">
+              <div class="steps" style="padding:0;"><span class="st done"><span class="n">01</span> Carriage</span><span class="ln done"></span><span class="st on"><span class="n">02</span> Payment</span><span class="ln"></span><span class="st"><span class="n">03</span> Review</span></div>
+            </div>
+            <div class="spec-label">checkout-steps <em>done = cream + brass line · current = brass</em></div>
+            <div class="demo-strip pad" style="margin-top:26px;">
+              <div class="timeline">
+                <div class="tl-item done"><div class="tl-node"></div><div class="tl-body"><div class="t">Confirmed</div><div class="d">12 March, 18:42 — the desk</div></div></div>
+                <div class="tl-item done"><div class="tl-node"></div><div class="tl-body"><div class="t">At the bench</div><div class="d">14 March — Atelier No. 3</div></div></div>
+                <div class="tl-item"><div class="tl-node"></div><div class="tl-body"><div class="t" style="color:var(--cream-dim)">Dispatched</div><div class="d">awaiting carriage</div></div></div>
+              </div>
+            </div>
+            <div class="spec-label">order-timeline <em>square nodes · brass fill when passed · hairline rail</em></div>
+          </div>
+          <div>
+            <div class="demo-strip pad">
+              <div class="panel sel"><div class="head"><span class="rad on"></span><span class="nm">A. Marchetti</span><span class="tag brass">Preferred</span></div><div class="body">14 Via dei Coronari<br>Rome 00186, Italy</div><div class="foot"><a>Amend</a><a>Remove</a></div></div>
+            </div>
+            <div class="spec-label">panel · selected <em>brass stroke when chosen · gradient/panel wash</em></div>
+            <div class="demo-strip pad" style="margin-top:26px;">
+              <div class="notif" style="border-top:none;"><span class="ndot"></span><div class="nbody"><div class="t">Your Minaudière has left the bench.</div><div class="m">Order RSN–2417 <span class="tag" style="font-size:8px">Order</span></div></div><div class="ntime">2 h</div></div>
+              <div class="notif"><span class="ndot read"></span><div class="nbody read"><div class="t">Returned to the archive: Peccary Gloves.</div><div class="m">Restock</div></div><div class="ntime">Mon</div></div>
+            </div>
+            <div class="spec-label">notification-row · unread / read <em>6px brass square, glowing · read = hollow</em></div>
+            <div class="demo-strip pad" style="margin-top:26px;">
+              <div class="linkrow" style="border-top:none;"><span class="lnum">04</span><span class="lbl">Addresses</span><span class="val">Rome · Paris</span><span class="chev">→</span></div>
+              <div class="linkrow"><span class="lbl">The Salon</span><span class="tag brass">Invited</span><span class="chev">→</span></div>
+            </div>
+            <div class="spec-label">link-row · numbered / tagged <em>the lot register applied to navigation</em></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     BAND 3 — SCREENS  ·  32 artboards in user-flow order
+     ================================================================ -->
+<section class="band" id="screens">
+  <div class="band-head"><span class="n">Page 3</span><h2>Screens</h2><span class="note">left-to-right in flow order · numbered 3.01–3.32 · assembled from Band 2 components only</span></div>
+
+  <div class="flow-label"><b>Flow A</b> — Arrival: splash → onboarding → sign in → create account</div>
+  <div class="row" id="rowA">
+
+    <!-- 3.01 SPLASH -->
+    <div class="frame">
+      <div class="frame-label"><span>3.01 · Splash</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s01">
+        <div class="grow" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 24px;">
+          <div style="width:1px; height:64px; background:linear-gradient(180deg, transparent, var(--brass));"></div>
+          <div class="eyebrow" style="padding:26px 0 0;">Est. MMXII · The House Registry</div>
+          <div class="h1" style="margin-top:18px; letter-spacing:0.12em;">RSN One</div>
+          <p class="sub" style="max-width:240px; margin-top:16px;">Objects worth keeping — heritage leather, gold, and cloth, chosen rather than manufactured.</p>
+          <div style="width:1px; height:64px; background:linear-gradient(180deg, var(--brass), transparent); margin-top:26px;"></div>
+        </div>
+        <div style="padding:0 24px 48px; text-align:center;">
+          <div class="micro" style="letter-spacing:0.22em;">By Appointment</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.02 ONBOARDING 1 -->
+    <div class="frame">
+      <div class="frame-label"><span>3.02 · Onboarding — The Registry</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s02">
+        <div class="status"></div>
+        <div class="topbar quiet"><div class="mark">RSN One</div><div class="icons"><span class="micro">Skip</span></div></div>
+        <div class="eyebrow">The Registry</div>
+        <div class="hero" style="padding-bottom:0;"><h1>A catalogue,<br>not a feed.</h1>
+          <p class="sub">Each season the house admits a small number of pieces to the registry. Nothing more.</p>
+        </div>
+        <div class="plate plate-hero" style="height:300px; margin-top:26px;"><div class="plate-cap"><div class="plate-no">Plate No. 001 · The Reading Room</div></div></div>
+        <div class="ob-foot mt-a">
+          <div class="dots"><i class="on"></i><i></i></div>
+          <div class="btn btn-primary">Continue</div>
+          <div class="skip">Skip the tour</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.03 ONBOARDING 2 -->
+    <div class="frame">
+      <div class="frame-label"><span>3.03 · Onboarding — Provenance</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s03">
+        <div class="status"></div>
+        <div class="topbar quiet"><div class="mark">RSN One</div><div class="icons"><span class="micro">Skip</span></div></div>
+        <div class="eyebrow">Provenance</div>
+        <div class="hero" style="padding-bottom:0;"><h1 style="font-size:40px;">Every piece arrives<br>with its papers.</h1>
+          <p class="sub">Origin, maker, and material — recorded at the bench, sealed at the desk, kept in your name.</p>
+        </div>
+        <div class="plate plate-hero" style="height:300px; margin-top:26px;"><div class="plate-cap"><div class="plate-no">Plate No. 002 · The Seal</div></div></div>
+        <div class="ob-foot mt-a">
+          <div class="dots"><i></i><i class="on"></i></div>
+          <div class="btn btn-primary">Enter the Registry</div>
+          <div class="skip">Skip the tour</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.04 SIGN IN -->
+    <div class="frame">
+      <div class="frame-label"><span>3.04 · Sign In</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s04">
+        <div class="status"></div>
+        <div class="topbar quiet"><div class="mark">RSN One</div><div class="icons"></div></div>
+        <div class="eyebrow">Welcome Back</div>
+        <div class="hero"><h1 style="font-size:40px;">The house keeps<br>your place.</h1></div>
+        <div class="form">
+          <div class="field"><label>Email</label><div class="control"><span>adeline@marchetti.it</span></div></div>
+          <div class="field focus"><label>Password</label><div class="control"><span>••••••••<span class="caret"></span></span><span class="micro">Show</span></div></div>
+          <div class="field-note" style="text-align:right; margin-top:10px;">Misplaced your password? →</div>
+        </div>
+        <div style="padding:34px 24px 0;"><div class="btn btn-primary">Sign In</div></div>
+        <div class="divider-or">or continue with</div>
+        <div class="btn-row"><div class="btn btn-ghost"> Apple</div><div class="btn btn-ghost">Google</div></div>
+        <div class="mt-a tcenter" style="padding:0 24px 44px;">
+          <span class="note">New to the house?</span>&nbsp;&nbsp;<span class="cta-line brass">Create an Account</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.05 CREATE ACCOUNT -->
+    <div class="frame">
+      <div class="frame-label"><span>3.05 · Create Account</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s05">
+        <div class="status"></div>
+        <div class="topbar quiet"><div class="back">←</div><div class="mark" style="font-size:16px;">RSN One</div><div class="icons"></div></div>
+        <div class="eyebrow">Correspondence</div>
+        <div class="hero" style="padding-bottom:6px;"><h1 style="font-size:40px;">Introduce<br>yourself.</h1>
+          <p class="sub">We write rarely, and only when something deserves it.</p>
+        </div>
+        <div class="form">
+          <div class="field"><label>Full Name</label><div class="control"><span class="ph">As it should appear on your papers</span></div></div>
+          <div class="field"><label>Email</label><div class="control"><span class="ph">you@—</span></div></div>
+          <div class="field"><label>Password</label><div class="control"><span class="ph">Twelve characters, at least</span></div></div>
+          <div class="checkrow" style="border-top:none; margin-top:14px;"><span class="box on"></span><span class="lbl note" style="font-size:13px;">Send me the seasonal registry — a letter, four times a year.</span></div>
+        </div>
+        <div style="padding:22px 24px 0;"><div class="btn btn-primary">Create Account</div></div>
+        <div class="mt-a tcenter" style="padding:0 24px 44px;">
+          <span class="note">Already known to us?</span>&nbsp;&nbsp;<span class="cta-line brass">Sign In</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-label"><b>Flow B</b> — Discovery: home → archive → listing → filter → search</div>
+  <div class="row" id="rowB">
+
+    <!-- 3.06 HOME (ground truth) -->
+    <div class="frame">
+      <div class="frame-label"><span>3.06 · Home — The Registry</span><i>reference plate · scrolls</i></div>
+      <div class="screen" id="s06">
+        <div class="status"></div>
+        <div class="topbar"><div class="mark">RSN One</div><div class="icons">⚲ ♡ ⊞</div></div>
+        <div class="eyebrow">The Autumn Registry</div>
+        <div class="hero"><h1>Objects worth<br>keeping.</h1>
+          <p class="sub">A private catalogue of heritage leather, gold, and cloth — chosen, not manufactured.</p>
+        </div>
+        <div class="plate plate-hero"><div class="plate-cap"><div class="plate-no">Plate No. 014</div><span class="cta-line">Enter Collection</span></div></div>
+        <div class="section-title"><h2>Recently Acquired</h2><a>View All</a></div>
+        <div class="catalogue">
+          <div class="lot"><div class="lot-num">01</div><div class="plate plate-thumb"></div><div class="lot-info"><div class="name">The Bordeaux Tote</div><div class="meta">Full-grain calfskin, Italy</div></div><div class="price">$4,200</div></div>
+          <div class="lot"><div class="lot-num">02</div><div class="plate plate-thumb"></div><div class="lot-info"><div class="name">Signet, 18k Yellow</div><div class="meta">Hand-engraved</div></div><div class="price">$2,850</div></div>
+          <div class="lot"><div class="lot-num">03</div><div class="plate plate-thumb"></div><div class="lot-info"><div class="name">Cashmere Overcoat</div><div class="meta">Loro Piana cloth</div></div><div class="price">$6,100</div></div>
+        </div>
+        <div class="quote-block"><p>"Buy the best and you only cry once."</p><span>— House Philosophy</span></div>
+        <div class="section-title" style="padding-top:0;"><h2>The Archive</h2><a>Browse</a></div>
+        <div class="grid2">
+          <div class="card"><span>Jewelry</span></div>
+          <div class="card"><span>Leather Goods</span></div>
+          <div class="card"><span>Ready-to-Wear</span></div>
+          <div class="card"><span>Fragrance</span></div>
+        </div>
+        <div class="navbar"><div class="active">Registry</div><div>Archive</div><div>Bag</div><div>Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.07 BROWSE — GRID -->
+    <div class="frame">
+      <div class="frame-label"><span>3.07 · Archive — Grid View</span><i>scrolls</i></div>
+      <div class="screen" id="s07">
+        <div class="status"></div>
+        <div class="topbar"><div class="mark">RSN One</div><div class="icons">⚲ ♡</div></div>
+        <div class="eyebrow">The Archive</div>
+        <div class="hero" style="padding-bottom:24px;"><h1 style="font-size:32px;">Six rooms, every<br>piece catalogued.</h1></div>
+        <div class="section-title" style="padding-top:0; padding-bottom:16px; border-top:1px solid var(--hairline); padding-top:20px;">
+          <span class="micro" style="letter-spacing:0.18em;">108 pieces in the archive</span>
+          <span style="display:flex; gap:14px; font-size:14px;"><span style="color:var(--brass);">⊞</span><span style="color:var(--cream-dim);">☰</span></span>
+        </div>
+        <div class="grid2" style="padding-bottom:14px;">
+          <div class="card"><span>Jewelry</span><span class="count">24</span></div>
+          <div class="card"><span>Leather Goods</span><span class="count">31</span></div>
+          <div class="card"><span>Ready-to-Wear</span><span class="count">18</span></div>
+          <div class="card"><span>Fragrance</span><span class="count">9</span></div>
+          <div class="card"><span>Timepieces</span><span class="count">12</span></div>
+          <div class="card"><span>Objects of the House</span><span class="count">14</span></div>
+        </div>
+        <div class="quote-block" style="margin-top:26px;"><p>"A room for everything,<br>and everything in its room."</p><span>— The Registrar</span></div>
+        <div class="navbar"><div>Registry</div><div class="active">Archive</div><div>Bag</div><div>Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.08 BROWSE — LIST -->
+    <div class="frame">
+      <div class="frame-label"><span>3.08 · Archive — List View</span><i>view toggle alternate</i></div>
+      <div class="screen" id="s08">
+        <div class="status"></div>
+        <div class="topbar"><div class="mark">RSN One</div><div class="icons">⚲ ♡</div></div>
+        <div class="eyebrow">The Archive</div>
+        <div class="hero" style="padding-bottom:24px;"><h1 style="font-size:32px;">Six rooms, every<br>piece catalogued.</h1></div>
+        <div class="section-title" style="padding:20px 24px 16px; border-top:1px solid var(--hairline);">
+          <span class="micro" style="letter-spacing:0.18em;">108 pieces in the archive</span>
+          <span style="display:flex; gap:14px; font-size:14px;"><span style="color:var(--cream-dim);">⊞</span><span style="color:var(--brass);">☰</span></span>
+        </div>
+        <div class="catalogue">
+          <div class="lot"><div class="lot-num">I</div><div class="plate plate-sq"></div><div class="lot-info"><div class="name">Jewelry</div><div class="meta">Signets, chains, and stones — 24 pieces</div></div><span class="chev" style="color:var(--cream-dim)">→</span></div>
+          <div class="lot"><div class="lot-num">II</div><div class="plate plate-sq"></div><div class="lot-info"><div class="name">Leather Goods</div><div class="meta">Cut, stitched, and burnished — 31 pieces</div></div><span class="chev" style="color:var(--cream-dim)">→</span></div>
+          <div class="lot"><div class="lot-num">III</div><div class="plate plate-sq"></div><div class="lot-info"><div class="name">Ready-to-Wear</div><div class="meta">Cloth of the great mills — 18 pieces</div></div><span class="chev" style="color:var(--cream-dim)">→</span></div>
+          <div class="lot"><div class="lot-num">IV</div><div class="plate plate-sq"></div><div class="lot-info"><div class="name">Fragrance</div><div class="meta">Extraits, poured by hand — 9 pieces</div></div><span class="chev" style="color:var(--cream-dim)">→</span></div>
+          <div class="lot"><div class="lot-num">V</div><div class="plate plate-sq"></div><div class="lot-info"><div class="name">Timepieces</div><div class="meta">Swiss lever escapements — 12 pieces</div></div><span class="chev" style="color:var(--cream-dim)">→</span></div>
+          <div class="lot"><div class="lot-num">VI</div><div class="plate plate-sq"></div><div class="lot-info"><div class="name">Objects of the House</div><div class="meta">For desk, bar, and shelf — 14 pieces</div></div><span class="chev" style="color:var(--cream-dim)">→</span></div>
+        </div>
+        <div class="navbar"><div>Registry</div><div class="active">Archive</div><div>Bag</div><div>Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.09 PLP -->
+    <div class="frame">
+      <div class="frame-label"><span>3.09 · Listing — Leather Goods</span><i>scrolls</i></div>
+      <div class="screen" id="s09">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Leather Goods</div><div class="spacer">♡</div></div>
+        <div class="eyebrow tight">The Archive · Autumn MMXXVI</div>
+        <div class="hero" style="padding-bottom:18px;"><h1 style="font-size:32px;">Leather Goods</h1>
+          <p class="sub" style="margin-top:8px;">Thirty-one pieces, cut from whole hides.</p>
+        </div>
+        <div class="chiprow" style="border-top:1px solid var(--hairline); padding-top:16px;">
+          <span class="chip">⊜ Refine · 2</span><span class="chip active">Calfskin ✕</span><span class="chip active">Ready to ship ✕</span><span class="chip">Sort — Latest ▾</span>
+        </div>
+        <div class="pgrid" style="padding-top:26px;">
+          <div class="pcard"><div class="plate"><div class="plate-tag">Lot 01</div></div><div class="name">The Bordeaux Tote</div><div class="meta">Full-grain calfskin, Italy</div><div class="price">$4,200</div></div>
+          <div class="pcard"><div class="plate"><div class="plate-tag">Lot 02</div></div><div class="name">The Attaché, Slim</div><div class="meta">Bridle leather, England</div><div class="price">$3,900</div></div>
+          <div class="pcard"><div class="plate"><div class="plate-tag">Lot 03</div></div><div class="name">The Meridian Minaudière</div><div class="meta">Box calf &amp; brass clasp</div><div class="price">$3,650</div></div>
+          <div class="pcard"><div class="plate"><div class="plate-tag">Lot 04</div></div><div class="name">Saddle Card Wallet</div><div class="meta">Six pockets, one hide</div><div class="price">$410</div></div>
+          <div class="pcard"><div class="plate"><div class="plate-tag">Lot 05</div></div><div class="name">Peccary Gloves</div><div class="meta">Unlined, hand-sewn</div><div class="price">$520</div></div>
+          <div class="pcard"><div class="plate"><div class="plate-tag">Lot 06</div></div><div class="name">The Weekender, Oak</div><div class="meta">Vachetta, saddle-stitched</div><div class="price">$5,800</div></div>
+        </div>
+        <div class="tcenter" style="padding:36px 24px 40px;"><span class="cta-line brass">Show the remaining 25</span></div>
+        <div class="navbar"><div>Registry</div><div class="active">Archive</div><div>Bag</div><div>Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.10 FILTER SHEET -->
+    <div class="frame">
+      <div class="frame-label"><span>3.10 · Refine — Filter Sheet</span><i>modal over 3.09 · 390×844</i></div>
+      <div class="screen h-fixed" id="s10">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Leather Goods</div><div class="spacer">♡</div></div>
+        <div class="eyebrow tight">The Archive · Autumn MMXXVI</div>
+        <div class="hero" style="padding-bottom:18px;"><h1 style="font-size:32px;">Leather Goods</h1></div>
+        <div class="pgrid" style="padding-top:10px;">
+          <div class="pcard"><div class="plate"></div><div class="name">The Bordeaux Tote</div><div class="price">$4,200</div></div>
+          <div class="pcard"><div class="plate"></div><div class="name">The Attaché, Slim</div><div class="price">$3,900</div></div>
+        </div>
+        <div class="scrim"></div>
+        <div class="sheet-modal">
+          <div class="grab"></div>
+          <div class="sheet-h"><h3>Refine</h3><a>Clear All</a></div>
+          <div class="group-lbl" style="padding:22px 0 2px;">Price</div>
+          <div class="range"><div class="rail"></div><div class="fill"></div><div class="handle" style="left:18%"></div><div class="handle" style="right:30%"></div></div>
+          <div style="display:flex; justify-content:space-between;" class="note"><span>$400</span><span>$6,800</span></div>
+          <div class="group-lbl" style="padding:26px 0 8px;">Material</div>
+          <div class="checkrow"><span class="box on"></span><span class="lbl">Calfskin</span><span class="note">12</span></div>
+          <div class="checkrow"><span class="box"></span><span class="lbl">Bridle</span><span class="note">6</span></div>
+          <div class="checkrow"><span class="box"></span><span class="lbl">Suede</span><span class="note">5</span></div>
+          <div class="checkrow"><span class="box"></span><span class="lbl">Peccary &amp; exotic</span><span class="note">8</span></div>
+          <div class="group-lbl" style="padding:26px 0 8px;">Availability</div>
+          <div class="radiorow"><span class="rad on"></span><span class="lbl">Ready to ship</span></div>
+          <div class="radiorow"><span class="rad"></span><span class="lbl">At the bench <span class="sub-lbl">made to order, 6–8 weeks</span></span></div>
+          <div class="radiorow"><span class="rad"></span><span class="lbl">Reserve only</span></div>
+          <div style="display:flex; gap:12px; margin-top:26px;">
+            <div class="btn btn-ghost" style="flex:1;">Close</div>
+            <div class="btn btn-primary" style="flex:2;">Show 12 Pieces</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.11 SEARCH -->
+    <div class="frame">
+      <div class="frame-label"><span>3.11 · Search</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s11">
+        <div class="status"></div>
+        <div class="searchbar"><span class="glyph">⚲</span><div class="q"><span class="ph">Search the archive…</span><span class="caret"></span></div><span class="cancel">Cancel</span></div>
+        <div class="group-lbl">Recent</div>
+        <div class="catalogue">
+          <div class="linkrow"><span class="lbl" style="font-style:italic; color:var(--cream-dim);">signet ring</span><span class="chev">✕</span></div>
+          <div class="linkrow"><span class="lbl" style="font-style:italic; color:var(--cream-dim);">cashmere</span><span class="chev">✕</span></div>
+          <div class="linkrow"><span class="lbl" style="font-style:italic; color:var(--cream-dim);">vetiver</span><span class="chev">✕</span></div>
+        </div>
+        <div class="group-lbl">From the House</div>
+        <div class="catalogue">
+          <div class="linkrow"><span class="lnum">01</span><span class="lbl">The Autumn Registry</span><span class="val">collection</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lnum">02</span><span class="lbl">Vetiver de Minuit</span><span class="val">fragrance</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lnum">03</span><span class="lbl">Bridle leather</span><span class="val">material</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lnum">04</span><span class="lbl">The Salon</span><span class="val">members</span><span class="chev">→</span></div>
+        </div>
+        <div class="quote-block mt-a" style="margin-bottom:120px;"><p>"Ask for it by name,<br>or describe it as you remember it."</p><span>— The Concierge Desk</span></div>
+        <div class="navbar"><div>Registry</div><div class="active">Archive</div><div>Bag</div><div>Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.12 SEARCH — NO RESULTS -->
+    <div class="frame">
+      <div class="frame-label"><span>3.12 · Search — No Results</span><i>empty state · 390×844</i></div>
+      <div class="screen h-fixed" id="s12">
+        <div class="status"></div>
+        <div class="searchbar"><span class="glyph">⚲</span><div class="q">chrome sneakers</div><span class="cancel">Cancel</span></div>
+        <div class="grow" style="display:flex; flex-direction:column; justify-content:center;">
+          <div class="quote-block" style="margin-top:0;"><p>"The archive holds<br>no record of it."</p><span>— The Registrar</span></div>
+          <div class="tcenter px24">
+            <p class="note" style="max-width:280px; margin:0 auto;">Nothing answers to "chrome sneakers." You might consult the rooms instead, or write to the concierge — requests have opened rooms before.</p>
+          </div>
+          <div class="chiprow" style="justify-content:center; padding-top:26px;">
+            <span class="chip">Leather Goods</span><span class="chip">Jewelry</span><span class="chip">Objects</span>
+          </div>
+          <div style="padding:30px 60px 0;"><div class="btn btn-secondary">Write to the Concierge</div></div>
+        </div>
+        <div class="navbar"><div>Registry</div><div class="active">Archive</div><div>Bag</div><div>Account</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-label"><b>Flow C</b> — Acquisition: product → bag → checkout → confirmation</div>
+  <div class="row" id="rowC2">
+
+    <!-- 3.13 PDP -->
+    <div class="frame">
+      <div class="frame-label"><span>3.13 · Product Detail — The Meridian Minaudière</span><i>scrolls</i></div>
+      <div class="screen" id="s13">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Lot 03 of 31</div><div class="spacer">♡</div></div>
+        <div class="plate" style="margin:0; height:460px; background:var(--g-plate-hero); box-shadow:var(--sh-hero); border-left:none; border-right:none;">
+          <div class="plate-tag">Plate No. 021 · Box Calf</div>
+          <div class="plate-cap"><div class="plate-no">View 1 of 4</div><span class="dots"><i class="on"></i><i></i><i></i><i></i></span></div>
+        </div>
+        <div class="eyebrow">Room II · Leather Goods · Lot 03</div>
+        <div class="hero" style="padding-bottom:0;">
+          <h1 style="font-size:32px;">The Meridian<br>Minaudière</h1>
+          <div class="price" style="font-size:18px; margin-top:14px;">$3,650</div>
+          <p class="sub wide" style="margin-top:12px;">A rigid evening case in box calf, closed by a single brass twist — made to outlast the evenings it attends.</p>
+        </div>
+        <div class="px24" style="padding-top:28px;">
+          <div class="micro" style="margin-bottom:12px; color:var(--cream);">Finish — <span style="color:var(--cream-dim);">Walnut</span></div>
+          <div class="swatches"><span class="sw walnut active"></span><span class="sw oxblood"></span><span class="sw noir"></span></div>
+        </div>
+        <div style="padding:30px 24px 8px;"><div class="btn btn-primary">Add to Bag — $3,650</div>
+          <div class="tcenter" style="margin-top:14px;"><span class="micro">Ready to ship · wrapped in the house paper</span></div>
+        </div>
+        <div class="px24" style="padding-top:26px;">
+          <div class="accordion">
+            <div class="acc-head"><span class="t">Materials &amp; Craft</span><span class="ic">−</span></div>
+            <div class="acc-body">Box calf from the Tanneries du Puy, chosen for its close grain; fittings cast and polished in Birmingham. One artisan, one bench, <b>fourteen hours</b> — the seams are saddle-stitched at seven to the inch and will not run.</div>
+          </div>
+          <div class="accordion"><div class="acc-head"><span class="t">Provenance &amp; Papers</span><span class="ic">+</span></div></div>
+          <div class="accordion"><div class="acc-head"><span class="t">Care &amp; Keeping</span><span class="ic">+</span></div></div>
+          <div class="accordion" style="border-bottom:1px solid var(--hairline);"><div class="acc-head"><span class="t">Carriage &amp; Returns</span><span class="ic">+</span></div></div>
+        </div>
+        <div class="quote-block"><p>"Made once,<br>made properly."</p><span>— Atelier No. 3</span></div>
+        <div class="section-title" style="padding-top:0;"><h2>From the Same Bench</h2><a>View All</a></div>
+        <div class="pgrid" style="padding-bottom:44px;">
+          <div class="pcard"><div class="plate"><div class="plate-tag">Lot 04</div></div><div class="name">Saddle Card Wallet</div><div class="meta">Six pockets, one hide</div><div class="price">$410</div></div>
+          <div class="pcard"><div class="plate"><div class="plate-tag">Lot 05</div></div><div class="name">Peccary Gloves</div><div class="meta">Unlined, hand-sewn</div><div class="price">$520</div></div>
+        </div>
+        <div class="navbar"><div>Registry</div><div class="active">Archive</div><div>Bag</div><div>Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.14 BAG -->
+    <div class="frame">
+      <div class="frame-label"><span>3.14 · Bag</span><i>scrolls</i></div>
+      <div class="screen" id="s14">
+        <div class="status"></div>
+        <div class="topbar"><div class="mark">RSN One</div><div class="icons">⚲ ♡</div></div>
+        <div class="eyebrow">Your Bag · Two Pieces</div>
+        <div class="hero" style="padding-bottom:22px;"><h1 style="font-size:32px;">Considered, then<br>carried home.</h1></div>
+        <div class="catalogue">
+          <div class="lot" style="align-items:flex-start;">
+            <div class="lot-num">01</div><div class="plate plate-thumb"></div>
+            <div class="lot-info"><div class="name">The Meridian Minaudière</div><div class="meta">Finish — Walnut · Ready to ship</div>
+              <div style="display:flex; align-items:center; gap:16px; margin-top:12px;"><span class="qty"><span class="op">−</span><span>1</span><span class="op">+</span></span><span class="micro" style="border-bottom:1px solid var(--hairline); padding-bottom:2px;">Release</span></div>
+            </div>
+            <div class="price">$3,650</div>
+          </div>
+          <div class="lot" style="align-items:flex-start;">
+            <div class="lot-num">02</div><div class="plate plate-thumb"></div>
+            <div class="lot-info"><div class="name">Vetiver de Minuit</div><div class="meta">Extrait de parfum, 50 ml</div>
+              <div style="display:flex; align-items:center; gap:16px; margin-top:12px;"><span class="qty"><span class="op">−</span><span>1</span><span class="op">+</span></span><span class="micro" style="border-bottom:1px solid var(--hairline); padding-bottom:2px;">Release</span></div>
+            </div>
+            <div class="price">$480</div>
+          </div>
+        </div>
+        <div class="form" style="padding-top:8px;">
+          <div class="field"><label>A Word from the House</label><div class="control"><span class="ph">Enter it here, if you hold one</span><span class="cta-line brass" style="font-size:11px;">Apply</span></div></div>
+        </div>
+        <div class="px24" style="padding-top:26px;">
+          <div class="kv"><span class="k">Subtotal</span><span class="v">$4,130</span></div>
+          <div class="kv"><span class="k">Carriage</span><span class="v">Complimentary</span></div>
+          <div class="kv"><span class="k">Duties &amp; taxes</span><span class="v">Reckoned at the desk</span></div>
+          <div class="kv total"><span class="k">Total</span><span class="v">$4,130</span></div>
+        </div>
+        <div style="padding:26px 24px 10px;"><div class="btn btn-primary">Proceed to the Desk</div></div>
+        <div class="tcenter" style="padding:8px 24px 36px;"><span class="note">Each piece leaves the house wrapped in its paper, without exception.</span></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div class="active">Bag</div><div>Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.15 BAG — EMPTY -->
+    <div class="frame">
+      <div class="frame-label"><span>3.15 · Bag — Empty</span><i>empty state · 390×844</i></div>
+      <div class="screen h-fixed" id="s15">
+        <div class="status"></div>
+        <div class="topbar"><div class="mark">RSN One</div><div class="icons">⚲ ♡</div></div>
+        <div class="eyebrow">Your Bag</div>
+        <div class="grow" style="display:flex; flex-direction:column; justify-content:center;">
+          <div class="quote-block" style="margin-top:0;"><p>"An empty bag is a promise<br>to your future self."</p><span>— House Philosophy</span></div>
+          <div class="tcenter px24"><p class="note" style="max-width:260px; margin:0 auto;">Nothing is held for you at the desk. The autumn registry is open, and the rooms are full.</p></div>
+          <div style="padding:32px 60px 0;"><div class="btn btn-secondary">Enter the Archive</div></div>
+        </div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div class="active">Bag</div><div>Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.16 CHECKOUT — CARRIAGE -->
+    <div class="frame">
+      <div class="frame-label"><span>3.16 · Checkout — Carriage</span><i>scrolls</i></div>
+      <div class="screen" id="s16">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">The Desk</div><div class="spacer"></div></div>
+        <div class="steps"><span class="st on"><span class="n">01</span> Carriage</span><span class="ln"></span><span class="st"><span class="n">02</span> Payment</span><span class="ln"></span><span class="st"><span class="n">03</span> Review</span></div>
+        <div class="hero" style="padding-top:30px; padding-bottom:24px;"><h1 style="font-size:32px;">Where shall<br>it be sent?</h1></div>
+        <div class="px24">
+          <div class="panel sel"><div class="head"><span class="rad on"></span><span class="nm">A. Marchetti</span><span class="tag brass">Preferred</span></div><div class="body">14 Via dei Coronari<br>Rome 00186, Italy · +39 06 68—</div><div class="foot"><a>Amend</a></div></div>
+          <div class="panel"><div class="head"><span class="rad"></span><span class="nm">The Studio</span></div><div class="body">8 Rue de Verneuil<br>Paris 75007, France</div><div class="foot"><a>Amend</a></div></div>
+        </div>
+        <div class="px24" style="padding-top:16px;"><div class="btn btn-ghost" style="height:46px;">＋ &nbsp;New Address</div></div>
+        <div class="group-lbl">Manner of Carriage</div>
+        <div class="catalogue">
+          <div class="radiorow"><span class="rad on"></span><span class="lbl">House courier <span class="sub-lbl">Three to five days · signed for · complimentary</span></span><span class="price">—</span></div>
+          <div class="radiorow" style="border-bottom:1px solid var(--hairline);"><span class="rad"></span><span class="lbl">Express <span class="sub-lbl">One to two days, by air</span></span><span class="price">$60</span></div>
+        </div>
+        <div style="padding:32px 24px 40px;" class="mt-a"><div class="btn btn-primary">Continue to Payment</div></div>
+      </div>
+    </div>
+
+    <!-- 3.17 CHECKOUT — PAYMENT -->
+    <div class="frame">
+      <div class="frame-label"><span>3.17 · Checkout — Payment</span><i>scrolls</i></div>
+      <div class="screen" id="s17">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">The Desk</div><div class="spacer"></div></div>
+        <div class="steps"><span class="st done"><span class="n">01</span> Carriage</span><span class="ln done"></span><span class="st on"><span class="n">02</span> Payment</span><span class="ln"></span><span class="st"><span class="n">03</span> Review</span></div>
+        <div class="hero" style="padding-top:30px; padding-bottom:24px;"><h1 style="font-size:32px;">And how shall<br>it be settled?</h1></div>
+        <div class="px24">
+          <div class="panel sel"><div class="head"><span class="rad on"></span><span class="nm">Amex ···· 4417</span><span class="tag brass">Preferred</span></div><div class="body">A. Marchetti · expires 08/28</div></div>
+          <div class="panel"><div class="head"><span class="rad"></span><span class="nm">Visa ···· 8802</span></div><div class="body">A. Marchetti · expires 06/27</div></div>
+        </div>
+        <div class="group-lbl">Or a New Card</div>
+        <div class="form">
+          <div class="field" style="padding-top:8px;"><label>Card Number</label><div class="control"><span class="ph">···· ···· ···· ····</span></div></div>
+          <div style="display:flex; gap:24px;">
+            <div class="field" style="flex:1;"><label>Expires</label><div class="control"><span class="ph">MM / YY</span></div></div>
+            <div class="field" style="flex:1;"><label>Code</label><div class="control"><span class="ph">···</span></div></div>
+          </div>
+          <div class="checkrow" style="border-top:none; margin-top:16px;"><span class="toggle on"><span class="knob"></span></span><span class="lbl" style="font-size:14px;">Billing follows the carriage address</span></div>
+        </div>
+        <div class="tcenter px24" style="padding-top:14px;"><span class="note">The house holds no card numbers; our bank does.</span></div>
+        <div style="padding:28px 24px 40px;" class="mt-a"><div class="btn btn-primary">Continue to Review</div></div>
+      </div>
+    </div>
+
+    <!-- 3.18 CHECKOUT — REVIEW -->
+    <div class="frame">
+      <div class="frame-label"><span>3.18 · Checkout — Review</span><i>scrolls</i></div>
+      <div class="screen" id="s18">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">The Desk</div><div class="spacer"></div></div>
+        <div class="steps"><span class="st done"><span class="n">01</span> Carriage</span><span class="ln done"></span><span class="st done"><span class="n">02</span> Payment</span><span class="ln done"></span><span class="st on"><span class="n">03</span> Review</span></div>
+        <div class="hero" style="padding-top:30px; padding-bottom:20px;"><h1 style="font-size:32px;">Read once,<br>then be sure.</h1></div>
+        <div class="catalogue">
+          <div class="lot"><div class="lot-num">01</div><div class="plate plate-thumb" style="width:56px; height:68px;"></div><div class="lot-info"><div class="name" style="font-size:15px;">The Meridian Minaudière</div><div class="meta">Walnut · qty 1</div></div><div class="price">$3,650</div></div>
+          <div class="lot"><div class="lot-num">02</div><div class="plate plate-thumb" style="width:56px; height:68px;"></div><div class="lot-info"><div class="name" style="font-size:15px;">Vetiver de Minuit</div><div class="meta">50 ml · qty 1</div></div><div class="price">$480</div></div>
+        </div>
+        <div class="group-lbl">Carriage</div>
+        <div class="px24"><div class="kv" style="padding-top:4px;"><span class="k">A. Marchetti — 14 Via dei Coronari, Rome</span><span class="cta-line brass" style="font-size:10px;">Amend</span></div>
+        <div class="kv"><span class="k">House courier, signed for</span><span class="v" style="font-style:italic; color:var(--cream-dim); font-size:13px;">3–5 days</span></div></div>
+        <div class="group-lbl">Settlement</div>
+        <div class="px24"><div class="kv" style="padding-top:4px;"><span class="k">Amex ···· 4417</span><span class="cta-line brass" style="font-size:10px;">Amend</span></div></div>
+        <div class="px24" style="padding-top:22px; margin-top:10px; border-top:1px solid var(--hairline);">
+          <div class="kv"><span class="k">Subtotal</span><span class="v">$4,130</span></div>
+          <div class="kv"><span class="k">Carriage</span><span class="v">Complimentary</span></div>
+          <div class="kv"><span class="k">Duties &amp; taxes</span><span class="v">$212</span></div>
+          <div class="kv total"><span class="k">Total</span><span class="v">$4,342</span></div>
+        </div>
+        <div style="padding:28px 24px 12px;"><div class="btn btn-primary">Confirm — $4,342</div></div>
+        <div class="tcenter" style="padding:0 44px 40px;"><span class="micro" style="letter-spacing:0.08em; line-height:2;">By confirming you accept the terms of the house · returns within 30 days, papers intact</span></div>
+      </div>
+    </div>
+
+    <!-- 3.19 CONFIRMATION -->
+    <div class="frame">
+      <div class="frame-label"><span>3.19 · Order Confirmed</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s19">
+        <div class="status"></div>
+        <div class="grow" style="display:flex; flex-direction:column; justify-content:center;">
+          <div class="tcenter px24">
+            <div style="width:1px; height:56px; background:linear-gradient(180deg, transparent, var(--brass)); margin:0 auto;"></div>
+            <div class="eyebrow" style="padding:24px 0 0;">Order No. RSN–2417</div>
+            <div class="h1" style="font-size:40px; margin-top:16px;">It is done,<br>and done well.</div>
+            <p class="sub" style="margin:18px auto 0; max-width:280px;">Your pieces enter the atelier queue this evening. Confirmation follows by letter, as is proper.</p>
+          </div>
+          <div class="px24" style="padding-top:36px;">
+            <div class="kv" style="border-top:1px solid var(--hairline); padding-top:16px;"><span class="k">Dispatch expected</span><span class="v">2 – 4 August</span></div>
+            <div class="kv" style="border-bottom:1px solid var(--hairline); padding-bottom:16px;"><span class="k">Carried to</span><span class="v">Via dei Coronari, Rome</span></div>
+          </div>
+          <div style="padding:36px 60px 0;">
+            <div class="btn btn-secondary">Follow the Order</div>
+            <div class="tcenter" style="margin-top:22px;"><span class="cta-line">Return to the Registry</span></div>
+          </div>
+        </div>
+        <div class="tcenter" style="padding-bottom:40px;"><span class="micro" style="letter-spacing:0.22em;">RSN One · By Appointment</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-label"><b>Flow D</b> — Keeping: shelf → account → acquisitions → addresses → correspondence</div>
+  <div class="row" id="rowD">
+
+    <!-- 3.20 WISHLIST -->
+    <div class="frame">
+      <div class="frame-label"><span>3.20 · The Shelf — Saved Pieces</span><i>scrolls</i></div>
+      <div class="screen" id="s20">
+        <div class="status"></div>
+        <div class="topbar"><div class="mark">RSN One</div><div class="icons">⚲ <span class="on">♡</span></div></div>
+        <div class="eyebrow">Saved · Four Pieces</div>
+        <div class="hero" style="padding-bottom:22px;"><h1 style="font-size:32px;">Your shelf,<br>kept in waiting.</h1></div>
+        <div class="catalogue">
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">01</div><div class="plate plate-thumb"></div>
+            <div class="lot-info"><div class="name">Signet, 18k Yellow</div><div class="meta">Hand-engraved · Jewelry</div><div style="margin-top:10px;"><span class="cta-line brass" style="font-size:10px;">Move to Bag</span></div></div>
+            <div class="lot-side"><span class="price">$2,850</span><span class="micro">♡</span></div></div>
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">02</div><div class="plate plate-thumb"></div>
+            <div class="lot-info"><div class="name">Cashmere Overcoat</div><div class="meta">Loro Piana cloth · Ready-to-Wear</div><div style="margin-top:10px;"><span class="cta-line brass" style="font-size:10px;">Move to Bag</span></div></div>
+            <div class="lot-side"><span class="price">$6,100</span><span class="micro">♡</span></div></div>
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">03</div><div class="plate plate-thumb"></div>
+            <div class="lot-info"><div class="name">Riviera Chain, 18k Rose</div><div class="meta">Hand-drawn links · Jewelry</div><div style="margin-top:10px;"><span class="tag rose">Edition of 9 — two remain</span></div></div>
+            <div class="lot-side"><span class="price">$4,750</span><span class="micro">♡</span></div></div>
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">04</div><div class="plate plate-thumb"></div>
+            <div class="lot-info"><div class="name">Silk Foulard, Umber</div><div class="meta">Hand-rolled edges</div><div style="margin-top:10px;"><span class="cta-line brass" style="font-size:10px;">Move to Bag</span></div></div>
+            <div class="lot-side"><span class="price">$450</span><span class="micro">♡</span></div></div>
+        </div>
+        <div class="quote-block"><p>"What is saved is not yet<br>spoken for."</p><span>— The Registrar</span></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.21 WISHLIST — EMPTY -->
+    <div class="frame">
+      <div class="frame-label"><span>3.21 · The Shelf — Empty</span><i>empty state · 390×844</i></div>
+      <div class="screen h-fixed" id="s21">
+        <div class="status"></div>
+        <div class="topbar"><div class="mark">RSN One</div><div class="icons">⚲ <span class="on">♡</span></div></div>
+        <div class="eyebrow">Saved</div>
+        <div class="grow" style="display:flex; flex-direction:column; justify-content:center;">
+          <div class="quote-block" style="margin-top:0;"><p>"A shelf kept empty<br>is a shelf kept ready."</p><span>— House Philosophy</span></div>
+          <div class="tcenter px24"><p class="note" style="max-width:270px; margin:0 auto;">Touch the small heart on any piece and it will wait here — unhurried, unreserved, and yours to consider.</p></div>
+          <div style="padding:32px 60px 0;"><div class="btn btn-secondary">Browse the Archive</div></div>
+        </div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.22 ACCOUNT -->
+    <div class="frame">
+      <div class="frame-label"><span>3.22 · Account</span><i>scrolls</i></div>
+      <div class="screen" id="s22">
+        <div class="status"></div>
+        <div class="topbar"><div class="mark">RSN One</div><div class="icons">⚲</div></div>
+        <div class="px24" style="display:flex; gap:20px; align-items:center; padding-top:30px;">
+          <div class="plate plate-sq" style="width:64px; height:64px; display:flex; align-items:center; justify-content:center;"><span style="font-family:var(--serif-d); font-size:24px; font-weight:300; letter-spacing:0.08em; position:relative;">AM</span></div>
+          <div>
+            <div style="font-family:var(--serif-d); font-size:24px; font-weight:400;">Adeline Marchetti</div>
+            <div class="note" style="margin-top:3px;">Member since MMXXII · Rome</div>
+            <div style="margin-top:8px;"><span class="tag brass">The Salon — Invited</span></div>
+          </div>
+        </div>
+        <div class="group-lbl">Your Records</div>
+        <div class="catalogue">
+          <div class="linkrow"><span class="lnum">01</span><span class="lbl">Acquisitions</span><span class="val">3 orders</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lnum">02</span><span class="lbl">The Shelf</span><span class="val">4 saved</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lnum">03</span><span class="lbl">Correspondence</span><span class="ndot" style="margin:0;"></span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lnum">04</span><span class="lbl">Addresses</span><span class="val">Rome · Paris</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lnum">05</span><span class="lbl">Payment</span><span class="val">Amex · Visa</span><span class="chev">→</span></div>
+        </div>
+        <div class="group-lbl">The House</div>
+        <div class="catalogue">
+          <div class="linkrow"><span class="lbl">The Salon</span><span class="tag brass">Invited</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lbl">Write to the Concierge</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lbl">Settings</span><span class="chev">→</span></div>
+        </div>
+        <div class="quote-block"><p>"The house remembers,<br>so you needn't."</p><span>— Member Services</span></div>
+        <div class="tcenter" style="padding-bottom:30px;"><span class="micro" style="border-bottom:1px solid var(--hairline); padding-bottom:3px;">Sign Out</span></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.23 ORDER HISTORY -->
+    <div class="frame">
+      <div class="frame-label"><span>3.23 · Acquisitions — Order History</span><i>scrolls</i></div>
+      <div class="screen" id="s23">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Acquisitions</div><div class="spacer"></div></div>
+        <div class="eyebrow tight">Your Records · Since MMXXII</div>
+        <div class="hero" style="padding-bottom:22px;"><h1 style="font-size:32px;">Three entries,<br>none regretted.</h1></div>
+        <div class="catalogue">
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">01</div>
+            <div class="lot-info"><div class="name">Order RSN–2417</div><div class="meta">Placed 24 July MMXXVI · two pieces</div><div class="meta up">Minaudière · Vetiver de Minuit</div></div>
+            <div class="lot-side"><span class="tag brass">At the Bench</span><span class="price">$4,342</span></div></div>
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">02</div>
+            <div class="lot-info"><div class="name">Order RSN–2401</div><div class="meta">Placed 12 March MMXXVI · three pieces</div><div class="meta up">Bordeaux Tote · Signet · Overcoat</div></div>
+            <div class="lot-side"><span class="tag">Delivered</span><span class="price">$13,150</span></div></div>
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">03</div>
+            <div class="lot-info"><div class="name">Order RSN–2388</div><div class="meta">Placed 2 December MMXXV · one piece</div><div class="meta up">Silk Foulard, Umber</div></div>
+            <div class="lot-side"><span class="tag">Delivered</span><span class="price">$450</span></div></div>
+        </div>
+        <div class="quote-block"><p>"An acquisition is a decision<br>you make only once."</p><span>— House Philosophy</span></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.24 ORDER DETAIL -->
+    <div class="frame">
+      <div class="frame-label"><span>3.24 · Order Detail — RSN–2417</span><i>scrolls</i></div>
+      <div class="screen" id="s24">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Order RSN–2417</div><div class="spacer"></div></div>
+        <div class="eyebrow tight">Placed 24 July MMXXVI · At the Bench</div>
+        <div class="hero" style="padding-bottom:10px;"><h1 style="font-size:32px;">Patience — it is<br>being made.</h1></div>
+        <div class="px24" style="padding-top:16px;">
+          <div class="timeline">
+            <div class="tl-item done"><div class="tl-node"></div><div class="tl-body"><div class="t">Confirmed</div><div class="d">24 July, 18:42 — received at the desk</div></div></div>
+            <div class="tl-item done"><div class="tl-node"></div><div class="tl-body"><div class="t">At the bench</div><div class="d">26 July — Atelier No. 3, fourteen hours of work</div></div></div>
+            <div class="tl-item"><div class="tl-node"></div><div class="tl-body"><div class="t" style="color:var(--cream-dim)">Dispatched</div><div class="d">expected 2 – 4 August, by house courier</div></div></div>
+            <div class="tl-item"><div class="tl-node"></div><div class="tl-body"><div class="t" style="color:var(--cream-dim)">Delivered</div><div class="d">signed for at Via dei Coronari</div></div></div>
+          </div>
+        </div>
+        <div class="group-lbl" style="padding-top:20px;">The Pieces</div>
+        <div class="catalogue">
+          <div class="lot"><div class="lot-num">01</div><div class="plate plate-thumb" style="width:56px; height:68px;"></div><div class="lot-info"><div class="name" style="font-size:15px;">The Meridian Minaudière</div><div class="meta">Walnut · Lot 03</div></div><div class="price">$3,650</div></div>
+          <div class="lot"><div class="lot-num">02</div><div class="plate plate-thumb" style="width:56px; height:68px;"></div><div class="lot-info"><div class="name" style="font-size:15px;">Vetiver de Minuit</div><div class="meta">50 ml</div></div><div class="price">$480</div></div>
+        </div>
+        <div class="px24" style="padding-top:14px;">
+          <div class="kv"><span class="k">Carriage</span><span class="v" style="font-size:13px;">House courier · complimentary</span></div>
+          <div class="kv"><span class="k">Settled by</span><span class="v" style="font-size:13px;">Amex ···· 4417</span></div>
+          <div class="kv"><span class="k">Duties &amp; taxes</span><span class="v">$212</span></div>
+          <div class="kv total"><span class="k">Total</span><span class="v">$4,342</span></div>
+        </div>
+        <div class="btn-row" style="padding-top:28px;">
+          <div class="btn btn-ghost">Invoice, PDF</div>
+          <div class="btn btn-secondary">Write to the Concierge</div>
+        </div>
+        <div style="height:40px;"></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.25 ADDRESSES -->
+    <div class="frame">
+      <div class="frame-label"><span>3.25 · Addresses</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s25">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Addresses</div><div class="spacer"></div></div>
+        <div class="eyebrow tight">Where the House May Call</div>
+        <div class="hero" style="padding-bottom:24px;"><h1 style="font-size:32px;">Two doors,<br>both known.</h1></div>
+        <div class="px24">
+          <div class="panel sel"><div class="head"><span class="nm">A. Marchetti — Home</span><span class="tag brass">Preferred</span></div><div class="body">14 Via dei Coronari<br>Rome 00186, Italy · +39 06 68—</div><div class="foot"><a>Amend</a><a>Remove</a></div></div>
+          <div class="panel"><div class="head"><span class="nm">The Studio</span></div><div class="body">8 Rue de Verneuil<br>Paris 75007, France</div><div class="foot"><a>Amend</a><a>Make Preferred</a></div></div>
+        </div>
+        <div class="px24" style="padding-top:18px;"><div class="btn btn-ghost" style="height:46px;">＋ &nbsp;New Address</div></div>
+        <div class="tcenter px24 mt-a" style="padding-bottom:120px;"><span class="note">Carriage is arranged to the preferred door unless you say otherwise at the desk.</span></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.26 ADDRESS — ADD / EDIT -->
+    <div class="frame">
+      <div class="frame-label"><span>3.26 · Address — Add / Amend</span><i>form state · 390×844</i></div>
+      <div class="screen h-fixed" id="s26">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">New Address</div><div class="spacer">✕</div></div>
+        <div class="form" style="padding-top:6px;">
+          <div class="field"><label>Name the Door</label><div class="control"><span>The Lake House</span></div></div>
+          <div class="field"><label>Recipient</label><div class="control"><span>A. Marchetti</span></div></div>
+          <div class="field focus"><label>Street</label><div class="control"><span>Via Regina 44<span class="caret"></span></span></div></div>
+          <div style="display:flex; gap:24px;">
+            <div class="field" style="flex:1.4;"><label>City</label><div class="control"><span class="ph">Como</span></div></div>
+            <div class="field" style="flex:1;"><label>Postcode</label><div class="control"><span class="ph">22019</span></div></div>
+          </div>
+          <div class="field"><label>Country</label><div class="control"><span>Italy</span><span class="micro">▾</span></div></div>
+          <div class="checkrow" style="border-top:none; margin-top:18px;"><span class="toggle"><span class="knob"></span></span><span class="lbl" style="font-size:14px;">Make this the preferred door</span></div>
+        </div>
+        <div class="mt-a" style="padding:0 24px 44px;">
+          <div class="btn btn-primary">Keep This Address</div>
+          <div class="tcenter" style="margin-top:20px;"><span class="micro" style="border-bottom:1px solid var(--hairline); padding-bottom:3px;">Discard</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3.27 PAYMENT METHODS -->
+    <div class="frame">
+      <div class="frame-label"><span>3.27 · Payment Methods</span><i>390×844</i></div>
+      <div class="screen h-fixed" id="s27">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Payment</div><div class="spacer"></div></div>
+        <div class="eyebrow tight">Manner of Settlement</div>
+        <div class="hero" style="padding-bottom:24px;"><h1 style="font-size:32px;">Settled quietly,<br>as arranged.</h1></div>
+        <div class="px24">
+          <div class="panel sel"><div class="head"><span class="nm">American Express ···· 4417</span><span class="tag brass">Preferred</span></div><div class="body">A. Marchetti · expires 08/28</div><div class="foot"><a>Amend</a><a>Remove</a></div></div>
+          <div class="panel"><div class="head"><span class="nm">Visa ···· 8802</span></div><div class="body">A. Marchetti · expires 06/27</div><div class="foot"><a>Amend</a><a>Make Preferred</a></div></div>
+        </div>
+        <div class="px24" style="padding-top:18px;"><div class="btn btn-ghost" style="height:46px;">＋ &nbsp;New Card</div></div>
+        <div class="tcenter px24 mt-a" style="padding-bottom:120px;"><span class="note">The house holds no card numbers; our bank does. Wire and cheque remain welcome, by arrangement.</span></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.28 NOTIFICATIONS -->
+    <div class="frame">
+      <div class="frame-label"><span>3.28 · Correspondence</span><i>scrolls</i></div>
+      <div class="screen" id="s28">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Correspondence</div><div class="spacer"></div></div>
+        <div class="eyebrow tight">Letters from the House</div>
+        <div class="hero" style="padding-bottom:16px;"><h1 style="font-size:32px;">Three letters,<br>one unread.</h1></div>
+        <div class="group-lbl" style="padding-top:16px;">Today</div>
+        <div class="catalogue">
+          <div class="notif"><span class="ndot"></span><div class="nbody"><div class="t">Your Minaudière has left the bench and passes to the finisher.</div><div class="m">Order RSN–2417 <span class="tag" style="font-size:8px;">Order</span></div></div><div class="ntime">2 h</div></div>
+        </div>
+        <div class="group-lbl">This Week</div>
+        <div class="catalogue">
+          <div class="notif"><span class="ndot"></span><div class="nbody"><div class="t">The Winter Registry opens Thursday at six in the evening.</div><div class="m">Forty pieces <span class="tag brass" style="font-size:8px;">Salon — 48 h early</span></div></div><div class="ntime">Tue</div></div>
+          <div class="notif"><span class="ndot read"></span><div class="nbody read"><div class="t">Returned to the archive: Peccary Gloves, all sizes.</div><div class="m">Restock <span class="tag" style="font-size:8px;">Shelf</span></div></div><div class="ntime">Mon</div></div>
+        </div>
+        <div class="group-lbl">Earlier</div>
+        <div class="catalogue">
+          <div class="notif"><span class="ndot read"></span><div class="nbody read"><div class="t">Delivered: Order RSN–2401, signed for at Via dei Coronari.</div><div class="m">Order RSN–2401</div></div><div class="ntime">Mar</div></div>
+          <div class="notif"><span class="ndot read"></span><div class="nbody read"><div class="t">The house wishes you a fine new year; the January plates are bound.</div><div class="m">A letter</div></div><div class="ntime">Jan</div></div>
+        </div>
+        <div class="tcenter" style="padding:30px 24px 40px;"><span class="micro" style="border-bottom:1px solid var(--hairline); padding-bottom:3px;">Mark All Read</span></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.29 NOTIFICATIONS — EMPTY -->
+    <div class="frame">
+      <div class="frame-label"><span>3.29 · Correspondence — Empty</span><i>empty state · 390×844</i></div>
+      <div class="screen h-fixed" id="s29">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Correspondence</div><div class="spacer"></div></div>
+        <div class="grow" style="display:flex; flex-direction:column; justify-content:center;">
+          <div class="quote-block" style="margin-top:0;"><p>"No letters today. The house<br>writes only when it must."</p><span>— Member Services</span></div>
+          <div class="tcenter px24"><p class="note" style="max-width:270px; margin:0 auto;">When an order moves, a registry opens, or a saved piece returns, word arrives here first.</p></div>
+          <div style="padding:32px 60px 0;"><div class="btn btn-ghost">Choose What We May Send</div></div>
+        </div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-label"><b>Flow E</b> — The Salon &amp; Settings: the private rooms, then the quiet machinery</div>
+  <div class="row" id="rowE">
+
+    <!-- 3.30 SALON GATE -->
+    <div class="frame">
+      <div class="frame-label"><span>3.30 · The Salon — Gate</span><i>private register · 390×844</i></div>
+      <div class="screen h-fixed salon" id="s30">
+        <div class="status"></div>
+        <div class="grow" style="display:flex; flex-direction:column; justify-content:center;">
+          <div class="tcenter px24">
+            <div style="width:1px; height:72px; background:linear-gradient(180deg, transparent, var(--brass)); margin:0 auto;"></div>
+            <div class="eyebrow" style="padding:28px 0 0;">The Salon</div>
+            <div class="h1" style="font-size:40px; margin-top:16px;">By invitation,<br>and quietly.</div>
+            <p class="sub" style="margin:18px auto 0; max-width:270px;">The Salon admits collectors of the house by invitation only. Standing is reviewed each season, without ceremony.</p>
+          </div>
+          <div class="form" style="padding-top:30px;">
+            <div class="field focus"><label>Invitation Reference</label><div class="control"><span>RSN–S · <span class="caret"></span></span></div></div>
+          </div>
+          <div style="padding:30px 24px 0;">
+            <div class="btn btn-secondary">Present Invitation</div>
+            <div class="tcenter" style="margin-top:22px;"><span class="micro" style="border-bottom:1px solid var(--hairline); padding-bottom:3px;">Enquire After Standing</span></div>
+          </div>
+        </div>
+        <div class="tcenter" style="padding-bottom:44px;"><span class="micro" style="letter-spacing:0.24em;">Seventy-One Members · MMXXVI</span></div>
+      </div>
+    </div>
+
+    <!-- 3.31 SALON HOME -->
+    <div class="frame">
+      <div class="frame-label"><span>3.31 · The Salon — Private Rooms</span><i>near-black register · scrolls</i></div>
+      <div class="screen salon" id="s31">
+        <div class="status"></div>
+        <div class="topbar" style="border-bottom-color:#2e1d16;"><div class="mark" style="font-weight:400;">RSN One</div><div class="icons"><span class="tag brass" style="font-size:8px;">Salon</span></div></div>
+        <div class="eyebrow">The Salon · Good Evening, A.</div>
+        <div class="hero"><h1 style="font-size:40px;">For those who<br>wait for nothing.</h1>
+          <p class="sub">Early rooms, reserved pieces, and terms spoken of only at the desk.</p>
+        </div>
+        <div class="plate plate-wide" style="background:var(--g-plate-salon); height:250px; box-shadow:var(--sh-hero);">
+          <div class="plate-tag">Plate No. 001 · The Midnight Registry</div>
+          <div class="plate-cap"><div class="plate-no">Forty pieces · sealed</div><span class="cta-line">First Look</span></div>
+        </div>
+        <div class="px24" style="padding-top:18px; display:flex; justify-content:space-between; align-items:baseline;">
+          <span class="micro" style="color:var(--brass); letter-spacing:0.18em;">Opens to the Salon in</span>
+          <span style="font-family:var(--serif-d); font-weight:300; font-size:26px; letter-spacing:0.08em;">06 : 12 : 44</span>
+        </div>
+        <div class="px24"><div style="height:1px; background:var(--hairline); margin-top:18px;"></div></div>
+        <div class="section-title"><h2>Held in Your Name</h2><a>Until 4 Aug</a></div>
+        <div class="catalogue">
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">01</div><div class="plate plate-thumb" style="background:var(--g-plate-salon);"></div>
+            <div class="lot-info"><div class="name">The Meridian Chronograph</div><div class="meta">No. VII of twelve · Swiss lever, sapphire</div><div style="margin-top:10px;"><span class="tag brass">Reserved for you</span></div></div>
+            <div class="price">$12,400</div></div>
+          <div class="lot" style="align-items:flex-start;"><div class="lot-num">02</div><div class="plate plate-thumb" style="background:var(--g-plate-salon);"></div>
+            <div class="lot-info"><div class="name">Signet, 18k Rose</div><div class="meta">Salon edition of nine</div><div style="margin-top:10px;"><span class="tag rose">Two remain</span></div></div>
+            <div class="price">$3,100</div></div>
+        </div>
+        <div class="quote-block" style="border-color:#6b4a3a;"><p>"Salon terms are applied at the desk,<br>never printed."</p><span>— The Registrar</span></div>
+        <div class="px24" style="padding-bottom:36px;">
+          <div class="linkrow" style="border-bottom:1px solid var(--hairline);"><span class="lbl">Your concierge — Signora E. Vane</span><span class="cta-line brass" style="font-size:10px;">Write</span></div>
+        </div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+
+    <!-- 3.32 SETTINGS -->
+    <div class="frame">
+      <div class="frame-label"><span>3.32 · Settings</span><i>scrolls</i></div>
+      <div class="screen" id="s32">
+        <div class="status"></div>
+        <div class="topbar sub"><div class="back">←</div><div class="ttl">Settings</div><div class="spacer"></div></div>
+        <div class="eyebrow tight">The Quiet Machinery</div>
+        <div class="hero" style="padding-bottom:10px;"><h1 style="font-size:32px;">Arranged once,<br>then forgotten.</h1></div>
+        <div class="group-lbl">Account</div>
+        <div class="catalogue">
+          <div class="linkrow"><span class="lbl">Email</span><span class="val">adeline@marchetti.it</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lbl">Password</span><span class="val">changed in May</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lbl">Region &amp; currency</span><span class="val">Italy · USD</span><span class="chev">→</span></div>
+        </div>
+        <div class="group-lbl">Correspondence</div>
+        <div class="catalogue">
+          <div class="checkrow"><span class="lbl">Order movements <span class="sub-lbl">confirmed, at the bench, dispatched, delivered</span></span><span class="toggle on"><span class="knob"></span></span></div>
+          <div class="checkrow"><span class="lbl">Registry openings <span class="sub-lbl">four times a year, on the evening</span></span><span class="toggle on"><span class="knob"></span></span></div>
+          <div class="checkrow"><span class="lbl">Restock notices <span class="sub-lbl">only for pieces on your shelf</span></span><span class="toggle"><span class="knob"></span></span></div>
+          <div class="checkrow" style="border-bottom:1px solid var(--hairline);"><span class="lbl">Letters from the house <span class="sub-lbl">rare, and worth opening</span></span><span class="toggle on"><span class="knob"></span></span></div>
+        </div>
+        <div class="group-lbl">The Apparatus</div>
+        <div class="catalogue">
+          <div class="linkrow"><span class="lbl">Face ID at the desk</span><span class="toggle on" style="margin-left:auto;"><span class="knob"></span></span></div>
+          <div class="linkrow"><span class="lbl">Terms of the house</span><span class="chev">→</span></div>
+          <div class="linkrow"><span class="lbl">Privacy, plainly stated</span><span class="chev">→</span></div>
+        </div>
+        <div class="tcenter" style="padding:40px 24px 14px;"><span class="micro" style="border-bottom:1px solid var(--hairline); padding-bottom:3px;">Sign Out</span></div>
+        <div class="tcenter" style="padding-bottom:34px;"><span class="micro" style="letter-spacing:0.2em; opacity:0.6;">RSN One · v1.0 · MMXXVI</span></div>
+        <div class="navbar"><div>Registry</div><div>Archive</div><div>Bag</div><div class="active">Account</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer style="max-width:1080px; border-top:1px solid var(--hairline); padding-top:20px; color:#6f5d4c; font-size:12px; font-style:italic;">
+  RSN One — mobile mockup canvas · 32 screens · Foundations → Components → Screens · pair with the build guide and tokens file for the Figma reconstruction.
+</footer>
+
+</body>
+</html>
