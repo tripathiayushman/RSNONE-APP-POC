@@ -7,6 +7,7 @@ import { TopBar } from "../components/TopBar";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { Plate } from "../components/Plate";
 import { PullQuote } from "../components/PullQuote";
+import { editorialImages } from "../assets/editorialImages";
 import { useShelf } from "../state/AppState";
 import { colors, fonts, type } from "../theme/tokens";
 
@@ -69,7 +70,7 @@ export default function ArchiveGrid({
                   style={styles.tile}
                   onPress={() => navigation.navigate("Listing", { category: room.name })}
                 >
-                  <Plate variant="card" plateNo={room.name} />
+                  <Plate variant="card" plateNo={room.name} source={editorialImages[`category:${room.name}`]} />
                   <Text style={styles.count}>{room.count}</Text>
                 </Pressable>
               ))}

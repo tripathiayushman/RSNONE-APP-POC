@@ -1,6 +1,7 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { ImageSourcePropType, Pressable, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Plate } from "./Plate";
+import { productImages } from "../assets/productImages";
 import * as tokens from "../theme/tokens";
 
 export type LotRowTagVariant = "brass" | "quiet" | "rose";
@@ -17,6 +18,10 @@ export type LotRowProps = {
   meta: string;
   price?: string;
   tag?: LotRowTag;
+  /** Product.id — used to look up a real photo in src/assets/productImages.ts, if one exists. */
+  productId?: string;
+  /** Explicit image override (e.g. for a non-product/editorial thumb) — takes precedence over productId. */
+  source?: ImageSourcePropType;
   onPress?: () => void;
   rightSlot?: React.ReactNode;
   style?: ViewStyle;
@@ -31,8 +36,9 @@ const TAG_COLOR: Record<LotRowTagVariant, string> = {
 /**
  * The house-signature numbered row. Reused across catalogue, bag, wishlist and orders.
  */
-export function LotRow({ number, thumb, name, meta, price, tag, onPress, rightSlot, style }: LotRowProps) {
+export function LotRow({ number, thumb, name, meta, price, tag, productId, source, onPress, rightSlot, style }: LotRowProps) {
   const showSide = !!rightSlot || !!price || !!tag;
+  const resolvedSource = source ?? (productId ? productImages[productId] : undefined);
 
   return (
     <Pressable
@@ -41,7 +47,7 @@ export function LotRow({ number, thumb, name, meta, price, tag, onPress, rightSl
       style={({ pressed }) => [styles.row, style, pressed && onPress ? styles.pressed : undefined]}
     >
       <Text style={styles.num}>{number}</Text>
-      {thumb ? <Plate variant="thumb" /> : null}
+      {thumb ? <Plate variant="thumb" source={resolvedSource} /> : null}
       <View style={styles.info}>
         <Text style={styles.name} numberOfLines={1}>
           {name}

@@ -10,6 +10,7 @@ import { SectionHeader } from "../components/SectionHeader";
 import { LotRow } from "../components/LotRow";
 import { PullQuote } from "../components/PullQuote";
 import { getProductById } from "../data/products";
+import { editorialImages } from "../assets/editorialImages";
 import { useShelf } from "../state/AppState";
 import { colors, fonts, type } from "../theme/tokens";
 
@@ -56,7 +57,12 @@ export default function Home({
         </View>
 
         <Pressable onPress={() => navigation.navigate("ArchiveGrid")}>
-          <Plate variant="hero" plateNo="Plate No. 014" ctaLine="Enter Collection" />
+          <Plate
+            variant="hero"
+            plateNo="Plate No. 014"
+            ctaLine="Enter Collection"
+            source={editorialImages["home-hero"]}
+          />
         </Pressable>
 
         <SectionHeader
@@ -70,6 +76,7 @@ export default function Home({
               key={product.id}
               number={String(index + 1).padStart(2, "0")}
               thumb
+              productId={product.id}
               name={product.name}
               meta={product.meta}
               price={product.price}
@@ -90,7 +97,7 @@ export default function Home({
                   style={styles.tile}
                   onPress={() => navigation.navigate("Listing", { category: room })}
                 >
-                  <Plate variant="card" plateNo={room} />
+                  <Plate variant="card" plateNo={room} source={editorialImages[`category:${room}`]} />
                 </Pressable>
               ))}
             </View>

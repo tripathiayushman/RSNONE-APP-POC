@@ -7,6 +7,7 @@ import { TopBar } from "../components/TopBar";
 import { Plate } from "../components/Plate";
 import { Dots } from "../components/Dots";
 import { Button } from "../components/Button";
+import { editorialImages } from "../assets/editorialImages";
 import { colors, fonts, type } from "../theme/tokens";
 
 /**
@@ -30,7 +31,12 @@ export default function OnboardingRegistry({
         </Text>
       </View>
 
-      <Plate variant="hero" plateNo="Plate No. 001 · The Reading Room" style={styles.plate} />
+      <Plate
+        variant="hero"
+        plateNo="Plate No. 001 · The Reading Room"
+        source={editorialImages["onboarding-reading-room"]}
+        style={styles.plate}
+      />
 
       <View style={styles.footer}>
         <Dots count={2} activeIndex={0} style={styles.dots} />

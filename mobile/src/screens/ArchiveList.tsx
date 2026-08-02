@@ -6,6 +6,7 @@ import { Screen } from "../components/Screen";
 import { TopBar } from "../components/TopBar";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { LotRow } from "../components/LotRow";
+import { editorialImages } from "../assets/editorialImages";
 import { useShelf } from "../state/AppState";
 import { colors, fonts, type } from "../theme/tokens";
 
@@ -63,6 +64,7 @@ export default function ArchiveList({
               key={room.name}
               number={room.number}
               thumb
+              source={editorialImages[`category:${room.name}`]}
               name={room.name}
               meta={room.description}
               onPress={() => navigation.navigate("Listing", { category: room.name })}

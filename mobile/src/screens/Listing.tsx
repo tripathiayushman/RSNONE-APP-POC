@@ -106,6 +106,7 @@ export default function Listing({ navigation, route }: ListingProps) {
                 return (
                   <ProductCard
                     key={product.id}
+                    productId={product.id}
                     name={product.name}
                     meta={product.meta}
                     price={product.price}

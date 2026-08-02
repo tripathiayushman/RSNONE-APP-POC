@@ -7,6 +7,7 @@ import { TopBar } from "../components/TopBar";
 import { Plate } from "../components/Plate";
 import { Dots } from "../components/Dots";
 import { Button } from "../components/Button";
+import { editorialImages } from "../assets/editorialImages";
 import { colors, fonts, type } from "../theme/tokens";
 
 /**
@@ -29,7 +30,12 @@ export default function OnboardingProvenance({
         </Text>
       </View>
 
-      <Plate variant="hero" plateNo="Plate No. 002 · The Seal" style={styles.plate} />
+      <Plate
+        variant="hero"
+        plateNo="Plate No. 002 · The Seal"
+        source={editorialImages["onboarding-seal"]}
+        style={styles.plate}
+      />
 
       <View style={styles.footer}>
         <Dots count={2} activeIndex={1} style={styles.dots} />

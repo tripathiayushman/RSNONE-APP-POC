@@ -16,6 +16,7 @@ import { SectionHeader } from "../components/SectionHeader";
 import { ProductCard } from "../components/ProductCard";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { getProductById, products } from "../data/products";
+import { productImages } from "../assets/productImages";
 import { useBag, useShelf } from "../state/AppState";
 import { colors, fonts, type } from "../theme/tokens";
 
@@ -70,6 +71,7 @@ export default function ProductDetail({ navigation, route }: Props) {
             variant="hero"
             tag={`${product.plateNo ?? ""} · ${product.meta}`}
             plateNo="View 1 of 4"
+            source={productImages[product.id]}
             style={styles.plate}
           />
           <View style={styles.dotsOverlay} pointerEvents="none">
@@ -133,6 +135,7 @@ export default function ProductDetail({ navigation, route }: Props) {
           {related.map((p) => (
             <ProductCard
               key={p.id}
+              productId={p.id}
               name={p.name}
               meta={p.meta}
               price={p.price}

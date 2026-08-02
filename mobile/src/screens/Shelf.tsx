@@ -83,6 +83,7 @@ export default function Shelf({ navigation }: Props) {
                 key={product.id}
                 number={twoDigit(index + 1)}
                 thumb
+                productId={product.id}
                 name={product.name}
                 meta={`${product.meta} · ${product.category}`}
                 onPress={() => navigation.navigate("ProductDetail", { productId: product.id })}

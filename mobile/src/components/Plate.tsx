@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { View, Text, Image, ImageSourcePropType, StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { colors, fonts, gradients, shadows } from '../theme/tokens';
 
@@ -15,6 +15,8 @@ export interface PlateProps {
   plateNo?: string;
   /** Bottom-right small caption, paired with plateNo. */
   ctaLine?: string;
+  /** Real photo/render to show instead of the gradient placeholder, when available. */
+  source?: ImageSourcePropType;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -45,19 +47,23 @@ function gradientFor(variant: PlateVariant, salon: boolean) {
  * The image-placeholder box used everywhere in this POC — there are no real
  * product photos, every "photograph" is a gradient plate with optional captions.
  */
-export function Plate({ variant, salon = false, tag, plateNo, ctaLine, style }: PlateProps) {
+export function Plate({ variant, salon = false, tag, plateNo, ctaLine, source, style }: PlateProps) {
   const gradient = gradientFor(variant, salon);
   const hasCaption = Boolean(plateNo || ctaLine);
 
   return (
     <View style={[styles.base, DIMENSIONS[variant], SHADOWS[variant], style]}>
-      <LinearGradient
-        colors={gradient.colors}
-        locations={gradient.locations}
-        start={gradient.start}
-        end={gradient.end}
-        style={StyleSheet.absoluteFill}
-      />
+      {source ? (
+        <Image source={source} style={StyleSheet.absoluteFill} resizeMode="cover" />
+      ) : (
+        <LinearGradient
+          colors={gradient.colors}
+          locations={gradient.locations}
+          start={gradient.start}
+          end={gradient.end}
+          style={StyleSheet.absoluteFill}
+        />
+      )}
       {tag ? (
         <View style={styles.tagWrap} pointerEvents="none">
           <Text style={styles.tagText} numberOfLines={1}>

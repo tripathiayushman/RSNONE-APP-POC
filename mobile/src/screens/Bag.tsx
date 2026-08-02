@@ -85,6 +85,7 @@ export default function Bag({ navigation }: Props) {
               key={line.product.id}
               number={String(i + 1).padStart(2, "0")}
               thumb
+              productId={line.product.id}
               name={line.product.name}
               meta={line.product.meta}
               onPress={() => navigation.navigate("ProductDetail", { productId: line.product.id })}

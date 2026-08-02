@@ -88,6 +88,7 @@ export default function OrderDetail({ navigation, route }: Props) {
                 key={`${line.productId}-${index}`}
                 number={twoDigit(index + 1)}
                 thumb
+                productId={product.id}
                 name={product.name}
                 meta={line.qty > 1 ? `${product.meta} · Qty ${line.qty}` : product.meta}
                 price={toCurrency(product.priceValue * line.qty)}

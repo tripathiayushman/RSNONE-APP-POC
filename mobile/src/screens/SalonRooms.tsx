@@ -9,6 +9,7 @@ import { LotRow } from "../components/LotRow";
 import { Tag } from "../components/Tag";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { getProductById } from "../data/products";
+import { editorialImages } from "../assets/editorialImages";
 import { colors, fonts, type as textType } from "../theme/tokens";
 
 type Props = NativeStackScreenProps<RootStackParamList, "SalonRooms">;
@@ -60,6 +61,7 @@ export default function SalonRooms({ navigation }: Props) {
             tag="Plate No. 001 · The Midnight Registry"
             plateNo="Forty pieces · sealed"
             ctaLine="First Look"
+            source={editorialImages["salon-midnight-registry"]}
             style={styles.plateWide}
           />
         </Pressable>
@@ -80,6 +82,7 @@ export default function SalonRooms({ navigation }: Props) {
                 key={entry.productId}
                 number={entry.number}
                 thumb
+                productId={product.id}
                 name={product.name}
                 meta={product.meta}
                 price={product.price}

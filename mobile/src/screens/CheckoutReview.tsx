@@ -57,6 +57,7 @@ export default function CheckoutReview({ navigation }: Props) {
               key={line.product.id}
               number={String(index + 1).padStart(2, '0')}
               thumb
+              productId={line.product.id}
               name={line.product.name}
               meta={`${line.product.meta} · qty ${line.qty}`}
               price={formatCurrency(line.product.priceValue * line.qty)}
