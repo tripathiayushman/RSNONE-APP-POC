@@ -147,5 +147,16 @@ mobile/
     theme/       tokens transcribed from the Figma mockups
   assets/        46 photographs + brand + generated app icons
 RSN-One-Figma-Mockups.html   the original design reference
+LLM_PROJECT_CONTEXT.md       how the app is built — read this first
+MEMORY_BANK.md               how it was developed, and why
 ASSETS.md                    image provenance and the asset hook
 ```
+
+## Docs
+
+- **[LLM_PROJECT_CONTEXT.md](LLM_PROJECT_CONTEXT.md)** — current state:
+  architecture, data, state, assets, conventions, and the traps that will bite
+  you. Start here.
+- **[MEMORY_BANK.md](MEMORY_BANK.md)** — the development history and the
+  reasoning behind each decision, including what was *rejected* and why.
+- **[ASSETS.md](ASSETS.md)** — where every image came from.
