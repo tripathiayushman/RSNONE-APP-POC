@@ -198,6 +198,66 @@ Android SDK but no JDK.
 
 ---
 
+## 2026-08-03 — Fixed images rendering at native size instead of their box
+
+**Commits:** (uncommitted at time of writing — see the next commit) · **Files:** `Plate.tsx`, `BrandMark.tsx`, `Search.tsx`
+
+### The bug
+
+The owner reported the app's "background" looked wrong and didn't fit the
+screen, and separately that images seemed to be missing entirely. Both turned
+out to be the same bug, not two.
+
+`Plate` and `BrandMark` render their photo with `<Image style={StyleSheet.absoluteFill} .../>` — `top/left/right/bottom: 0`, no explicit `width`/`height`. On
+native that's enough; Yoga stretches an absolutely-positioned child with all
+four insets set to fill its parent regardless of the child's own content.
+**On web it is not enough.** Per CSS2.1 §10.3.8, an absolutely positioned
+*replaced element* (`<img>` is one) with `width: auto` falls back to its
+**intrinsic size** even when `left`/`right` are both `0` — the inset alone
+doesn't stretch it the way it stretches a `<div>`. So every photo rendered at
+its raw pixel dimensions: the 1122×515 wordmark logo, a 1200×1200 category
+photo, an ~2000px-wide product shot — each one dozens of times larger than
+its 74–420px box, spilling off the screen or, in a small `LotRow` thumb slot,
+overlapping the row above and below it into an unreadable mess. That reads
+exactly like "the background doesn't fit" from a glance, and in the smaller
+slots it reads like "there's no image there" because what's visible is an
+unrecognizable, wildly-cropped fragment rather than a photo.
+
+Neither `tsc --noEmit` nor `expo export --platform web` catches this —
+export only proves Metro can *resolve* the asset, not that the browser lays
+it out correctly. It only shows up by actually rendering a screen, which
+nothing in the verification loop had done since the retheme added real
+photography. (See `LLM_PROJECT_CONTEXT.md` §7 — the two commands there are
+still the right gate for *build* correctness, this was a *runtime* miss.)
+
+### The fix
+
+Added an explicit `width: '100%', height: '100%'` alongside `absoluteFill` on
+both `<Image>` call sites (`Plate.tsx`, `BrandMark.tsx` — the only two places
+an `<Image>` exists in this codebase). Confirmed via a headless-browser
+inspection of the actual rendered DOM (not just a screenshot) that the image
+box now matches its container exactly, then re-screenshotted Splash,
+onboarding, Sign In, Home (hero, the Standards band, the room grid), and a
+Product Detail page. All render correctly now — no code changes needed
+beyond the two `style` arrays; the photography and every `require()` path
+were already correct.
+
+Also fixed `Search.tsx`: it passed `productId` to `LotRow` without `thumb`,
+the exact trap `ASSETS.md` documents — so search results silently showed no
+thumbnail at all. One-line fix (add `thumb`).
+
+### On "missing images"
+
+There aren't any. Diffed every `Product.id` in `products.ts` against
+`productImages.ts`: 31 products, 31 photos, zero gaps, zero orphans. Every
+`editorialImages` key referenced anywhere in `src/screens` has a matching
+entry, 14 for 14. The perception of missing images was entirely the sizing
+bug above — small slots rendered an oversized, cropped-to-nothing fragment
+that didn't read as a photo. **No new photography is needed**; nothing was
+briefed to Codex for image generation as a result.
+
+---
+
 ## Standing decisions
 
 | | |

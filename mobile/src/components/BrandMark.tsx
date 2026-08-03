@@ -20,7 +20,7 @@ export function BrandMark({ width = 104, muted = false, style }: BrandMarkProps)
     <View style={[{ width, height: width / BRAND_LOGO_ASPECT }, style]}>
       <Image
         source={brandLogo}
-        style={[StyleSheet.absoluteFill, muted ? styles.muted : null]}
+        style={[StyleSheet.absoluteFill, styles.fillImage, muted ? styles.muted : null]}
         resizeMode="contain"
         accessibilityRole="image"
         accessibilityLabel="RSN One — Global Family Club"
@@ -30,5 +30,8 @@ export function BrandMark({ width = 104, muted = false, style }: BrandMarkProps)
 }
 
 const styles = StyleSheet.create({
+  // `absoluteFill` alone doesn't stretch a replaced element like <img> on web —
+  // the browser falls back to its natural pixel size without an explicit 100%.
+  fillImage: { width: '100%', height: '100%' },
   muted: { opacity: 0.55 },
 });

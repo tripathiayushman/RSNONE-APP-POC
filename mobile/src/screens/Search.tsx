@@ -70,6 +70,7 @@ export default function Search({ navigation }: SearchProps) {
               <LotRow
                 key={product.id}
                 number={String(index + 1).padStart(2, "0")}
+                thumb
                 productId={product.id}
                 name={product.name}
                 meta={product.meta}

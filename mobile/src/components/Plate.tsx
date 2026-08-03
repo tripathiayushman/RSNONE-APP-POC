@@ -54,7 +54,14 @@ export function Plate({ variant, salon = false, tag, plateNo, ctaLine, source, s
   return (
     <View style={[styles.base, DIMENSIONS[variant], SHADOWS[variant], style]}>
       {source ? (
-        <Image source={source} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        // `absoluteFill` alone (top/left/right/bottom:0) doesn't stretch a
+        // replaced element like <img> on web — the browser falls back to its
+        // natural pixel size. Explicit 100% width/height forces it to the box.
+        <Image
+          source={source}
+          style={[StyleSheet.absoluteFill, styles.fillImage]}
+          resizeMode="cover"
+        />
       ) : (
         <LinearGradient
           colors={gradient.colors}
@@ -95,6 +102,10 @@ export function Plate({ variant, salon = false, tag, plateNo, ctaLine, source, s
 }
 
 const styles = StyleSheet.create({
+  fillImage: {
+    width: '100%',
+    height: '100%',
+  },
   base: {
     borderWidth: 1,
     borderColor: colors.hairline,
