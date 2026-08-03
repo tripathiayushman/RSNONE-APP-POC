@@ -1,14 +1,19 @@
 name: Android APK
 
-# Builds an installable APK on EAS and publishes it as a GitHub Release, so the
-# POC can be downloaded straight onto a phone.
+# Builds an installable APK on every push to main and publishes it as a GitHub
+# Release, so the POC can be downloaded straight onto a phone.
 #
-# Requires one repo secret: EXPO_TOKEN (expo.dev → Settings → Access tokens).
-# The Expo project must also be linked once with `npx eas init` inside mobile/,
-# which writes extra.eas.projectId into app.json.
+# Two build paths, picked automatically:
 #
-# There is a no-account fallback in android-release-local.yml that builds with
-# Gradle on the runner instead; run it manually if EAS is unavailable.
+#   * EAS   — used when the EXPO_TOKEN repo secret is set. Needs a one-time
+#             `npx eas init` in mobile/ to write extra.eas.projectId.
+#   * Gradle — the fallback when it isn't. Runs `expo prebuild` +
+#             `assembleRelease` on the runner, no Expo account or secrets at
+#             all. The React Native template signs `release` with the keystore
+#             it ships, so the signature stays stable between builds.
+#
+# Either way a Release is cut, so pushing works out of the box and adding the
+# token later is an upgrade rather than a prerequisite.
 
 on:
   push:
@@ -30,13 +35,35 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  # `secrets` can't be read from a job-level `if`, so surface it as an output.
+  route:
+    name: Pick a build path
+    runs-on: ubuntu-latest
+    outputs:
+      use_eas: ${{ steps.pick.outputs.use_eas }}
+    steps:
+      - id: pick
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -n "$EXPO_TOKEN" ]; then
+            echo "use_eas=true" >> "$GITHUB_OUTPUT"
+            echo "EXPO_TOKEN present → building on EAS."
+          else
+            echo "use_eas=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::EXPO_TOKEN not set → building with Gradle on the runner."
+            echo "To use EAS instead: create a token at https://expo.dev/settings/access-tokens"
+            echo "and add it as the EXPO_TOKEN repository secret."
+          fi
+
+  eas:
     name: Build APK on EAS
+    needs: route
+    if: needs.route.outputs.use_eas == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: mobile
-
     steps:
       - uses: actions/checkout@v4
 
@@ -46,17 +73,6 @@ jobs:
           node-version: '20.19.4'
           cache: npm
           cache-dependency-path: mobile/package-lock.json
-
-      - name: Fail early if EXPO_TOKEN is missing
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: |
-          if [ -z "$EXPO_TOKEN" ]; then
-            echo "::error::EXPO_TOKEN is not set. Add it under Settings → Secrets and variables → Actions."
-            echo "Generate one at https://expo.dev/settings/access-tokens"
-            exit 1
-          fi
-          echo "EXPO_TOKEN present."
 
       - uses: expo/expo-github-action@v8
         with:
@@ -92,7 +108,6 @@ jobs:
           cat build.json
 
       - name: Download the APK
-        id: apk
         run: |
           URL=$(node -e "
             const b = require('./build.json');
@@ -101,26 +116,95 @@ jobs:
             if (!url) { console.error('No build URL in build.json'); process.exit(1); }
             console.log(url);
           ")
-          OUT="rsn-one-poc-build${{ github.run_number }}.apk"
-          curl -fL -o "$OUT" "$URL"
-          test -s "$OUT" || { echo "Downloaded APK is empty"; exit 1; }
-          echo "path=mobile/$OUT" >> "$GITHUB_OUTPUT"
-          echo "name=$OUT" >> "$GITHUB_OUTPUT"
-          echo "size=$(du -h "$OUT" | cut -f1)" >> "$GITHUB_OUTPUT"
+          curl -fL -o "rsn-one-poc-build${{ github.run_number }}.apk" "$URL"
+          test -s "rsn-one-poc-build${{ github.run_number }}.apk"
 
-      - name: Upload as a workflow artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: rsn-one-poc-apk
-          path: ${{ steps.apk.outputs.path }}
+          name: apk
+          path: mobile/rsn-one-poc-build${{ github.run_number }}.apk
           retention-days: 30
 
-      - name: Publish the release
-        uses: softprops/action-gh-release@v2
+  gradle:
+    name: Build APK with Gradle
+    needs: route
+    if: needs.route.outputs.use_eas == 'false'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.19.4'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Generate the Android project
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Stamp the build number
+        run: |
+          sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
+          grep -n "versionCode" android/app/build.gradle
+
+      - name: Assemble release APK
+        run: |
+          chmod +x android/gradlew
+          cd android && ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Collect the APK
+        run: |
+          SRC=android/app/build/outputs/apk/release/app-release.apk
+          test -f "$SRC" || { echo "APK not found at $SRC"; ls -R android/app/build/outputs || true; exit 1; }
+          cp "$SRC" "rsn-one-poc-build${{ github.run_number }}.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: mobile/rsn-one-poc-build${{ github.run_number }}.apk
+          retention-days: 30
+
+  release:
+    name: Publish the release
+    needs: [route, eas, gradle]
+    # Run when whichever build path was chosen succeeded.
+    if: always() && (needs.eas.result == 'success' || needs.gradle.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: apk
+
+      - name: Describe the artifact
+        id: apk
+        run: |
+          FILE="rsn-one-poc-build${{ github.run_number }}.apk"
+          test -s "$FILE" || { echo "APK missing"; ls -la; exit 1; }
+          echo "name=$FILE" >> "$GITHUB_OUTPUT"
+          echo "size=$(du -h "$FILE" | cut -f1)" >> "$GITHUB_OUTPUT"
+          echo "builder=${{ needs.route.outputs.use_eas == 'true' && 'EAS (preview profile)' || 'Gradle on the runner' }}" >> "$GITHUB_OUTPUT"
+
+      - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag || format('poc-v{0}', github.run_number) }}
           name: RSN One POC — build ${{ github.run_number }}
-          files: ${{ steps.apk.outputs.path }}
+          files: ${{ steps.apk.outputs.name }}
           generate_release_notes: true
           body: |
             **Download `${{ steps.apk.outputs.name }}`** below and open it on an Android phone.
@@ -129,11 +213,11 @@ jobs:
             your browser or file manager, then install.
 
             | | |
-            |---|---|
+            | --- | --- |
             | Commit | `${{ github.sha }}` |
             | Size | ${{ steps.apk.outputs.size }} |
             | Package | `com.rsnone.poc` |
-            | Built by | EAS, `preview` profile |
+            | Built by | ${{ steps.apk.outputs.builder }} |
 
             This is a prototype: no backend, no database. State resets when the
             app is reopened.

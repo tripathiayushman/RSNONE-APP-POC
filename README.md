@@ -39,41 +39,41 @@ npx expo export --platform web      # proves Metro resolves every asset
 
 ## How the APK is built
 
-[`android-release.yml`](.github/workflows/android-release.yml) builds on **EAS**
-(`preview` profile → `buildType: apk`, so it's directly installable rather than
-a Play-Store AAB), downloads the artifact, and attaches it to a Release.
+[`android-release.yml`](.github/workflows/android-release.yml) picks one of two
+paths automatically, then cuts the Release either way — so pushing works out of
+the box and configuring EAS later is an upgrade, not a prerequisite.
 
-### One-time setup
+| | When | Needs |
+| --- | --- | --- |
+| **EAS** | `EXPO_TOKEN` secret is set | An Expo account + one-time `eas init` |
+| **Gradle on the runner** | it isn't | Nothing at all |
 
-Run once, from `mobile/`:
+Both produce a directly installable APK rather than a Play-Store AAB.
+
+### Optional: switch to EAS
+
+Run once, from `mobile/` (already done for this repo):
 
 ```bash
-npx eas login      # your Expo account
+npx eas login
 npx eas init       # writes extra.eas.projectId into app.json — commit it
 ```
 
-Then add the repo secret so CI can build as you:
+Then create a token at **expo.dev → Settings → Access tokens** and add it under
+**repo Settings → Secrets and variables → Actions** as `EXPO_TOKEN`. The next
+push builds on EAS instead.
 
-1. Create a token at **expo.dev → Settings → Access tokens**.
-2. **Repo → Settings → Secrets and variables → Actions → New repository secret**
-3. Name it `EXPO_TOKEN`, paste the token.
+### Forcing a Gradle build
 
-The workflow fails fast with a clear message if either step is missing, rather
-than dying deep inside an EAS command.
+[`android-release-local.yml`](.github/workflows/android-release-local.yml) is a
+manual-dispatch job for when EAS *is* configured but you don't want to wait for
+it — a queued free-tier build the morning of a demo, say. It uploads a workflow
+artifact instead of cutting a Release, so it can't collide with the release tags.
 
-### Fallback with no Expo account
-
-[`android-release-local.yml`](.github/workflows/android-release-local.yml) builds
-the same APK on the GitHub runner with `expo prebuild` + `gradlew assembleRelease`
-— no Expo login, no EAS quota. It's **manual-dispatch only** and uploads a
-workflow artifact instead of creating a Release, so it can't collide with the
-EAS release tags. Use it if EAS is unavailable.
-
-It needs no signing secrets either: the React Native template signs its
-`release` build type with the keystore it ships. Fine for a prototype, and the
-signature stays stable so builds install over each other.
-
-The generated `android/` directory is gitignored; CI recreates it each run.
+Neither path needs signing secrets: on the Gradle path the React Native template
+signs `release` with the keystore it ships, which is fine for a prototype and
+keeps the signature stable so builds install over each other. The generated
+`android/` directory is gitignored; CI recreates it each run.
 
 ## What it demonstrates
 

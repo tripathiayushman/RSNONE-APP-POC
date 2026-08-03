@@ -1,8 +1,10 @@
 name: Android APK (Gradle fallback)
 
-# A no-account escape hatch. Builds the APK on the GitHub runner with
-# `expo prebuild` + Gradle instead of EAS — no Expo login, no EXPO_TOKEN, no
-# EAS build quota. Use it if EAS is unavailable or out of builds.
+# Force a Gradle build even when EXPO_TOKEN is set.
+#
+# android-release.yml already falls back to Gradle on its own when the token is
+# absent, so this is only needed when EAS *is* configured but you don't want to
+# wait for it — a queued free-tier build the morning of a demo, say.
 #
 # Manual only, and it uploads a workflow artifact rather than creating a
 # Release, so it can never collide with the tags android-release.yml publishes.
