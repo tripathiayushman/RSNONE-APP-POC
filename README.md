@@ -39,12 +39,39 @@ npx expo export --platform web      # proves Metro resolves every asset
 
 ## How the APK is built
 
-[`.github/workflows/android-release.yml`](.github/workflows/android-release.yml)
-runs `expo prebuild` to generate the Android project, then
-`./gradlew assembleRelease`. **No Expo account, EAS credits or signing secrets
-are involved** — the React Native template signs its `release` build type with
-the keystore it ships, which is fine for a prototype and keeps the signature
-stable between builds.
+[`android-release.yml`](.github/workflows/android-release.yml) builds on **EAS**
+(`preview` profile → `buildType: apk`, so it's directly installable rather than
+a Play-Store AAB), downloads the artifact, and attaches it to a Release.
+
+### One-time setup
+
+Run once, from `mobile/`:
+
+```bash
+npx eas login      # your Expo account
+npx eas init       # writes extra.eas.projectId into app.json — commit it
+```
+
+Then add the repo secret so CI can build as you:
+
+1. Create a token at **expo.dev → Settings → Access tokens**.
+2. **Repo → Settings → Secrets and variables → Actions → New repository secret**
+3. Name it `EXPO_TOKEN`, paste the token.
+
+The workflow fails fast with a clear message if either step is missing, rather
+than dying deep inside an EAS command.
+
+### Fallback with no Expo account
+
+[`android-release-local.yml`](.github/workflows/android-release-local.yml) builds
+the same APK on the GitHub runner with `expo prebuild` + `gradlew assembleRelease`
+— no Expo login, no EAS quota. It's **manual-dispatch only** and uploads a
+workflow artifact instead of creating a Release, so it can't collide with the
+EAS release tags. Use it if EAS is unavailable.
+
+It needs no signing secrets either: the React Native template signs its
+`release` build type with the keystore it ships. Fine for a prototype, and the
+signature stays stable so builds install over each other.
 
 The generated `android/` directory is gitignored; CI recreates it each run.
 
@@ -66,7 +93,7 @@ Walk B is the one that explains the business. Walk A alone reads as a shop.
 ## What is real vs. staged
 
 | Real | Staged |
-|---|---|
+| --- | --- |
 | The 31-product catalogue — names, prices (NPR), copy, origin, members-only flags — transcribed from production `storefront-demo/catalog.ts` | Member identity (Aarya Shrestha, GFC-00412) and their orders, referrals and wallet ledger |
 | All 46 photographs and the wordmark, copied from production (see [ASSETS.md](ASSETS.md)) | Search results cap at 8; the Refine sheet's chips don't filter the grid |
 | Payment model — cash on delivery, bank transfer, card marked "not yet accepted" | Sign-in accepts anything; "Share" opens the real OS share sheet, "Copy Code" only swaps its label |

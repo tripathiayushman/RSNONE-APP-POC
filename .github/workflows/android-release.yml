@@ -1,12 +1,14 @@
 name: Android APK
 
-# Builds an installable APK on every push to main and publishes it as a GitHub
-# Release, so the POC can be downloaded straight onto a phone.
+# Builds an installable APK on EAS and publishes it as a GitHub Release, so the
+# POC can be downloaded straight onto a phone.
 #
-# No Expo account, EAS credits or signing secrets are needed: `expo prebuild`
-# generates the Android project, and the React Native template signs `release`
-# with the checked-in debug keystore. That keystore is identical on every run,
-# so successive builds install over each other instead of forcing an uninstall.
+# Requires one repo secret: EXPO_TOKEN (expo.dev → Settings → Access tokens).
+# The Expo project must also be linked once with `npx eas init` inside mobile/,
+# which writes extra.eas.projectId into app.json.
+#
+# There is a no-account fallback in android-release-local.yml that builds with
+# Gradle on the runner instead; run it manually if EAS is unavailable.
 
 on:
   push:
@@ -29,7 +31,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build APK
+    name: Build APK on EAS
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -45,12 +47,21 @@ jobs:
           cache: npm
           cache-dependency-path: mobile/package-lock.json
 
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
+      - name: Fail early if EXPO_TOKEN is missing
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::EXPO_TOKEN is not set. Add it under Settings → Secrets and variables → Actions."
+            echo "Generate one at https://expo.dev/settings/access-tokens"
+            exit 1
+          fi
+          echo "EXPO_TOKEN present."
 
-      - uses: android-actions/setup-android@v3
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
         run: npm ci
@@ -58,26 +69,41 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
-      - name: Generate the Android project
-        run: npx expo prebuild --platform android --no-install
-
-      - name: Stamp the build number
+      - name: Fail early if the Expo project is not linked
         run: |
-          sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
-          grep -n "versionCode" android/app/build.gradle
+          node -e "
+            const app = require('./app.json');
+            const id = app?.expo?.extra?.eas?.projectId;
+            if (!id) {
+              console.error('::error::app.json has no extra.eas.projectId. Run \`npx eas init\` inside mobile/ once, then commit app.json.');
+              process.exit(1);
+            }
+            console.log('EAS project linked:', id);
+          "
 
-      - name: Assemble release APK
+      - name: Build on EAS and wait
         run: |
-          chmod +x android/gradlew
-          cd android && ./gradlew assembleRelease --no-daemon --stacktrace
+          eas build \
+            --platform android \
+            --profile preview \
+            --non-interactive \
+            --wait \
+            --json > build.json
+          cat build.json
 
-      - name: Name the artifact
+      - name: Download the APK
         id: apk
         run: |
-          SRC=android/app/build/outputs/apk/release/app-release.apk
-          test -f "$SRC" || { echo "APK not found at $SRC"; ls -R android/app/build/outputs || true; exit 1; }
+          URL=$(node -e "
+            const b = require('./build.json');
+            const build = Array.isArray(b) ? b[0] : b;
+            const url = build?.artifacts?.buildUrl || build?.artifacts?.applicationArchiveUrl;
+            if (!url) { console.error('No build URL in build.json'); process.exit(1); }
+            console.log(url);
+          ")
           OUT="rsn-one-poc-build${{ github.run_number }}.apk"
-          cp "$SRC" "$OUT"
+          curl -fL -o "$OUT" "$URL"
+          test -s "$OUT" || { echo "Downloaded APK is empty"; exit 1; }
           echo "path=mobile/$OUT" >> "$GITHUB_OUTPUT"
           echo "name=$OUT" >> "$GITHUB_OUTPUT"
           echo "size=$(du -h "$OUT" | cut -f1)" >> "$GITHUB_OUTPUT"
@@ -100,14 +126,14 @@ jobs:
             **Download `${{ steps.apk.outputs.name }}`** below and open it on an Android phone.
 
             Android will warn about installing outside the Play Store — allow it for
-            your browser or file manager, then install. Signed with the React Native
-            debug keystore, so each build installs over the last one.
+            your browser or file manager, then install.
 
             | | |
             |---|---|
             | Commit | `${{ github.sha }}` |
             | Size | ${{ steps.apk.outputs.size }} |
             | Package | `com.rsnone.poc` |
+            | Built by | EAS, `preview` profile |
 
             This is a prototype: no backend, no database. State resets when the
             app is reopened.

@@ -1,0 +1,76 @@
+name: Android APK (Gradle fallback)
+
+# A no-account escape hatch. Builds the APK on the GitHub runner with
+# `expo prebuild` + Gradle instead of EAS — no Expo login, no EXPO_TOKEN, no
+# EAS build quota. Use it if EAS is unavailable or out of builds.
+#
+# Manual only, and it uploads a workflow artifact rather than creating a
+# Release, so it can never collide with the tags android-release.yml publishes.
+# Download it from the run's "Artifacts" section.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build APK with Gradle
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Expo SDK 57 requires >= 20.19.4.
+          node-version: '20.19.4'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Generate the Android project
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Stamp the build number
+        run: |
+          sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
+          grep -n "versionCode" android/app/build.gradle
+
+      - name: Assemble release APK
+        # The React Native template signs `release` with the debug keystore it
+        # ships, so this needs no signing secrets and keeps a stable signature.
+        run: |
+          chmod +x android/gradlew
+          cd android && ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Name the artifact
+        id: apk
+        run: |
+          SRC=android/app/build/outputs/apk/release/app-release.apk
+          test -f "$SRC" || { echo "APK not found at $SRC"; ls -R android/app/build/outputs || true; exit 1; }
+          OUT="rsn-one-poc-gradle-build${{ github.run_number }}.apk"
+          cp "$SRC" "$OUT"
+          echo "path=mobile/$OUT" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rsn-one-poc-apk-gradle
+          path: ${{ steps.apk.outputs.path }}
+          retention-days: 30
