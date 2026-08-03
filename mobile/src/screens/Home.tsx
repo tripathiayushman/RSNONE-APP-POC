@@ -121,8 +121,8 @@ export default function Home({
         <SectionHeader title="Held to, on every order." tight />
         <View style={styles.standards}>
           {STANDARDS.map((s) => (
-            <View key={s.n} style={styles.standard}>
-              <Plate variant="wide" plateNo={s.title} source={editorialImages[s.image]} style={styles.standardPlate} />
+            <View key={s.n}>
+              <Plate variant="wide" source={editorialImages[s.image]} style={styles.standardPlate} />
               <View style={styles.standardText}>
                 <Text style={styles.standardNum}>{s.n}</Text>
                 <View style={styles.standardBody}>
@@ -175,7 +175,6 @@ const styles = StyleSheet.create({
   subWide: { maxWidth: 280 },
   catalogue: { paddingHorizontal: 24 },
   standards: { gap: 30 },
-  standard: {},
   standardPlate: { height: 190 },
   standardText: { flexDirection: "row", gap: 16, paddingHorizontal: 24, paddingTop: 14 },
   standardNum: {
