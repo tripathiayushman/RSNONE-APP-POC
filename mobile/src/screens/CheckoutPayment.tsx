@@ -56,7 +56,7 @@ export default function CheckoutPayment({ navigation }: Props) {
   const [callAhead, setCallAhead] = useState(true);
 
   return (
-    <Screen>
+    <Screen keyboard>
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <TopBar variant="sub" title="The Desk" onBack={() => navigation.goBack()} />
         <Steps steps={CHECKOUT_STEPS} currentIndex={1} />

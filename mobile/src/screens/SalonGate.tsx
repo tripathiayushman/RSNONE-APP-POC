@@ -16,7 +16,7 @@ export default function SalonGate({ navigation }: NativeStackScreenProps<RootSta
   const [code, setCode] = useState("");
 
   return (
-    <Screen salon>
+    <Screen salon keyboard>
       <View style={styles.center}>
         <View style={styles.intro}>
           <LinearGradient

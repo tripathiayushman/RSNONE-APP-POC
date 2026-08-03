@@ -74,7 +74,7 @@ export default function Listing({ navigation, route }: ListingProps) {
         variant="sub"
         title={title}
         onBack={() => navigation.goBack()}
-        rightLabel="♡"
+        rightIcon="heart"
         onRightPress={() => navigation.navigate("Shelf")}
       />
       <ScrollView style={styles.flex} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
@@ -87,7 +87,7 @@ export default function Listing({ navigation, route }: ListingProps) {
         </View>
 
         <View style={styles.chiprow}>
-          <Chip label={`⊜ Refine · ${activeFilters.length}`} onPress={() => navigation.navigate("FilterSheet")} />
+          <Chip label={`Refine · ${activeFilters.length}`} onPress={() => navigation.navigate("FilterSheet")} />
           {activeFilters.map((label) => (
             <Chip
               key={label}
@@ -97,7 +97,7 @@ export default function Listing({ navigation, route }: ListingProps) {
               onRemove={() => removeFilter(label)}
             />
           ))}
-          <Chip label={`Sort — ${SORT_OPTIONS[sortIndex]} ▾`} onPress={cycleSort} />
+          <Chip label={`Sort — ${SORT_OPTIONS[sortIndex]}`} onPress={cycleSort} />
         </View>
 
         <View style={styles.grid}>

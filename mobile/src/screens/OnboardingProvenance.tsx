@@ -19,7 +19,7 @@ export default function OnboardingProvenance({
 }: NativeStackScreenProps<RootStackParamList, "OnboardingProvenance">) {
   return (
     <Screen>
-      <TopBar variant="default" quiet icons={[{ glyph: "Skip", onPress: () => navigation.navigate("SignIn") }]} />
+      <TopBar variant="default" quiet icons={[{ label: "Skip", onPress: () => navigation.navigate("SignIn") }]} />
 
       <Text style={styles.eyebrow}>Origin</Text>
 

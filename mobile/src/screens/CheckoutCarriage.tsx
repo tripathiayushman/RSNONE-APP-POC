@@ -79,7 +79,7 @@ export default function CheckoutCarriage({ navigation }: Props) {
         </View>
 
         <View style={styles.newAddressWrap}>
-          <Button variant="ghost" label="＋  New Address" onPress={() => navigation.navigate("AddressForm", undefined)} />
+          <Button variant="ghost" label="+  New Address" onPress={() => navigation.navigate("AddressForm", undefined)} />
         </View>
 
         <Text style={styles.groupLbl}>Manner of Carriage</Text>

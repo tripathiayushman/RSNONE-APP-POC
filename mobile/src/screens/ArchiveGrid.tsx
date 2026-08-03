@@ -6,6 +6,7 @@ import { Screen } from "../components/Screen";
 import { TopBar } from "../components/TopBar";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { Plate } from "../components/Plate";
+import { Icon } from "../components/Icon";
 import { PullQuote } from "../components/PullQuote";
 import { editorialImages } from "../assets/editorialImages";
 import { categories, countByCategory, products } from "../data/products";
@@ -33,8 +34,8 @@ export default function ArchiveGrid({
     <Screen edges={["top"]}>
       <TopBar
         icons={[
-          { glyph: "⚲", onPress: () => navigation.navigate("Search") },
-          { glyph: "♡", active: shelf.items.length > 0, onPress: () => navigation.navigate("Shelf") },
+          { icon: "search", onPress: () => navigation.navigate("Search") },
+          { icon: "heart", active: shelf.items.length > 0, onPress: () => navigation.navigate("Shelf") },
         ]}
       />
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -48,9 +49,9 @@ export default function ArchiveGrid({
         <View style={styles.metaRow}>
           <Text style={styles.metaText}>{TOTAL_PIECES} pieces in the archive</Text>
           <View style={styles.toggleRow}>
-            <Text style={[styles.toggleGlyph, styles.toggleActive]}>⊞</Text>
+            <Icon name="grid" size={17} color={colors.brass} />
             <Pressable onPress={() => navigation.navigate("ArchiveList")} hitSlop={8}>
-              <Text style={styles.toggleGlyph}>☰</Text>
+              <Icon name="list" size={17} />
             </Pressable>
           </View>
         </View>
@@ -111,8 +112,6 @@ const styles = StyleSheet.create({
     color: colors.creamDim,
   },
   toggleRow: { flexDirection: "row", gap: 14 },
-  toggleGlyph: { fontSize: 14, color: colors.creamDim },
-  toggleActive: { color: colors.brass },
   grid: { paddingHorizontal: 24, paddingBottom: 14, gap: 14 },
   gridRow: { flexDirection: "row", gap: 14 },
   tile: { flex: 1, position: "relative" },

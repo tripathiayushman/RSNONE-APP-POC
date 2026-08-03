@@ -24,7 +24,7 @@ export default function SignIn({ navigation }: NativeStackScreenProps<RootStackP
   }
 
   return (
-    <Screen>
+    <Screen keyboard>
       <TopBar variant="default" quiet icons={[]} />
 
       <Text style={styles.eyebrow}>Welcome Back</Text>

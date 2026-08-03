@@ -24,8 +24,8 @@ export default function ShelfEmpty({ navigation }: Props) {
     <Screen>
       <TopBar
         icons={[
-          { glyph: "⚲", onPress: () => navigation.navigate("Search") },
-          { glyph: "♡", active: true },
+          { icon: "search", onPress: () => navigation.navigate("Search") },
+          { icon: "heart", active: true },
         ]}
       />
       <Text style={styles.eyebrow}>Saved</Text>

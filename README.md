@@ -8,7 +8,21 @@ reload.
 It is themed on the real business: the Global Family Club, the real 31-piece
 catalogue in NPR, the real photography, and the real logo.
 
-## Run it
+## Get the app on a phone
+
+**Download the APK from [Releases](../../releases)** — every push to `main`
+builds one and publishes it. Open it on an Android phone, allow the
+install-from-unknown-sources prompt, done. Each build is signed with the same
+keystore, so a new one installs over the old one.
+
+You can also trigger a build by hand from the **Actions** tab → *Android APK* →
+*Run workflow*.
+
+> iOS has no equivalent — Apple does not allow installing outside the App Store
+> without a paid developer account. For an iPhone in the meeting, run
+> `npx expo start` and open it in **Expo Go**.
+
+## Run it locally
 
 ```bash
 cd mobile
@@ -22,6 +36,17 @@ Verify a change:
 npx tsc --noEmit                    # types
 npx expo export --platform web      # proves Metro resolves every asset
 ```
+
+## How the APK is built
+
+[`.github/workflows/android-release.yml`](.github/workflows/android-release.yml)
+runs `expo prebuild` to generate the Android project, then
+`./gradlew assembleRelease`. **No Expo account, EAS credits or signing secrets
+are involved** — the React Native template signs its `release` build type with
+the keystore it ships, which is fine for a prototype and keeps the signature
+stable between builds.
+
+The generated `android/` directory is gitignored; CI recreates it each run.
 
 ## What it demonstrates
 
@@ -51,6 +76,25 @@ Walk B is the one that explains the business. Walk A alone reads as a shop.
 Placing an order **does** append to the order history, so the confirmation
 screen leads somewhere real rather than dead-ending.
 
+## Built for a phone, not a shrunk website
+
+- **Real icons, not Unicode.** The mockups used bare glyphs (`⚲ ♡ ⊞ ☰ ⊜ ▾`),
+  which render inconsistently across Android OEM fonts and tofu on some devices.
+  Everything now routes through [`Icon.tsx`](mobile/src/components/Icon.tsx)
+  (Feather, which ships with Expo).
+- **Touch targets.** Every bar action is a 40×40 hit area with extra `hitSlop`,
+  rather than a 15px glyph.
+- **Haptics** on the moments that matter — saving to the shelf, adding to the
+  bag, confirming an order, copying the invitation code, switching tabs.
+- **A live tab bar.** The bag tab carries a count badge, and the bar pads for the
+  home indicator instead of assuming a fixed 20px.
+- **Keyboard handling.** Every screen with a text field lifts above the keyboard
+  (`<Screen keyboard>`), which the form screens previously did not.
+- **Native gestures** — swipe-back is on via the native stack, and the modal
+  filter sheet slides from the bottom.
+- **Dark by default.** `userInterfaceStyle: "dark"` with `expo-system-ui`, so the
+  system chrome matches the walnut ground and there is no white flash on launch.
+
 ## Known divergences from the web storefront
 
 Deliberate, not oversights:
@@ -65,11 +109,11 @@ Deliberate, not oversights:
 
 ## Layout
 
-```
+```text
 mobile/
   src/
     screens/     36 route components
-    components/  the design system (Plate, LotRow, BrandMark, …)
+    components/  the design system (Plate, LotRow, BrandMark, Icon, …)
     data/        products, orders, addresses, member, filters, correspondence
     assets/      the two image maps
     state/       AppState — bag, shelf, notifications, orders

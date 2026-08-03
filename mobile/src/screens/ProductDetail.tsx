@@ -15,6 +15,7 @@ import { SectionHeader } from "../components/SectionHeader";
 import { ProductCard } from "../components/ProductCard";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { Tag } from "../components/Tag";
+import * as Haptics from "expo-haptics";
 import { getProductById, products } from "../data/products";
 import { productImages } from "../assets/productImages";
 import { useBag, useShelf } from "../state/AppState";
@@ -73,8 +74,12 @@ export default function ProductDetail({ navigation, route }: Props) {
         variant="sub"
         title={lotLabel}
         onBack={() => navigation.goBack()}
-        rightLabel={saved ? "♥" : "♡"}
-        onRightPress={() => toggle(product)}
+        rightIcon={saved ? "heart-filled" : "heart"}
+        rightActive={saved}
+        onRightPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+          toggle(product);
+        }}
       />
       <ScrollView style={styles.flex} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.plateWrap}>
@@ -122,7 +127,14 @@ export default function ProductDetail({ navigation, route }: Props) {
         </View>
 
         <View style={styles.ctaBlock}>
-          <Button label={`Add to Bag — ${product.price}`} onPress={() => { addItem(product, qty); navigation.navigate("Bag"); }} />
+          <Button
+            label={`Add to Bag — ${product.price}`}
+            onPress={() => {
+              Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+              addItem(product, qty);
+              navigation.navigate("Bag");
+            }}
+          />
           <Text style={styles.note}>In stock · sealed before it travels · paid on delivery</Text>
         </View>
 

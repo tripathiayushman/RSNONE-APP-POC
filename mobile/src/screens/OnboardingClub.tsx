@@ -20,7 +20,7 @@ export default function OnboardingClub({
 }: NativeStackScreenProps<RootStackParamList, "OnboardingClub">) {
   return (
     <Screen>
-      <TopBar variant="default" quiet icons={[{ glyph: "Skip", onPress: () => navigation.navigate("SignIn") }]} />
+      <TopBar variant="default" quiet icons={[{ label: "Skip", onPress: () => navigation.navigate("SignIn") }]} />
 
       <Text style={styles.eyebrow}>The Global Family Club</Text>
 

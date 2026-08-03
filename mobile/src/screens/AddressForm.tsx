@@ -28,12 +28,12 @@ export default function AddressForm({
   const [preferred, setPreferred] = useState(existing?.preferred ?? false);
 
   return (
-    <Screen>
+    <Screen keyboard>
       <TopBar
         variant="sub"
         title={existing ? "Amend Address" : "New Address"}
         onBack={() => navigation.goBack()}
-        rightLabel="✕"
+        rightIcon="close"
         onRightPress={() => navigation.goBack()}
       />
       <View style={styles.form}>

@@ -38,7 +38,7 @@ export default function Account({ navigation }: Props) {
   return (
     <Screen>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TopBar icons={[{ glyph: '⚲', onPress: () => navigation.navigate('Search') }]} />
+        <TopBar icons={[{ icon: "search", onPress: () => navigation.navigate('Search') }]} />
 
         <View style={styles.profileRow}>
           <View style={styles.avatar}>

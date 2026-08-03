@@ -36,12 +36,12 @@ export default function Bag({ navigation }: Props) {
 
   if (items.length === 0) {
     return (
-      <Screen edges={["top"]}>
+      <Screen edges={["top"]} keyboard>
         <TopBar
           variant="default"
           icons={[
-            { glyph: "⚲", onPress: () => navigation.navigate("Search") },
-            { glyph: "♡", onPress: () => navigation.navigate("Shelf") },
+            { icon: "search", onPress: () => navigation.navigate("Search") },
+            { icon: "heart", onPress: () => navigation.navigate("Shelf") },
           ]}
         />
         <Text style={styles.eyebrow}>Your Bag</Text>
@@ -49,7 +49,7 @@ export default function Bag({ navigation }: Props) {
           <PullQuote quote={"An empty bag is a promise\nto your future self."} attribution="— House Philosophy" />
           <View style={styles.emptyNoteWrap}>
             <Text style={styles.emptyNote}>
-              Nothing is held for you at the desk. The autumn registry is open, and the rooms are full.
+              Nothing is held for you at the desk. The registry is open, and all six rooms are stocked.
             </Text>
           </View>
           <View style={styles.emptyCtaWrap}>
@@ -62,12 +62,12 @@ export default function Bag({ navigation }: Props) {
   }
 
   return (
-    <Screen edges={["top"]}>
+    <Screen edges={["top"]} keyboard>
       <TopBar
         variant="default"
         icons={[
-          { glyph: "⚲", onPress: () => navigation.navigate("Search") },
-          { glyph: "♡", onPress: () => navigation.navigate("Shelf") },
+          { icon: "search", onPress: () => navigation.navigate("Search") },
+          { icon: "heart", onPress: () => navigation.navigate("Shelf") },
         ]}
       />
       <ScrollView style={styles.flex} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>

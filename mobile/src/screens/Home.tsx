@@ -73,9 +73,9 @@ export default function Home({
     <Screen edges={["top"]}>
       <TopBar
         icons={[
-          { glyph: "⚲", onPress: () => navigation.navigate("Search") },
-          { glyph: "♡", active: shelf.items.length > 0, onPress: () => navigation.navigate("Shelf") },
-          { glyph: "⊞", onPress: () => navigation.navigate("ArchiveGrid") },
+          { icon: "search", onPress: () => navigation.navigate("Search") },
+          { icon: "heart", active: shelf.items.length > 0, onPress: () => navigation.navigate("Shelf") },
+          { icon: "grid", onPress: () => navigation.navigate("ArchiveGrid") },
         ]}
       />
       <ScrollView contentContainerStyle={styles.scrollContent}>

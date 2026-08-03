@@ -12,6 +12,7 @@ import { colors, fonts, type } from '../theme/tokens';
 import { useBag, useOrders } from '../state/AppState';
 import { addresses } from '../data/addresses';
 import { formatNpr } from '../data/products';
+import * as Haptics from 'expo-haptics';
 
 const CHECKOUT_STEPS: Step[] = [
   { number: '01', label: 'Carriage' },
@@ -39,6 +40,7 @@ export default function CheckoutReview({ navigation }: Props) {
   const total = bag.subtotal + duties;
 
   const handleConfirm = () => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     // Record the order before clearing the bag, so the confirmation and the
     // history both have something real to point at.
     place(bag.items, total);

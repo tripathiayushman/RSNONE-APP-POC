@@ -9,6 +9,7 @@ import { LotRow } from "../components/LotRow";
 import { PullQuote } from "../components/PullQuote";
 import { Tag } from "../components/Tag";
 import { Button, CtaLine } from "../components/Button";
+import { Icon } from "../components/Icon";
 import { useBag, useShelf } from "../state/AppState";
 import { colors, fonts, type } from "../theme/tokens";
 
@@ -48,8 +49,8 @@ export default function Shelf({ navigation }: Props) {
     <Screen>
       <TopBar
         icons={[
-          { glyph: "⚲", onPress: () => navigation.navigate("Search") },
-          { glyph: "♡", active: true },
+          { icon: "search", onPress: () => navigation.navigate("Search") },
+          { icon: "heart", active: true },
         ]}
       />
 
@@ -103,7 +104,7 @@ export default function Shelf({ navigation }: Props) {
                       />
                     )}
                     <Pressable hitSlop={8} onPress={() => shelf.toggle(product)}>
-                      <Text style={styles.heart}>♥</Text>
+                      <Icon name="heart-filled" size={15} color={colors.brass} />
                     </Pressable>
                   </>
                 }
@@ -132,7 +133,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
     color: colors.brass,
   },
-  heart: { fontFamily: fonts.bodyRegular, fontSize: 13, color: colors.brass },
   emptyWrap: { flex: 1, justifyContent: "center" },
   noteWrap: { paddingHorizontal: 24 },
   note: {

@@ -6,6 +6,7 @@ import { Screen } from "../components/Screen";
 import { TopBar } from "../components/TopBar";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { LotRow } from "../components/LotRow";
+import { Icon } from "../components/Icon";
 import { editorialImages } from "../assets/editorialImages";
 import { categories, countByCategory, products } from "../data/products";
 import { useShelf } from "../state/AppState";
@@ -37,8 +38,8 @@ export default function ArchiveList({
     <Screen edges={["top"]}>
       <TopBar
         icons={[
-          { glyph: "⚲", onPress: () => navigation.navigate("Search") },
-          { glyph: "♡", active: shelf.items.length > 0, onPress: () => navigation.navigate("Shelf") },
+          { icon: "search", onPress: () => navigation.navigate("Search") },
+          { icon: "heart", active: shelf.items.length > 0, onPress: () => navigation.navigate("Shelf") },
         ]}
       />
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -53,9 +54,9 @@ export default function ArchiveList({
           <Text style={styles.metaText}>{products.length} pieces in the archive</Text>
           <View style={styles.toggleRow}>
             <Pressable onPress={() => navigation.navigate("ArchiveGrid")} hitSlop={8}>
-              <Text style={styles.toggleGlyph}>⊞</Text>
+              <Icon name="grid" size={17} />
             </Pressable>
-            <Text style={[styles.toggleGlyph, styles.toggleActive]}>☰</Text>
+            <Icon name="list" size={17} color={colors.brass} />
           </View>
         </View>
 
@@ -69,7 +70,7 @@ export default function ArchiveList({
               name={room.name}
               meta={room.description}
               onPress={() => navigation.navigate("Listing", { category: room.name })}
-              rightSlot={<Text style={styles.chev}>→</Text>}
+              rightSlot={<Icon name="chevron-right" size={16} />}
             />
           ))}
         </View>
@@ -108,8 +109,5 @@ const styles = StyleSheet.create({
     color: colors.creamDim,
   },
   toggleRow: { flexDirection: "row", gap: 14 },
-  toggleGlyph: { fontSize: 14, color: colors.creamDim },
-  toggleActive: { color: colors.brass },
   catalogue: { paddingHorizontal: 24 },
-  chev: { fontSize: 14, color: colors.creamDim },
 });

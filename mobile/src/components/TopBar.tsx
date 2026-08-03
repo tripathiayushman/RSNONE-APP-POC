@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { BrandMark } from './BrandMark';
+import { Icon, IconName } from './Icon';
 import { colors, fonts } from '../theme/tokens';
 
 export interface TopBarIcon {
-  /** Plain text glyph, e.g. "⚲", "♡", "☰". */
-  glyph: string;
+  /** House icon name — see components/Icon.tsx. */
+  icon?: IconName;
+  /** Short text action ("Skip") for the rare bar that needs a word, not a mark. */
+  label?: string;
   active?: boolean;
   onPress?: () => void;
 }
@@ -22,7 +25,9 @@ export interface TopBarProps {
   quiet?: boolean;
   /** Row of glyph icons — used by the "default" variant. */
   icons?: TopBarIcon[];
-  /** Optional right-side text action for the "sub" variant, replacing the spacer. */
+  /** Optional right-side action for the "sub" variant, replacing the spacer. */
+  rightIcon?: IconName;
+  rightActive?: boolean;
   rightLabel?: string;
   onRightPress?: () => void;
   /** Show the wordmark instead of the text title on the "sub" variant. */
@@ -39,6 +44,8 @@ export function TopBar({
   onBack,
   quiet = false,
   icons = [],
+  rightIcon,
+  rightActive = false,
   rightLabel,
   onRightPress,
   brandTitle = false,
@@ -49,19 +56,39 @@ export function TopBar({
         <>
           <BrandMark width={96} />
           <View style={styles.icons}>
-            {icons.map((icon, index) => (
-              <Pressable key={index} onPress={icon.onPress} hitSlop={8}>
-                <Text style={[styles.iconGlyph, icon.active && styles.iconGlyphActive]}>
-                  {icon.glyph}
-                </Text>
+            {icons.map((item, index) => (
+              <Pressable
+                key={index}
+                onPress={item.onPress}
+                hitSlop={10}
+                style={styles.iconHit}
+                accessibilityRole="button"
+              >
+                {item.icon ? (
+                  <Icon
+                    name={item.icon}
+                    size={19}
+                    color={item.active ? colors.brass : colors.creamDim}
+                  />
+                ) : (
+                  <Text style={[styles.iconLabel, item.active && styles.iconGlyphActive]}>
+                    {item.label}
+                  </Text>
+                )}
               </Pressable>
             ))}
           </View>
         </>
       ) : (
         <>
-          <Pressable onPress={onBack} hitSlop={8} style={styles.back}>
-            <Text style={styles.backGlyph}>←</Text>
+          <Pressable
+            onPress={onBack}
+            hitSlop={12}
+            style={styles.back}
+            accessibilityRole="button"
+            accessibilityLabel="Back"
+          >
+            <Icon name="back" size={20} />
           </Pressable>
           {brandTitle ? (
             <View style={styles.brandTitle}>
@@ -72,11 +99,24 @@ export function TopBar({
               {title}
             </Text>
           )}
-          {rightLabel ? (
-            <Pressable onPress={onRightPress} hitSlop={8} style={styles.rightAction}>
-              <Text style={styles.rightActionText} numberOfLines={1}>
-                {rightLabel}
-              </Text>
+          {rightIcon || rightLabel ? (
+            <Pressable
+              onPress={onRightPress}
+              hitSlop={12}
+              style={styles.rightAction}
+              accessibilityRole="button"
+            >
+              {rightIcon ? (
+                <Icon
+                  name={rightIcon}
+                  size={19}
+                  color={rightActive ? colors.brass : colors.creamDim}
+                />
+              ) : (
+                <Text style={styles.rightActionText} numberOfLines={1}>
+                  {rightLabel}
+                </Text>
+              )}
             </Pressable>
           ) : (
             <View style={styles.spacer} />
@@ -102,11 +142,18 @@ const styles = StyleSheet.create({
   // gives back some of its padding to keep the header from crowding content.
   barBranded: { paddingTop: 4, paddingBottom: 14 },
   barQuiet: { borderBottomWidth: 0 },
-  icons: { flexDirection: 'row', alignItems: 'center', gap: 18 },
-  iconGlyph: { fontSize: 15, color: colors.creamDim },
+  icons: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  // 40x40 keeps every bar action at the 44pt-ish touch target phones expect.
+  iconHit: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  iconLabel: {
+    fontFamily: fonts.bodyRegular,
+    fontSize: 11,
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+    color: colors.creamDim,
+  },
   iconGlyphActive: { color: colors.brass },
-  back: { width: 40 },
-  backGlyph: { fontSize: 16, color: colors.creamDim },
+  back: { width: 40, height: 40, alignItems: 'flex-start', justifyContent: 'center' },
   title: {
     flex: 1,
     fontFamily: fonts.displayMedium,
@@ -117,7 +164,7 @@ const styles = StyleSheet.create({
   },
   brandTitle: { flex: 1, alignItems: 'center' },
   spacer: { width: 40 },
-  rightAction: { width: 40, alignItems: 'flex-end' },
+  rightAction: { width: 40, height: 40, alignItems: 'flex-end', justifyContent: 'center' },
   rightActionText: {
     fontFamily: fonts.bodyRegular,
     fontSize: 11,

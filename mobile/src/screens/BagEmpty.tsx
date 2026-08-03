@@ -32,8 +32,8 @@ export default function BagEmpty({ navigation }: Props) {
       <TopBar
         variant="default"
         icons={[
-          { glyph: "⚲", onPress: () => navigation.navigate("Search") },
-          { glyph: "♡", onPress: () => navigation.navigate("Shelf") },
+          { icon: "search", onPress: () => navigation.navigate("Search") },
+          { icon: "heart", onPress: () => navigation.navigate("Shelf") },
         ]}
       />
       <Text style={styles.eyebrow}>Your Bag</Text>

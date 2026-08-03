@@ -25,7 +25,7 @@ export default function CreateAccount({
   }
 
   return (
-    <Screen>
+    <Screen keyboard>
       <TopBar variant="sub" title="Join the Club" onBack={() => navigation.goBack()} quiet />
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.scrollContent}>
         <Text style={styles.eyebrow}>Admission</Text>

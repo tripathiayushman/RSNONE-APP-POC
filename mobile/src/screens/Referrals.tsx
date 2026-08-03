@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ScrollView, Share, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import * as Haptics from "expo-haptics";
 import { RootStackParamList } from "../navigation/types";
 import { Screen } from "../components/Screen";
 import { TopBar } from "../components/TopBar";
@@ -57,7 +58,8 @@ export default function Referrals({ navigation }: Props) {
   }
 
   function copyCode() {
-    // No clipboard dependency in this POC; the label confirms the action.
+    // No clipboard dependency in this POC; the label plus a tap confirms it.
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }

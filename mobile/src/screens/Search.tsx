@@ -52,7 +52,7 @@ export default function Search({ navigation }: SearchProps) {
   }
 
   return (
-    <Screen edges={["top"]}>
+    <Screen edges={["top"]} keyboard>
       <SearchBar
         value={query}
         onChangeText={setQuery}

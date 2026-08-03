@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { gradients } from '../theme/tokens';
@@ -14,6 +14,8 @@ export interface ScreenProps {
   salon?: boolean;
   /** Safe-area edges to pad for. Defaults to top + bottom. */
   edges?: ScreenEdge[];
+  /** Lift content above the keyboard — set on any screen with a text field. */
+  keyboard?: boolean;
 }
 
 const DEFAULT_EDGES: ScreenEdge[] = ['top', 'bottom'];
@@ -23,9 +25,28 @@ const DEFAULT_EDGES: ScreenEdge[] = ['top', 'bottom'];
  * the entire device viewport (behind the status bar / home indicator too); content
  * sits in a flex column above it, padded only for the requested safe-area edges.
  */
-export function Screen({ children, salon = false, edges = DEFAULT_EDGES }: ScreenProps) {
+export function Screen({
+  children,
+  salon = false,
+  edges = DEFAULT_EDGES,
+  keyboard = false,
+}: ScreenProps) {
   const insets = useSafeAreaInsets();
   const gradient = salon ? gradients.screenSalon : gradients.screen;
+
+  const padding = {
+    paddingTop: edges.includes('top') ? insets.top : 0,
+    paddingBottom: edges.includes('bottom') ? insets.bottom : 0,
+    paddingLeft: edges.includes('left') ? insets.left : 0,
+    paddingRight: edges.includes('right') ? insets.right : 0,
+  };
+
+  const Wrapper = keyboard ? KeyboardAvoidingView : View;
+  // iOS needs "padding" to lift the content; Android resizes the window itself,
+  // so "height" (or nothing) is correct there.
+  const wrapperProps = keyboard
+    ? { behavior: Platform.OS === 'ios' ? ('padding' as const) : ('height' as const) }
+    : {};
 
   return (
     <View style={styles.root}>
@@ -36,19 +57,9 @@ export function Screen({ children, salon = false, edges = DEFAULT_EDGES }: Scree
         end={gradient.end}
         style={StyleSheet.absoluteFill}
       />
-      <View
-        style={[
-          styles.content,
-          {
-            paddingTop: edges.includes('top') ? insets.top : 0,
-            paddingBottom: edges.includes('bottom') ? insets.bottom : 0,
-            paddingLeft: edges.includes('left') ? insets.left : 0,
-            paddingRight: edges.includes('right') ? insets.right : 0,
-          },
-        ]}
-      >
+      <Wrapper style={[styles.content, padding]} {...wrapperProps}>
         {children}
-      </View>
+      </Wrapper>
     </View>
   );
 }
