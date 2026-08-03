@@ -30,6 +30,12 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5f4765ed-b590-4c19-bf19-046570f3cf8b"
+      }
+    },
+    "owner": "tripathiayushman"
   }
 }

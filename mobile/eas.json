@@ -5,17 +5,13 @@
   },
   "build": {
     "preview": {
-      "// note": "The POC profile. `distribution: internal` + `buildType: apk` produces a directly installable APK rather than a Play-Store AAB.",
       "distribution": "internal",
-      "channel": "preview",
       "android": {
         "buildType": "apk"
       }
     },
     "production": {
-      "// note": "Kept for completeness — the POC does not ship to a store.",
       "distribution": "store",
-      "channel": "production",
       "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
