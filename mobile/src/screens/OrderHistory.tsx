@@ -7,7 +7,8 @@ import { TopBar } from "../components/TopBar";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { LotRow, LotRowTagVariant } from "../components/LotRow";
 import { PullQuote } from "../components/PullQuote";
-import { orders, OrderStatus } from "../data/orders";
+import { OrderStatus } from "../data/orders";
+import { useOrders } from "../state/AppState";
 import { getProductById } from "../data/products";
 import { type } from "../theme/tokens";
 
@@ -31,8 +32,10 @@ const STATUS_TAG: Record<OrderStatus, LotRowTagVariant> = {
   Delivered: "quiet",
 };
 
-/** 3.23 · Acquisitions — Order History, sourced from data/orders.ts. */
+/** 3.23 · Acquisitions — Order History, including anything placed this session. */
 export default function OrderHistory({ navigation }: Props) {
+  const { items: orders } = useOrders();
+
   const handleNav = (key: BottomNavKey) => {
     if (key === "Registry") navigation.navigate("Home");
     else if (key === "Archive") navigation.navigate("ArchiveGrid");
@@ -45,7 +48,7 @@ export default function OrderHistory({ navigation }: Props) {
       <TopBar variant="sub" title="Acquisitions" onBack={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>Your Records · Since MMXXII</Text>
+        <Text style={styles.eyebrow}>Your Records · Since June 2026</Text>
         <View style={styles.hero}>
           <Text style={styles.h1}>{`${numberWord(orders.length)} entries,\nnone regretted.`}</Text>
         </View>

@@ -7,14 +7,14 @@ import type { RootStackParamList } from "../navigation/types";
 import { Chip } from "../components/Chip";
 import { RangeSlider } from "../components/RangeSlider";
 import { Button } from "../components/Button";
-import { materialFilters, availabilityFilters, priceRangeDefault } from "../data/filters";
-import { products } from "../data/products";
+import { originFilters, availabilityFilters, priceRangeDefault } from "../data/filters";
+import { formatNpr, products } from "../data/products";
 import * as tokens from "../theme/tokens";
 
 type FilterSheetProps = NativeStackScreenProps<RootStackParamList, "FilterSheet">;
 
-// Default selection mirrors Listing's starting "Refine · 2" chips (Calfskin / In Stock).
-const DEFAULT_MATERIALS = ["calfskin"];
+// Default selection mirrors Listing's starting "Refine · 2" chips (Nepal / In Stock).
+const DEFAULT_ORIGINS = ["np"];
 const DEFAULT_AVAILABILITY = ["in-stock"];
 
 /**
@@ -24,18 +24,18 @@ const DEFAULT_AVAILABILITY = ["in-stock"];
  */
 export default function FilterSheet({ navigation }: FilterSheetProps) {
   const insets = useSafeAreaInsets();
-  const [materials, setMaterials] = useState<Set<string>>(new Set(DEFAULT_MATERIALS));
+  const [origins, setOrigins] = useState<Set<string>>(new Set(DEFAULT_ORIGINS));
   const [availability, setAvailability] = useState<Set<string>>(new Set(DEFAULT_AVAILABILITY));
 
   const minPrice = useMemo(() => Math.min(...products.map((p) => p.priceValue)), []);
   const maxPrice = useMemo(() => Math.max(...products.map((p) => p.priceValue)), []);
 
-  // Decorative result count — there's no real material/availability data on Product to
-  // filter against, so this is a plausible mock figure that responds to the selection.
+  // Decorative result count — the sheet doesn't apply its selection to the
+  // Listing in this POC, so this is a plausible figure that moves with the chips.
   const resultCount = useMemo(() => {
-    const activeCount = materials.size + availability.size;
+    const activeCount = origins.size + availability.size;
     return Math.max(1, products.length - activeCount * 2);
-  }, [materials, availability]);
+  }, [origins, availability]);
 
   function toggle(set: Set<string>, setSet: (next: Set<string>) => void, id: string) {
     const next = new Set(set);
@@ -45,7 +45,7 @@ export default function FilterSheet({ navigation }: FilterSheetProps) {
   }
 
   function clearAll() {
-    setMaterials(new Set());
+    setOrigins(new Set());
     setAvailability(new Set());
   }
 
@@ -76,18 +76,18 @@ export default function FilterSheet({ navigation }: FilterSheetProps) {
           <Text style={[styles.groupLbl, styles.groupLblFirst]}>Price</Text>
           <RangeSlider lowPercent={priceRangeDefault.lowPercent} highPercent={priceRangeDefault.highPercent} />
           <View style={styles.priceRow}>
-            <Text style={styles.priceLabel}>${minPrice.toLocaleString()}</Text>
-            <Text style={styles.priceLabel}>${maxPrice.toLocaleString()}</Text>
+            <Text style={styles.priceLabel}>{formatNpr(minPrice)}</Text>
+            <Text style={styles.priceLabel}>{formatNpr(maxPrice)}</Text>
           </View>
 
-          <Text style={styles.groupLbl}>Material</Text>
+          <Text style={styles.groupLbl}>Origin</Text>
           <View style={styles.chipWrap}>
-            {materialFilters.map((f) => (
+            {originFilters.map((f) => (
               <Chip
                 key={f.id}
                 label={f.label}
-                active={materials.has(f.id)}
-                onPress={() => toggle(materials, setMaterials, f.id)}
+                active={origins.has(f.id)}
+                onPress={() => toggle(origins, setOrigins, f.id)}
               />
             ))}
           </View>

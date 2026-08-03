@@ -13,9 +13,9 @@ import * as tokens from "../theme/tokens";
 type SearchEmptyProps = NativeStackScreenProps<RootStackParamList, "SearchEmpty">;
 
 const BROWSE_CATEGORIES: { label: string; category: string }[] = [
-  { label: "Leather Goods", category: "Bags" },
-  { label: "Jewelry", category: "Jewelry" },
-  { label: "Objects", category: "Accessories" },
+  { label: "Home & Living", category: "Home & Living" },
+  { label: "Food & Beverage", category: "Food & Beverage" },
+  { label: "Fashion & Bags", category: "Fashion & Bags" },
 ];
 
 /**

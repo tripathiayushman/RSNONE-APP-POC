@@ -10,20 +10,21 @@ import { Tag } from '../components/Tag';
 import { PullQuote } from '../components/PullQuote';
 import { Plate } from '../components/Plate';
 import { colors, fonts } from '../theme/tokens';
-import { useShelf } from '../state/AppState';
+import { useOrders, useShelf } from '../state/AppState';
 import { addresses } from '../data/addresses';
-import { orders } from '../data/orders';
 import { correspondence } from '../data/correspondence';
-
-// Member identity is fixed house content for this POC, not sourced from a data file.
-const MEMBER_NAME = 'Adeline Marchetti';
-const MEMBER_INITIALS = 'AM';
-const MEMBER_SINCE = 'Member since MMXXII · Rome';
+import {
+  activeReferralCount,
+  formatCny,
+  member,
+  walletBalanceMinor,
+} from '../data/member';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Account'>;
 
 export default function Account({ navigation }: Props) {
   const shelf = useShelf();
+  const { items: orders } = useOrders();
   const unreadCorrespondence = correspondence.filter((c) => !c.read).length;
   const addressCities = addresses.slice(0, 2).map((a) => a.city).join(' · ');
 
@@ -43,16 +44,39 @@ export default function Account({ navigation }: Props) {
           <View style={styles.avatar}>
             <Plate variant="sq" style={styles.avatarPlate} />
             <View style={styles.avatarInitialsWrap}>
-              <Text style={styles.avatarInitials}>{MEMBER_INITIALS}</Text>
+              <Text style={styles.avatarInitials}>{member.initials}</Text>
             </View>
           </View>
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{MEMBER_NAME}</Text>
-            <Text style={styles.profileMeta}>{MEMBER_SINCE}</Text>
+            <Text style={styles.profileName}>{member.name}</Text>
+            <Text style={styles.profileMeta}>{member.since}</Text>
             <View style={styles.profileTagWrap}>
-              <Tag label="The Salon — Invited" variant="brass" />
+              <Tag label={member.tier} variant="brass" />
             </View>
           </View>
+        </View>
+
+        <Text style={styles.groupLbl}>Your Membership</Text>
+        <View>
+          <LinkRow
+            number="01"
+            label="Membership"
+            value={member.memberNo}
+            onPress={() => navigation.navigate('Membership')}
+          />
+          <LinkRow
+            number="02"
+            label="Wallet"
+            value={formatCny(walletBalanceMinor)}
+            onPress={() => navigation.navigate('Wallet')}
+          />
+          <LinkRow
+            number="03"
+            label="Invitations"
+            value={`${activeReferralCount} admitted`}
+            tag={{ label: member.referralCode, variant: 'brass' }}
+            onPress={() => navigation.navigate('Referrals')}
+          />
         </View>
 
         <Text style={styles.groupLbl}>Your Records</Text>
@@ -84,7 +108,7 @@ export default function Account({ navigation }: Props) {
           <LinkRow
             number="05"
             label="Payment"
-            value="Amex · Visa"
+            value="Cash on delivery"
             onPress={() => navigation.navigate('PaymentMethods')}
           />
         </View>
@@ -93,10 +117,10 @@ export default function Account({ navigation }: Props) {
         <View>
           <LinkRow
             label="The Salon"
-            tag={{ label: 'Invited', variant: 'brass' }}
+            tag={{ label: 'Members Only', variant: 'brass' }}
             onPress={() => navigation.navigate('SalonGate')}
           />
-          <LinkRow label="Write to the Concierge" onPress={() => navigation.navigate('Correspondence')} />
+          <LinkRow label={`Write to ${member.concierge}`} onPress={() => navigation.navigate('Correspondence')} />
           <LinkRow label="Settings" onPress={() => navigation.navigate('Settings')} />
         </View>
 

@@ -15,9 +15,9 @@ import * as tokens from "../theme/tokens";
 type SearchProps = NativeStackScreenProps<RootStackParamList, "Search">;
 
 const BROWSE_CATEGORIES: { label: string; category: string }[] = [
-  { label: "Bags", category: "Bags" },
-  { label: "Jewelry", category: "Jewelry" },
-  { label: "Accessories", category: "Accessories" },
+  { label: "Home & Living", category: "Home & Living" },
+  { label: "Food & Beverage", category: "Food & Beverage" },
+  { label: "Fashion & Bags", category: "Fashion & Bags" },
 ];
 
 const MAX_RESULTS = 8;

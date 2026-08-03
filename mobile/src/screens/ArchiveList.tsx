@@ -7,18 +7,19 @@ import { TopBar } from "../components/TopBar";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { LotRow } from "../components/LotRow";
 import { editorialImages } from "../assets/editorialImages";
+import { categories, countByCategory, products } from "../data/products";
 import { useShelf } from "../state/AppState";
 import { colors, fonts, type } from "../theme/tokens";
 
-/** The six rooms of the house archive, in list form — same content as ArchiveGrid. */
-const ROOMS: { number: string; name: string; description: string }[] = [
-  { number: "I", name: "Jewelry", description: "Signets, chains, and stones — 24 pieces" },
-  { number: "II", name: "Leather Goods", description: "Cut, stitched, and burnished — 31 pieces" },
-  { number: "III", name: "Ready-to-Wear", description: "Cloth of the great mills — 18 pieces" },
-  { number: "IV", name: "Fragrance", description: "Extraits, poured by hand — 9 pieces" },
-  { number: "V", name: "Timepieces", description: "Swiss lever escapements — 12 pieces" },
-  { number: "VI", name: "Objects of the House", description: "For desk, bar, and shelf — 14 pieces" },
-];
+const NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
+
+/** The six rooms in list form — same source of truth as ArchiveGrid. */
+const ROOMS = categories.map((c, i) => ({
+  number: NUMERALS[i] ?? String(i + 1),
+  slug: c.slug,
+  name: c.name,
+  description: `${c.subtitle} — ${countByCategory(c.name)} pieces`,
+}));
 
 export default function ArchiveList({
   navigation,
@@ -49,7 +50,7 @@ export default function ArchiveList({
         </View>
 
         <View style={styles.metaRow}>
-          <Text style={styles.metaText}>108 pieces in the archive</Text>
+          <Text style={styles.metaText}>{products.length} pieces in the archive</Text>
           <View style={styles.toggleRow}>
             <Pressable onPress={() => navigation.navigate("ArchiveGrid")} hitSlop={8}>
               <Text style={styles.toggleGlyph}>⊞</Text>
@@ -61,10 +62,10 @@ export default function ArchiveList({
         <View style={styles.catalogue}>
           {ROOMS.map((room) => (
             <LotRow
-              key={room.name}
+              key={room.slug}
               number={room.number}
               thumb
-              source={editorialImages[`category:${room.name}`]}
+              source={editorialImages[`category:${room.slug}`]}
               name={room.name}
               meta={room.description}
               onPress={() => navigation.navigate("Listing", { category: room.name })}

@@ -21,25 +21,25 @@ export default function OnboardingProvenance({
     <Screen>
       <TopBar variant="default" quiet icons={[{ glyph: "Skip", onPress: () => navigation.navigate("SignIn") }]} />
 
-      <Text style={styles.eyebrow}>Provenance</Text>
+      <Text style={styles.eyebrow}>Origin</Text>
 
       <View style={styles.hero}>
-        <Text style={styles.h1}>{"Every piece arrives\nwith its papers."}</Text>
+        <Text style={styles.h1}>{"Bought at origin,\nsealed before it travels."}</Text>
         <Text style={styles.sub}>
-          Origin, maker, and material — recorded at the bench, sealed at the desk, kept in your name.
+          The house buys from the workshop, not the middleman — and passes the difference to members.
         </Text>
       </View>
 
       <Plate
         variant="hero"
-        plateNo="Plate No. 002 · The Seal"
-        source={editorialImages["onboarding-seal"]}
+        plateNo="II · Origin"
+        source={editorialImages["provenance"]}
         style={styles.plate}
       />
 
       <View style={styles.footer}>
-        <Dots count={2} activeIndex={1} style={styles.dots} />
-        <Button label="Enter the Registry" onPress={() => navigation.navigate("SignIn")} />
+        <Dots count={3} activeIndex={1} style={styles.dots} />
+        <Button label="Continue" onPress={() => navigation.navigate("OnboardingClub")} />
         <Pressable onPress={() => navigation.navigate("SignIn")} hitSlop={8}>
           <Text style={styles.skip}>Skip the tour</Text>
         </Pressable>
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 14,
   },
-  h1: { ...type.heroH1, fontSize: 40, lineHeight: 44 },
+  h1: { ...type.heroH1, fontSize: 36, lineHeight: 40 },
   sub: {
     ...type.sub,
     marginTop: 14,

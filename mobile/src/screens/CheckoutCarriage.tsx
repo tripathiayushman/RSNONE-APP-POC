@@ -87,15 +87,15 @@ export default function CheckoutCarriage({ navigation }: Props) {
           <CarriageRow
             active={carriageMethod === "courier"}
             label="House courier"
-            subLabel="Three to five days · signed for · complimentary"
+            subLabel="Five to seven days · signed for · complimentary"
             price="—"
             onPress={() => setCarriageMethod("courier")}
           />
           <CarriageRow
             active={carriageMethod === "express"}
-            label="Express"
-            subLabel="One to two days, by air"
-            price="$60"
+            label="Valley express"
+            subLabel="Next day within Kathmandu and Lalitpur"
+            price="Rs. 350"
             onPress={() => setCarriageMethod("express")}
             last
           />

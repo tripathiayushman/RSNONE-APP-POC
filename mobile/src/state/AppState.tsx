@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { Product } from "../data/products";
+import { formatNpr, Product } from "../data/products";
 import { NotificationItem, notifications as seedNotifications } from "../data/notifications";
+import { Order, orders as seedOrders } from "../data/orders";
 
 export type BagLine = {
   product: Product;
@@ -19,6 +20,10 @@ type AppStateValue = {
 
   notifications: NotificationItem[];
   markNotificationRead: (id: string) => void;
+
+  orders: Order[];
+  placeOrder: (lines: BagLine[], total: number) => Order;
+  lastOrderId: string | null;
 };
 
 const AppStateContext = createContext<AppStateValue | undefined>(undefined);
@@ -35,6 +40,8 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
   const [bagItems, setBagItems] = useState<BagLine[]>([]);
   const [shelfItems, setShelfItems] = useState<Product[]>([]);
   const [notifications, setNotifications] = useState<NotificationItem[]>(seedNotifications);
+  const [orders, setOrders] = useState<Order[]>(seedOrders);
+  const [lastOrderId, setLastOrderId] = useState<string | null>(null);
 
   const addItem = useCallback((product: Product, qty: number = 1) => {
     setBagItems((prev) => {
@@ -72,6 +79,32 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   }, []);
 
+  /**
+   * Turns the bag into a real order at the front of the history, so the
+   * confirmation screen leads somewhere instead of dead-ending. Ids continue
+   * the seeded RSN-24xx series.
+   */
+  const placeOrder = useCallback((lines: BagLine[], total: number): Order => {
+    const order: Order = {
+      id: `RSN-${2441 + orders.length - seedOrders.length}`,
+      date: "3 August 2026",
+      status: "Processing",
+      items: lines.map((line) => ({ productId: line.product.id, qty: line.qty })),
+      total: formatNpr(Math.round(total)),
+      payment: "Cash on delivery",
+      timeline: [
+        { title: "Order Placed", detail: "Received at the registry, awaiting collection on delivery.", done: true },
+        { title: "Sourced at Origin", detail: "Being released by the workshop.", done: false },
+        { title: "Inspected and Sealed", detail: "Awaiting inspection against the house standard.", done: false },
+        { title: "In Transit", detail: "Not yet dispatched.", done: false },
+        { title: "Delivered", detail: "Not yet dispatched.", done: false },
+      ],
+    };
+    setOrders((prev) => [order, ...prev]);
+    setLastOrderId(order.id);
+    return order;
+  }, [orders.length]);
+
   const value = useMemo<AppStateValue>(
     () => ({
       bagItems,
@@ -83,8 +116,24 @@ export function AppStateProvider({ children }: AppStateProviderProps) {
       toggleShelf,
       notifications,
       markNotificationRead,
+      orders,
+      placeOrder,
+      lastOrderId,
     }),
-    [bagItems, addItem, removeItem, updateQty, clearBag, shelfItems, toggleShelf, notifications, markNotificationRead]
+    [
+      bagItems,
+      addItem,
+      removeItem,
+      updateQty,
+      clearBag,
+      shelfItems,
+      toggleShelf,
+      notifications,
+      markNotificationRead,
+      orders,
+      placeOrder,
+      lastOrderId,
+    ]
   );
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>;
@@ -152,4 +201,23 @@ export function useNotifications(): UseNotificationsResult {
   const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
 
   return { items: notifications, unreadCount, markRead: markNotificationRead };
+}
+
+export type UseOrdersResult = {
+  items: Order[];
+  place: (lines: BagLine[], total: number) => Order;
+  lastOrderId: string | null;
+  getById: (id: string) => Order | undefined;
+};
+
+/**
+ * Order history, seeded from data/orders.ts and extended in-memory by anything
+ * placed during the session — so a checkout actually shows up afterwards.
+ */
+export function useOrders(): UseOrdersResult {
+  const { orders, placeOrder, lastOrderId } = useAppStateContext();
+
+  const getById = useCallback((id: string) => orders.find((o) => o.id === id), [orders]);
+
+  return { items: orders, place: placeOrder, lastOrderId, getById };
 }

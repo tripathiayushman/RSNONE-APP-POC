@@ -7,6 +7,7 @@ import { RootStackParamList } from "./types";
 import Splash from "../screens/Splash";
 import OnboardingRegistry from "../screens/OnboardingRegistry";
 import OnboardingProvenance from "../screens/OnboardingProvenance";
+import OnboardingClub from "../screens/OnboardingClub";
 import SignIn from "../screens/SignIn";
 import CreateAccount from "../screens/CreateAccount";
 import Home from "../screens/Home";
@@ -26,6 +27,9 @@ import OrderConfirmed from "../screens/OrderConfirmed";
 import Shelf from "../screens/Shelf";
 import ShelfEmpty from "../screens/ShelfEmpty";
 import Account from "../screens/Account";
+import Membership from "../screens/Membership";
+import Wallet from "../screens/Wallet";
+import Referrals from "../screens/Referrals";
 import OrderHistory from "../screens/OrderHistory";
 import OrderDetail from "../screens/OrderDetail";
 import Addresses from "../screens/Addresses";
@@ -40,7 +44,7 @@ import Settings from "../screens/Settings";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 /**
- * The single flat native-stack of all 32 RSN One routes. NavigationContainer lives
+ * The single flat native-stack of all 36 RSN One routes. NavigationContainer lives
  * here (not App.tsx). Every screen builds its own TopBar, so headers are disabled
  * globally. FilterSheet is presented as a transparent modal sliding up from the
  * bottom so it overlays Listing instead of replacing it.
@@ -52,6 +56,7 @@ export function RootNavigator() {
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="OnboardingRegistry" component={OnboardingRegistry} />
         <Stack.Screen name="OnboardingProvenance" component={OnboardingProvenance} />
+        <Stack.Screen name="OnboardingClub" component={OnboardingClub} />
         <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="Home" component={Home} />
@@ -78,6 +83,9 @@ export function RootNavigator() {
         <Stack.Screen name="Shelf" component={Shelf} />
         <Stack.Screen name="ShelfEmpty" component={ShelfEmpty} />
         <Stack.Screen name="Account" component={Account} />
+        <Stack.Screen name="Membership" component={Membership} />
+        <Stack.Screen name="Wallet" component={Wallet} />
+        <Stack.Screen name="Referrals" component={Referrals} />
         <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="OrderDetail" component={OrderDetail} />
         <Stack.Screen name="Addresses" component={Addresses} />

@@ -41,7 +41,7 @@ export default function BagEmpty({ navigation }: Props) {
         <PullQuote quote={"An empty bag is a promise\nto your future self."} attribution="— House Philosophy" />
         <View style={styles.noteWrap}>
           <Text style={styles.note}>
-            Nothing is held for you at the desk. The autumn registry is open, and the rooms are full.
+            Nothing is held for you at the desk. The registry is open, and all six rooms are stocked.
           </Text>
         </View>
         <View style={styles.ctaWrap}>

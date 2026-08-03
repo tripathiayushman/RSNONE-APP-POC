@@ -27,19 +27,19 @@ export default function OnboardingRegistry({
       <View style={styles.hero}>
         <Text style={styles.h1}>{"A catalogue,\nnot a feed."}</Text>
         <Text style={styles.sub}>
-          Each season the house admits a small number of pieces to the registry. Nothing more.
+          Six rooms, thirty-one pieces, each one chosen. The registry grows slowly and on purpose.
         </Text>
       </View>
 
       <Plate
         variant="hero"
-        plateNo="Plate No. 001 · The Reading Room"
-        source={editorialImages["onboarding-reading-room"]}
+        plateNo="I · The Registry"
+        source={editorialImages["corridor-globe"]}
         style={styles.plate}
       />
 
       <View style={styles.footer}>
-        <Dots count={2} activeIndex={0} style={styles.dots} />
+        <Dots count={3} activeIndex={0} style={styles.dots} />
         <Button label="Continue" onPress={() => navigation.navigate("OnboardingProvenance")} />
         <Pressable onPress={() => navigation.navigate("SignIn")} hitSlop={8}>
           <Text style={styles.skip}>Skip the tour</Text>

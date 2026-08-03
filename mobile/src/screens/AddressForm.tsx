@@ -8,6 +8,7 @@ import { Field } from "../components/Field";
 import { Toggle } from "../components/Toggle";
 import { Button } from "../components/Button";
 import { addresses } from "../data/addresses";
+import { member } from "../data/member";
 import * as tokens from "../theme/tokens";
 
 /** 3.26 · Address — Add / Amend. Prefills from data/addresses.ts when an addressId is passed. */
@@ -19,7 +20,7 @@ export default function AddressForm({
   const existing = addressId ? addresses.find((a) => a.id === addressId) : undefined;
 
   const [doorName, setDoorName] = useState(existing?.name ?? "");
-  const [recipient, setRecipient] = useState(existing ? "A. Marchetti" : "");
+  const [recipient, setRecipient] = useState(existing ? member.name : "");
   const [street, setStreet] = useState(existing?.street ?? "");
   const [city, setCity] = useState(existing?.city ?? "");
   const [postal, setPostal] = useState(existing?.postal ?? "");

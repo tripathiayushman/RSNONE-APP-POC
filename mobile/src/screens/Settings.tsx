@@ -74,7 +74,7 @@ export default function Settings({ navigation }: Props) {
         <View style={styles.catalogue}>
           <LinkRow
             label="Email"
-            value="adeline@marchetti.it"
+            value="aarya.shrestha@gmail.com"
             onPress={() => navigation.navigate("Account")}
           />
           <LinkRow
@@ -84,7 +84,7 @@ export default function Settings({ navigation }: Props) {
           />
           <LinkRow
             label="Region & currency"
-            value="Italy · USD"
+            value="Nepal · NPR"
             onPress={() => navigation.navigate("Account")}
           />
         </View>
@@ -93,7 +93,7 @@ export default function Settings({ navigation }: Props) {
         <View style={styles.catalogue}>
           <PrefRow
             label="Order movements"
-            sub="confirmed, at the bench, dispatched, delivered"
+            sub="confirmed, sourced, sealed, dispatched, delivered"
             value={orderMovements}
             onValueChange={setOrderMovements}
           />
@@ -136,7 +136,7 @@ export default function Settings({ navigation }: Props) {
           </Pressable>
         </View>
         <View style={styles.versionWrap}>
-          <Text style={styles.version}>RSN One · v1.0 · MMXXVI</Text>
+          <Text style={styles.version}>RSN One · v1.0 · 2026</Text>
         </View>
       </ScrollView>
       <BottomNav active="Account" onNavigate={handleNavigate} />

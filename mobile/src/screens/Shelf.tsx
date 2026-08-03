@@ -90,8 +90,8 @@ export default function Shelf({ navigation }: Props) {
                 rightSlot={
                   <>
                     <Text style={styles.price}>{product.price}</Text>
-                    {product.lotTag?.toUpperCase().includes("EDITION") ? (
-                      <Tag label={product.lotTag} variant="rose" />
+                    {product.membersOnly ? (
+                      <Tag label="Members Only" variant="rose" />
                     ) : (
                       <CtaLine
                         label="Move to Bag"

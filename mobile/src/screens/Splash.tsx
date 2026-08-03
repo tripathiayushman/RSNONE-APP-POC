@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation/types";
 import { Screen } from "../components/Screen";
+import { BrandMark } from "../components/BrandMark";
 import { colors, fonts, type } from "../theme/tokens";
 
 const ADVANCE_DELAY_MS = 2400;
@@ -39,10 +40,10 @@ export default function Splash({ navigation }: NativeStackScreenProps<RootStackP
             end={{ x: 0.5, y: 1 }}
             style={styles.line}
           />
-          <Text style={styles.eyebrow}>Est. MMXII · The House Registry</Text>
-          <Text style={styles.h1}>RSN One</Text>
+          <Text style={styles.eyebrow}>Kathmandu · The Global Family Club</Text>
+          <BrandMark width={244} style={styles.mark} />
           <Text style={styles.sub}>
-            Objects worth keeping — heritage leather, gold, and cloth, chosen rather than manufactured.
+            Sourced at origin, priced without theatre, sealed before it travels.
           </Text>
           <LinearGradient
             colors={[colors.brass, "transparent"]}
@@ -52,7 +53,7 @@ export default function Splash({ navigation }: NativeStackScreenProps<RootStackP
           />
         </View>
         <View style={styles.footer}>
-          <Text style={styles.micro}>By Appointment</Text>
+          <Text style={styles.micro}>By Introduction</Text>
         </View>
       </Pressable>
     </Screen>
@@ -74,16 +75,11 @@ const styles = StyleSheet.create({
     marginTop: 26,
     textAlign: "center",
   },
-  h1: {
-    ...type.heroH1,
-    marginTop: 18,
-    letterSpacing: 5.3,
-    textAlign: "center",
-  },
+  mark: { marginTop: 22 },
   sub: {
     ...type.sub,
-    marginTop: 16,
-    maxWidth: 240,
+    marginTop: 20,
+    maxWidth: 260,
     textAlign: "center",
   },
   footer: {

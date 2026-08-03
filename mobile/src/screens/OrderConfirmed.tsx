@@ -5,16 +5,18 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
 import { Screen } from '../components/Screen';
 import { KV } from '../components/KV';
+import { BrandMark } from '../components/BrandMark';
 import { Button } from '../components/Button';
+import { useOrders } from '../state/AppState';
 import { colors, fonts, type } from '../theme/tokens';
-
-// The order just placed by CheckoutReview — hardcoded, as this POC has no order
-// history persistence; it is one past the highest id already seeded in orders.ts.
-const NEW_ORDER_ID = 'RSN–2441';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderConfirmed'>;
 
 export default function OrderConfirmed({ navigation }: Props) {
+  const { lastOrderId, getById } = useOrders();
+  const order = lastOrderId ? getById(lastOrderId) : undefined;
+  const orderId = order?.id ?? 'RSN-2441';
+
   return (
     <Screen>
       <View style={styles.grow}>
@@ -25,17 +27,18 @@ export default function OrderConfirmed({ navigation }: Props) {
             end={{ x: 0.5, y: 1 }}
             style={styles.divider}
           />
-          <Text style={styles.eyebrow}>Order No. {NEW_ORDER_ID}</Text>
+          <Text style={styles.eyebrow}>Order No. {orderId}</Text>
           <Text style={styles.h1}>It is done,{'\n'}and done well.</Text>
           <Text style={styles.sub}>
-            Your pieces enter the atelier queue this evening. Confirmation follows by letter, as is
-            proper.
+            Your pieces are being inspected and sealed. Nothing is collected until the parcel is in
+            your hands.
           </Text>
         </View>
 
         <View style={styles.kvBlock}>
           <KV label="Dispatch expected" value="5 – 7 August" style={styles.kvTop} />
-          <KV label="Carried to" value="Via dei Coronari, Rome" style={styles.kvBottom} />
+          <KV label="Carried to" value="Jhamsikhel, Lalitpur" />
+          <KV label="Settlement" value="Cash on delivery" style={styles.kvBottom} />
         </View>
 
         <View style={styles.actionsBlock}>
@@ -55,7 +58,7 @@ export default function OrderConfirmed({ navigation }: Props) {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>RSN One · By Appointment</Text>
+        <BrandMark width={92} muted />
       </View>
     </Screen>
   );
@@ -97,11 +100,4 @@ const styles = StyleSheet.create({
     paddingBottom: 3,
   },
   footer: { alignItems: 'center', paddingBottom: 40 },
-  footerText: {
-    fontFamily: fonts.bodyRegular,
-    fontSize: 10,
-    letterSpacing: 2.2,
-    textTransform: 'uppercase',
-    color: colors.creamDim,
-  },
 });

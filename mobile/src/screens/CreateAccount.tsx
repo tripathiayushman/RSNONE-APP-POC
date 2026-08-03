@@ -15,6 +15,7 @@ export default function CreateAccount({
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [referralCode, setReferralCode] = useState("");
   const [subscribed, setSubscribed] = useState(true);
 
   function handleCreateAccount() {
@@ -25,14 +26,16 @@ export default function CreateAccount({
 
   return (
     <Screen>
-      <TopBar variant="sub" title="RSN One" onBack={() => navigation.goBack()} quiet />
+      <TopBar variant="sub" title="Join the Club" onBack={() => navigation.goBack()} quiet />
       <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.eyebrow}>Correspondence</Text>
+        <Text style={styles.eyebrow}>Admission</Text>
         <View style={styles.hero}>
           <Text style={styles.h1}>
             Introduce{"\n"}yourself.
           </Text>
-          <Text style={type.sub}>We write rarely, and only when something deserves it.</Text>
+          <Text style={type.sub}>
+            Admission to the club is free while we build the first families. No card is asked for.
+          </Text>
         </View>
 
         <View style={styles.form}>
@@ -58,6 +61,13 @@ export default function CreateAccount({
             placeholder="Twelve characters, at least"
             secureTextEntry
             autoCapitalize="none"
+          />
+          <Field
+            label="Who Introduced You — Optional"
+            value={referralCode}
+            onChangeText={setReferralCode}
+            placeholder="Their member code, if you have it"
+            autoCapitalize="characters"
           />
 
           <Pressable

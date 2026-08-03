@@ -6,7 +6,6 @@ import { RootStackParamList } from "../navigation/types";
 import { Screen } from "../components/Screen";
 import { TopBar } from "../components/TopBar";
 import { Plate } from "../components/Plate";
-import { Dots } from "../components/Dots";
 import { Swatch } from "../components/Swatch";
 import { Stepper } from "../components/Stepper";
 import { Button } from "../components/Button";
@@ -15,12 +14,24 @@ import { PullQuote } from "../components/PullQuote";
 import { SectionHeader } from "../components/SectionHeader";
 import { ProductCard } from "../components/ProductCard";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
+import { Tag } from "../components/Tag";
 import { getProductById, products } from "../data/products";
 import { productImages } from "../assets/productImages";
 import { useBag, useShelf } from "../state/AppState";
 import { colors, fonts, type } from "../theme/tokens";
 
 type Props = NativeStackScreenProps<RootStackParamList, "ProductDetail">;
+
+/** Origin countries represented in the registry, spelled out for the PDP. */
+const COUNTRY_NAME: Record<string, string> = {
+  NP: "Nepal",
+  CN: "China",
+  KR: "Korea",
+  TH: "Thailand",
+  LK: "Sri Lanka",
+  GB: "United Kingdom",
+  AE: "UAE",
+};
 
 function capitalize(value: string): string {
   return value.charAt(0).toUpperCase() + value.slice(1);
@@ -70,13 +81,10 @@ export default function ProductDetail({ navigation, route }: Props) {
           <Plate
             variant="hero"
             tag={`${product.plateNo ?? ""} · ${product.meta}`}
-            plateNo="View 1 of 4"
+            plateNo={product.lotTag ?? "In the registry"}
             source={productImages[product.id]}
             style={styles.plate}
           />
-          <View style={styles.dotsOverlay} pointerEvents="none">
-            <Dots count={4} activeIndex={0} />
-          </View>
         </View>
 
         <Text style={styles.eyebrow}>
@@ -85,8 +93,18 @@ export default function ProductDetail({ navigation, route }: Props) {
 
         <View style={styles.heroBlock}>
           <Text style={styles.h1}>{product.name}</Text>
-          <Text style={styles.price}>{product.price}</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.price}>{product.price}</Text>
+            {product.membersOnly ? <Tag label="Members Only" variant="brass" /> : null}
+          </View>
           <Text style={styles.sub}>{product.description}</Text>
+        </View>
+
+        <View style={styles.originRow}>
+          <Text style={styles.originLabel}>Sourced at origin</Text>
+          <Text style={styles.originValue}>
+            {product.origin.place} · {COUNTRY_NAME[product.origin.country] ?? product.origin.country}
+          </Text>
         </View>
 
         {product.swatches ? (
@@ -105,25 +123,25 @@ export default function ProductDetail({ navigation, route }: Props) {
 
         <View style={styles.ctaBlock}>
           <Button label={`Add to Bag — ${product.price}`} onPress={() => { addItem(product, qty); navigation.navigate("Bag"); }} />
-          <Text style={styles.note}>Ready to ship · wrapped in the house paper</Text>
+          <Text style={styles.note}>In stock · sealed before it travels · paid on delivery</Text>
         </View>
 
         <View style={styles.accordionsBlock}>
-          <Accordion title="Materials & Craft" defaultOpen>
-            {`Crafted from ${product.meta.toLowerCase()}, chosen for how it wears rather than how it photographs. Fittings are cast and finished by hand, one bench, one maker, start to finish.`}
+          <Accordion title="Materials & Making" defaultOpen>
+            {`${capitalize(product.meta)}. Made in ${product.origin.place}, bought from the workshop rather than a middleman, and held to the house standard before it is listed.`}
           </Accordion>
-          <Accordion title="Provenance & Papers">
-            Each piece is issued with a signed certificate of provenance and a registry entry logged under your name at acquisition — the same record you can recall from your Account at any time.
+          <Accordion title="Origin & Papers">
+            {`Sourced at origin in ${product.origin.place}, ${COUNTRY_NAME[product.origin.country] ?? product.origin.country}. Each piece carries a certificate of origin and a registry entry logged under your name — the same record you can recall from your Account at any time.`}
           </Accordion>
-          <Accordion title="Care & Keeping">
-            Keep away from prolonged direct sun and store within its dust bag when not in use. A soft, dry cloth is enough for the everyday; anything more should go to the house, not a stranger.
+          <Accordion title="RSN Tested">
+            Nothing enters the registry untested. Samples are checked against the house standard for what they claim to be, and the report is filed against the record.
           </Accordion>
-          <Accordion title="Carriage & Returns" style={styles.lastAccordion}>
-            Ships wrapped in the house paper via courier, complimentary within five to seven days. Returns are accepted within fourteen days, unworn and in their original wrapping.
+          <Accordion title="Carriage & Settlement" style={styles.lastAccordion}>
+            Wrapped in the house paper and wax-sealed, delivered within five to seven days across the valley. Settled in cash at the door — nothing is collected before the parcel is in your hands. Returns are accepted within fourteen days, unused and in their original wrapping.
           </Accordion>
         </View>
 
-        <PullQuote quote={"Made once,\nmade properly."} attribution="— Atelier No. 3" />
+        <PullQuote quote={"Chosen once,\nchosen properly."} attribution="— The House Standard" />
 
         <SectionHeader
           title="From the Same Bench"
@@ -156,12 +174,24 @@ const styles = StyleSheet.create({
   scrollContent: { paddingBottom: 12 },
   plateWrap: { position: "relative" },
   plate: { marginHorizontal: 0, borderLeftWidth: 0, borderRightWidth: 0 },
-  dotsOverlay: { position: "absolute", right: 20, bottom: 16 },
   eyebrow: { ...type.eyebrow, paddingHorizontal: 24, paddingTop: 28 },
   heroBlock: { paddingHorizontal: 24, paddingTop: 14, paddingBottom: 0 },
   h1: { ...type.displayMd },
-  price: { fontFamily: fonts.bodyRegular, fontSize: 18, letterSpacing: 0.4, color: colors.brass, marginTop: 14 },
+  priceRow: { flexDirection: "row", alignItems: "center", gap: 14, marginTop: 14 },
+  price: { fontFamily: fonts.bodyRegular, fontSize: 18, letterSpacing: 0.4, color: colors.brass },
   sub: { ...type.sub, marginTop: 12 },
+  originRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+    marginHorizontal: 24,
+    marginTop: 22,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: colors.hairline,
+  },
+  originLabel: { ...type.micro, color: colors.brass },
+  originValue: { fontFamily: fonts.bodyRegular, fontSize: 14, color: colors.cream },
   section: { paddingHorizontal: 24, paddingTop: 28 },
   microLabel: { ...type.micro, color: colors.cream, marginBottom: 12 },
   microLabelDim: { color: colors.creamDim },

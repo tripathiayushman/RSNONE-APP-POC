@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { BrandMark } from './BrandMark';
 import { colors, fonts } from '../theme/tokens';
 
 export interface TopBarIcon {
@@ -24,6 +25,8 @@ export interface TopBarProps {
   /** Optional right-side text action for the "sub" variant, replacing the spacer. */
   rightLabel?: string;
   onRightPress?: () => void;
+  /** Show the wordmark instead of the text title on the "sub" variant. */
+  brandTitle?: boolean;
 }
 
 /**
@@ -38,12 +41,13 @@ export function TopBar({
   icons = [],
   rightLabel,
   onRightPress,
+  brandTitle = false,
 }: TopBarProps) {
   return (
-    <View style={[styles.bar, quiet && styles.barQuiet]}>
+    <View style={[styles.bar, variant === 'default' && styles.barBranded, quiet && styles.barQuiet]}>
       {variant === 'default' ? (
         <>
-          <Text style={styles.mark}>RSN One</Text>
+          <BrandMark width={96} />
           <View style={styles.icons}>
             {icons.map((icon, index) => (
               <Pressable key={index} onPress={icon.onPress} hitSlop={8}>
@@ -59,9 +63,15 @@ export function TopBar({
           <Pressable onPress={onBack} hitSlop={8} style={styles.back}>
             <Text style={styles.backGlyph}>←</Text>
           </Pressable>
-          <Text style={styles.title} numberOfLines={1}>
-            {title}
-          </Text>
+          {brandTitle ? (
+            <View style={styles.brandTitle}>
+              <BrandMark width={88} />
+            </View>
+          ) : (
+            <Text style={styles.title} numberOfLines={1}>
+              {title}
+            </Text>
+          )}
           {rightLabel ? (
             <Pressable onPress={onRightPress} hitSlop={8} style={styles.rightAction}>
               <Text style={styles.rightActionText} numberOfLines={1}>
@@ -88,13 +98,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.hairline,
   },
+  // The wordmark stands taller than the old text mark, so the branded bar
+  // gives back some of its padding to keep the header from crowding content.
+  barBranded: { paddingTop: 4, paddingBottom: 14 },
   barQuiet: { borderBottomWidth: 0 },
-  mark: {
-    fontFamily: fonts.displayMedium,
-    fontSize: 20,
-    letterSpacing: 5.6,
-    color: colors.cream,
-  },
   icons: { flexDirection: 'row', alignItems: 'center', gap: 18 },
   iconGlyph: { fontSize: 15, color: colors.creamDim },
   iconGlyphActive: { color: colors.brass },
@@ -108,6 +115,7 @@ const styles = StyleSheet.create({
     color: colors.cream,
     textAlign: 'center',
   },
+  brandTitle: { flex: 1, alignItems: 'center' },
   spacer: { width: 40 },
   rightAction: { width: 40, alignItems: 'flex-end' },
   rightActionText: {

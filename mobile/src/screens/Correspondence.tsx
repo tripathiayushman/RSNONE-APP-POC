@@ -8,7 +8,10 @@ import { NotificationRow } from "../components/NotificationRow";
 import { PullQuote } from "../components/PullQuote";
 import { Button } from "../components/Button";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
+import { Plate } from "../components/Plate";
 import { correspondence as seedCorrespondence, CorrespondenceItem } from "../data/correspondence";
+import { member } from "../data/member";
+import { editorialImages } from "../assets/editorialImages";
 import { colors, fonts, type as textType } from "../theme/tokens";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Correspondence">;
@@ -112,6 +115,13 @@ export default function Correspondence({ navigation }: Props) {
             {unreadPhrase}.
           </Text>
         </View>
+
+        <Plate
+          variant="wide"
+          plateNo={`Your concierge · ${member.concierge}`}
+          ctaLine="Write"
+          source={editorialImages["concierge"]}
+        />
 
         {BUCKET_ORDER.map((bucket) =>
           groups[bucket].length > 0 ? (

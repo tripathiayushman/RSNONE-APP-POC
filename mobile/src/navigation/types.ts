@@ -1,10 +1,11 @@
-// Fixed navigation contract for RSN One — a single flat native-stack of all 32 screens.
+// Fixed navigation contract for RSN One — a single flat native-stack of all 36 screens.
 // The bottom nav in the mockup is styled markup inside a screen, not a separate tab
 // navigator, so screens simply navigation.navigate() between flat route names.
 export type RootStackParamList = {
   Splash: undefined;
   OnboardingRegistry: undefined;
   OnboardingProvenance: undefined;
+  OnboardingClub: undefined;
   SignIn: undefined;
   CreateAccount: undefined;
   Home: undefined;
@@ -24,6 +25,9 @@ export type RootStackParamList = {
   Shelf: undefined;
   ShelfEmpty: undefined;
   Account: undefined;
+  Membership: undefined;
+  Wallet: undefined;
+  Referrals: undefined;
   OrderHistory: undefined;
   OrderDetail: { orderId: string };
   Addresses: undefined;

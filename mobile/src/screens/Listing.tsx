@@ -8,6 +8,7 @@ import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { ProductCard } from "../components/ProductCard";
 import { Chip } from "../components/Chip";
 import { products, Product } from "../data/products";
+import { availabilityFilters, originFilters } from "../data/filters";
 import * as tokens from "../theme/tokens";
 
 type ListingProps = NativeStackScreenProps<RootStackParamList, "Listing">;
@@ -15,7 +16,8 @@ type ListingProps = NativeStackScreenProps<RootStackParamList, "Listing">;
 const SORT_OPTIONS = ["Latest", "Price: Low", "Price: High"] as const;
 
 // Default active refinements — mirrors the mockup's "Refine · 2" starting state.
-const DEFAULT_FILTERS = ["Calfskin", "In Stock"];
+// Labels must match the chips in data/filters.ts, so take them from there.
+const DEFAULT_FILTERS = [originFilters[0].label, availabilityFilters[0].label];
 
 const PAGE_SIZE = 6;
 
@@ -76,11 +78,11 @@ export default function Listing({ navigation, route }: ListingProps) {
         onRightPress={() => navigation.navigate("Shelf")}
       />
       <ScrollView style={styles.flex} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>The Archive · Autumn MMXXVI</Text>
+        <Text style={styles.eyebrow}>The Registry · 2026</Text>
         <View style={styles.hero}>
           <Text style={tokens.type.displayMd}>{title}</Text>
           <Text style={[tokens.type.sub, styles.heroSub]}>
-            {sortedList.length} pieces, cut from whole hides.
+            {sortedList.length} {sortedList.length === 1 ? "piece" : "pieces"}, each bought at origin.
           </Text>
         </View>
 

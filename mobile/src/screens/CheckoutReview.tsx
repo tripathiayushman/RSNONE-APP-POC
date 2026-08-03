@@ -9,8 +9,9 @@ import { LotRow } from '../components/LotRow';
 import { KV } from '../components/KV';
 import { Button } from '../components/Button';
 import { colors, fonts, type } from '../theme/tokens';
-import { useBag } from '../state/AppState';
+import { useBag, useOrders } from '../state/AppState';
 import { addresses } from '../data/addresses';
+import { formatNpr } from '../data/products';
 
 const CHECKOUT_STEPS: Step[] = [
   { number: '01', label: 'Carriage' },
@@ -18,25 +19,29 @@ const CHECKOUT_STEPS: Step[] = [
   { number: '03', label: 'Review' },
 ];
 
-// Mirrors the "Preferred" saved payment method offered on the Payment step —
-// there is no shared checkout-selection store in this POC, so both screens
-// independently reference the same house-default card and address.
-const SELECTED_PAYMENT_LABEL = 'Amex ···· 4417';
+// Mirrors the settlement method offered on the Payment step — there is no
+// shared checkout-selection store in this POC, so both screens independently
+// reference the same house default. The club collects on delivery today.
+const SELECTED_PAYMENT_LABEL = 'Cash on delivery';
 
 function formatCurrency(amount: number): string {
-  return `$${Math.round(amount).toLocaleString('en-US')}`;
+  return formatNpr(Math.round(amount));
 }
 
 type Props = NativeStackScreenProps<RootStackParamList, 'CheckoutReview'>;
 
 export default function CheckoutReview({ navigation }: Props) {
   const bag = useBag();
+  const { place } = useOrders();
   const address = addresses.find((a) => a.preferred) ?? addresses[0];
 
   const duties = Math.round(bag.subtotal * 0.05);
   const total = bag.subtotal + duties;
 
   const handleConfirm = () => {
+    // Record the order before clearing the bag, so the confirmation and the
+    // history both have something real to point at.
+    place(bag.items, total);
     bag.clear();
     navigation.reset({ index: 0, routes: [{ name: 'OrderConfirmed' }] });
   };
@@ -106,7 +111,7 @@ export default function CheckoutReview({ navigation }: Props) {
         </View>
         <View style={styles.legalWrap}>
           <Text style={styles.legal}>
-            By confirming you accept the terms of the house · returns within 30 days, papers intact
+            By confirming you accept the terms of the house · returns within fourteen days, papers intact
           </Text>
         </View>
       </ScrollView>

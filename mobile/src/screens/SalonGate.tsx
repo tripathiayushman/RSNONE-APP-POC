@@ -28,25 +28,25 @@ export default function SalonGate({ navigation }: NativeStackScreenProps<RootSta
           <Text style={styles.eyebrow}>The Salon</Text>
           <Text style={styles.h1}>By invitation,{"\n"}and quietly.</Text>
           <Text style={styles.sub}>
-            The Salon admits collectors of the house by invitation only. Standing is reviewed each season, without
-            ceremony.
+            The Salon holds allocations too small to list openly. Members in good standing are
+            admitted on their code; standing is reviewed each season, without ceremony.
           </Text>
         </View>
         <View style={styles.form}>
           <Field
-            label="Invitation Reference"
+            label="Member Code"
             value={code}
             onChangeText={setCode}
-            placeholder="RSN–S · ————"
+            placeholder="AARYA412"
             autoCapitalize="characters"
           />
         </View>
         <View style={styles.actions}>
-          <Button label="Present Invitation" onPress={() => navigation.navigate("SalonRooms")} />
+          <Button label="Present Your Code" onPress={() => navigation.navigate("SalonRooms")} />
           <Text style={styles.enquire}>Enquire After Standing</Text>
         </View>
       </View>
-      <Text style={styles.footer}>Seventy-One Members · MMXXVI</Text>
+      <Text style={styles.footer}>Members Only · 2026</Text>
     </Screen>
   );
 }

@@ -38,7 +38,7 @@ export default function SignIn({ navigation }: NativeStackScreenProps<RootStackP
           label="Email"
           value={email}
           onChangeText={setEmail}
-          placeholder="adeline@marchetti.it"
+          placeholder="aarya.shrestha@gmail.com"
           keyboardType="email-address"
           autoCapitalize="none"
         />

@@ -9,8 +9,9 @@ import { LotRow } from "../components/LotRow";
 import { Timeline } from "../components/Timeline";
 import { KV } from "../components/KV";
 import { Button } from "../components/Button";
-import { getOrderById, OrderStatus } from "../data/orders";
-import { getProductById } from "../data/products";
+import { OrderStatus } from "../data/orders";
+import { formatNpr, getProductById } from "../data/products";
+import { useOrders } from "../state/AppState";
 import { type } from "../theme/tokens";
 
 type Props = NativeStackScreenProps<RootStackParamList, "OrderDetail">;
@@ -20,7 +21,7 @@ function twoDigit(n: number): string {
 }
 
 function toCurrency(n: number): string {
-  return `$${Math.round(n).toLocaleString("en-US")}`;
+  return formatNpr(Math.round(n));
 }
 
 function parseCurrency(value: string): number {
@@ -34,9 +35,10 @@ const HERO_COPY: Record<OrderStatus, string> = {
   Delivered: "Delivered, and now\nyours to keep.",
 };
 
-/** 3.24 · Order Detail — route.params.orderId looked up in data/orders.ts. */
+/** 3.24 · Order Detail — route.params.orderId looked up in the live order store. */
 export default function OrderDetail({ navigation, route }: Props) {
-  const order = getOrderById(route.params.orderId);
+  const { getById } = useOrders();
+  const order = getById(route.params.orderId);
 
   const handleNav = (key: BottomNavKey) => {
     if (key === "Registry") navigation.navigate("Home");
@@ -100,7 +102,7 @@ export default function OrderDetail({ navigation, route }: Props) {
 
         <View style={styles.kvWrap}>
           <KV label="Carriage" value="House courier · complimentary" />
-          <KV label="Settled by" value={`Amex ···· ${order.id.slice(-4)}`} />
+          <KV label="Settled by" value={order.payment} />
           <KV label="Duties & taxes" value={duties > 0 ? toCurrency(duties) : "Included"} />
           <KV label="Total" value={order.total} total />
         </View>

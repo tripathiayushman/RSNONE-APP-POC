@@ -9,30 +9,42 @@ import { Button } from "../components/Button";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import * as tokens from "../theme/tokens";
 
-type Card = {
+type Method = {
   id: string;
-  brand: string;
-  last4: string;
-  holder: string;
-  expiry: string;
+  title: string;
+  body: string;
+  tag?: { label: string; variant?: "default" | "brass" | "rose" };
   preferred?: boolean;
+  actions?: { label: string }[];
 };
 
-// No dedicated data/payments.ts exists for this POC — the house holds no card
-// numbers (see the footer note below), so these two cards are mocked in-file.
-const cards: Card[] = [
+// The club takes no card numbers — settlement happens at the door or by
+// arrangement with the desk. This screen states the terms rather than
+// pretending to hold a wallet of cards.
+const methods: Method[] = [
   {
-    id: "amex-4417",
-    brand: "American Express",
-    last4: "4417",
-    holder: "A. Marchetti",
-    expiry: "08/28",
+    id: "cod",
+    title: "Cash on delivery",
+    body: "Counted at the door, against the sealed parcel. Available everywhere the house delivers.",
+    tag: { label: "Preferred", variant: "brass" },
     preferred: true,
+    actions: [{ label: "Terms" }],
   },
-  { id: "visa-8802", brand: "Visa", last4: "8802", holder: "A. Marchetti", expiry: "06/27" },
+  {
+    id: "transfer",
+    title: "Bank transfer",
+    body: "Arranged with the desk before dispatch. Suited to larger orders and standing accounts.",
+    actions: [{ label: "Request Details" }],
+  },
+  {
+    id: "card",
+    title: "Card",
+    body: "Not yet accepted. The gateway opens later this year; members will be written to first.",
+    tag: { label: "Soon" },
+  },
 ];
 
-/** 3.27 · Payment Methods — read-only for this POC; the house settles, it does not store. */
+/** 3.27 · Payment — the manner of settlement, read-only for this POC. */
 export default function PaymentMethods({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, "PaymentMethods">) {
@@ -49,26 +61,26 @@ export default function PaymentMethods({
       <View style={styles.body}>
         <Text style={styles.eyebrow}>Manner of Settlement</Text>
         <View style={styles.hero}>
-          <Text style={styles.h1}>Settled quietly,{"\n"}as arranged.</Text>
+          <Text style={styles.h1}>Settled at the door,{"\n"}not before.</Text>
         </View>
         <View style={styles.panels}>
-          {cards.map((card) => (
+          {methods.map((method) => (
             <Panel
-              key={card.id}
-              selected={card.preferred}
-              header={`${card.brand} ···· ${card.last4}`}
-              tag={card.preferred ? { label: "Preferred", variant: "brass" } : undefined}
-              body={`${card.holder} · expires ${card.expiry}`}
-              actions={card.preferred ? [{ label: "Amend" }, { label: "Remove" }] : [{ label: "Amend" }, { label: "Make Preferred" }]}
+              key={method.id}
+              selected={method.preferred}
+              header={method.title}
+              tag={method.tag}
+              body={method.body}
+              actions={method.actions}
             />
           ))}
         </View>
         <View style={styles.newCardWrap}>
-          <Button label="+  New Card" disabled />
+          <Button label="+  Add a Card" disabled />
         </View>
         <View style={styles.noteWrap}>
           <Text style={styles.note}>
-            The house holds no card numbers; our bank does. Wire and cheque remain welcome, by arrangement.
+            The house holds no card numbers. Nothing is collected until the parcel is in your hands.
           </Text>
         </View>
       </View>

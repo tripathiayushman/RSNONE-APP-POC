@@ -7,6 +7,7 @@ import { Plate } from "../components/Plate";
 import { SectionHeader } from "../components/SectionHeader";
 import { LotRow } from "../components/LotRow";
 import { Tag } from "../components/Tag";
+import { BrandMark } from "../components/BrandMark";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { getProductById } from "../data/products";
 import { editorialImages } from "../assets/editorialImages";
@@ -17,13 +18,18 @@ type Props = NativeStackScreenProps<RootStackParamList, "SalonRooms">;
 const heldInYourName = [
   {
     number: "01",
-    productId: "signet-yellow",
+    productId: "hand-knotted-wool-runner",
     tag: { label: "Reserved for you", variant: "brass" as const },
   },
   {
     number: "02",
-    productId: "meridian-minaudiere",
+    productId: "ilam-first-flush",
     tag: { label: "Two remain", variant: "rose" as const },
+  },
+  {
+    number: "03",
+    productId: "seoul-skincare-edit",
+    tag: { label: "Members only", variant: "rose" as const },
   },
 ];
 
@@ -42,15 +48,15 @@ export default function SalonRooms({ navigation }: Props) {
   return (
     <Screen salon>
       <View style={styles.header}>
-        <Text style={styles.mark}>RSN One</Text>
+        <BrandMark width={96} />
         <Tag label="Salon" variant="brass" />
       </View>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.eyebrow}>The Salon · Good Evening, A.</Text>
+        <Text style={styles.eyebrow}>The Salon · Good Evening, Aarya</Text>
         <View style={styles.hero}>
           <Text style={styles.heroTitle}>For those who{"\n"}wait for nothing.</Text>
           <Text style={styles.heroSub}>
-            Early rooms, reserved pieces, and terms spoken of only at the desk.
+            Member-only allocations, held pieces, and prices quoted at the desk.
           </Text>
         </View>
 
@@ -58,17 +64,17 @@ export default function SalonRooms({ navigation }: Props) {
           <Plate
             variant="wide"
             salon
-            tag="Plate No. 001 · The Midnight Registry"
-            plateNo="Forty pieces · sealed"
+            tag="The Sealed Register"
+            plateNo="Forty pieces · members only"
             ctaLine="First Look"
-            source={editorialImages["salon-midnight-registry"]}
+            source={editorialImages["membership-hero"]}
             style={styles.plateWide}
           />
         </Pressable>
 
         <View style={styles.countdownRow}>
-          <Text style={styles.countdownLabel}>Opens to the Salon in</Text>
-          <Text style={styles.countdownValue}>06 : 12 : 44</Text>
+          <Text style={styles.countdownLabel}>Next allocation</Text>
+          <Text style={styles.countdownValue}>12 September</Text>
         </View>
         <View style={styles.divider} />
 
@@ -95,13 +101,13 @@ export default function SalonRooms({ navigation }: Props) {
 
         <View style={styles.quoteBlock}>
           <Text style={styles.quoteText}>
-            &ldquo;Salon terms are applied at the desk,{"\n"}never printed.&rdquo;
+            &ldquo;Small allocations, named openly,{"\n"}offered to members first.&rdquo;
           </Text>
-          <Text style={styles.quoteAttribution}>— The Registrar</Text>
+          <Text style={styles.quoteAttribution}>— The House Standard</Text>
         </View>
 
         <View style={styles.conciergeRow}>
-          <Text style={styles.conciergeLabel}>Your concierge — Signora E. Vane</Text>
+          <Text style={styles.conciergeLabel}>Your concierge — Ms. Pratima Shakya</Text>
           <Pressable onPress={() => navigation.navigate("Correspondence")} hitSlop={8}>
             <Text style={styles.conciergeCta}>Write</Text>
           </Pressable>
@@ -122,12 +128,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderBottomWidth: 1,
     borderBottomColor: "#2e1d16",
-  },
-  mark: {
-    fontFamily: fonts.displayRegular,
-    fontSize: 20,
-    letterSpacing: 5.6,
-    color: colors.cream,
   },
   scrollContent: { paddingBottom: 40 },
   eyebrow: { ...textType.eyebrow, paddingTop: 28, paddingHorizontal: 24 },

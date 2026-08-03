@@ -12,6 +12,7 @@ import { Button, CtaLine } from "../components/Button";
 import { PullQuote } from "../components/PullQuote";
 import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { useBag } from "../state/AppState";
+import { formatNpr } from "../data/products";
 import { colors, fonts, type } from "../theme/tokens";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Bag">;
@@ -26,9 +27,7 @@ function handleBottomNav<RouteName extends keyof RootStackParamList>(
   else navigation.navigate("Account");
 }
 
-function formatPrice(value: number): string {
-  return `$${value.toLocaleString("en-US")}`;
-}
+const formatPrice = formatNpr;
 
 export default function Bag({ navigation }: Props) {
   const { items, updateQty, removeItem, subtotal } = useBag();
@@ -119,8 +118,8 @@ export default function Bag({ navigation }: Props) {
         <View style={styles.summary}>
           <KV label="Subtotal" value={formatPrice(subtotal)} />
           <KV label="Carriage" value="Complimentary" />
-          <KV label="Duties & taxes" value="Reckoned at the desk" />
-          <KV label="Total" value={formatPrice(subtotal)} total />
+          <KV label="Duties & taxes" value={formatPrice(Math.round(subtotal * 0.05))} />
+          <KV label="Total" value={formatPrice(subtotal + Math.round(subtotal * 0.05))} total />
         </View>
 
         <View style={styles.ctaBlock}>

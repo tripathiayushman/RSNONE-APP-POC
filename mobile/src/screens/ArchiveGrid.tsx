@@ -8,20 +8,14 @@ import { BottomNav, BottomNavKey } from "../components/BottomNav";
 import { Plate } from "../components/Plate";
 import { PullQuote } from "../components/PullQuote";
 import { editorialImages } from "../assets/editorialImages";
+import { categories, countByCategory, products } from "../data/products";
 import { useShelf } from "../state/AppState";
 import { colors, fonts, type } from "../theme/tokens";
 
-/** The six rooms of the house archive, with their piece counts. */
-const ROOMS: { name: string; count: number }[] = [
-  { name: "Jewelry", count: 24 },
-  { name: "Leather Goods", count: 31 },
-  { name: "Ready-to-Wear", count: 18 },
-  { name: "Fragrance", count: 9 },
-  { name: "Timepieces", count: 12 },
-  { name: "Objects of the House", count: 14 },
-];
+/** The six rooms of the house, derived from the catalogue so counts stay honest. */
+const ROOMS = categories.map((c) => ({ ...c, count: countByCategory(c.name) }));
 
-const TOTAL_PIECES = ROOMS.reduce((sum, room) => sum + room.count, 0);
+const TOTAL_PIECES = products.length;
 
 export default function ArchiveGrid({
   navigation,
@@ -66,11 +60,11 @@ export default function ArchiveGrid({
             <View key={rowIndex} style={styles.gridRow}>
               {ROOMS.slice(rowIndex * 2, rowIndex * 2 + 2).map((room) => (
                 <Pressable
-                  key={room.name}
+                  key={room.slug}
                   style={styles.tile}
                   onPress={() => navigation.navigate("Listing", { category: room.name })}
                 >
-                  <Plate variant="card" plateNo={room.name} source={editorialImages[`category:${room.name}`]} />
+                  <Plate variant="card" plateNo={room.name} source={editorialImages[`category:${room.slug}`]} />
                   <Text style={styles.count}>{room.count}</Text>
                 </Pressable>
               ))}
