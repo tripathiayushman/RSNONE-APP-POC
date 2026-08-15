@@ -372,12 +372,17 @@ the shared `src/`). Three things landed:
 
 ### The client demo channel (EAS Update)
 
-For sending the app to a remote person with no Apple spend: `eas update
---branch demo` publishes the JS bundle to EAS, and the `demo` **channel**
-(channels don't auto-create; `eas channel:create demo` linked it) serves it
-to **Expo Go** at
-`exp://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b?channel-name=demo&runtime-version=exposdk:57.0.0`
-— verified anonymously fetchable, no Expo account needed on the phone. This
+`eas update --branch demo` publishes the JS bundle to EAS, and the `demo`
+**channel** (channels don't auto-create; `eas channel:create demo` linked it)
+serves it to **Expo Go** at
+`exp://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b?channel-name=demo&runtime-version=exposdk:57.0.0`.
+**Scope learned the hard way:** the raw manifest is publicly fetchable
+(HTTP 200 anonymously), but **Expo Go itself 403s any signed-in account
+without access to the owning project** — and a personal Expo account cannot
+invite members — so this link serves the owner/team's own phones, NOT an
+outside client. The client-facing channel is the **web demo on GitHub Pages**
+(`web-demo.yml` → https://tripathiayushman.github.io/RSNONE-APP-POC/, path-
+prefixed via `experiments.baseUrl`). This
 required `runtimeVersion: { policy: "sdkVersion" }` in `app.json` (the
 `eas update` default of `appVersion` produces runtime `1.0.0`, which Expo Go
 cannot open — it only opens `exposdk:57.0.0`). The `updates.url` +

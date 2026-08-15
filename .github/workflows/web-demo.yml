@@ -1,0 +1,80 @@
+name: Web demo
+
+# Publishes the react-native-web export of the POC to GitHub Pages on every
+# push to main, so there is a stable URL that runs the app in any browser —
+# including an iPhone's Safari — with nothing to install and no account
+# anywhere. This is the zero-friction way to put the POC in front of a
+# remote client: Expo Go's published-update path requires the viewer's Expo
+# account to have access to the project (personal accounts can't invite
+# members), and TestFlight needs the paid Apple program. A URL needs neither.
+#
+# The export is path-prefixed via app.json's experiments.baseUrl
+# ("/RSNONE-APP-POC"), which is what makes assets resolve under
+# https://<owner>.github.io/RSNONE-APP-POC/.
+
+on:
+  push:
+    branches: [main]
+    # Docs-only pushes don't change the app.
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Export the web build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Expo SDK 57 requires >= 20.19.4.
+          node-version: '20.19.4'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Export for web
+        run: npx expo export --platform web
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: mobile/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Link the demo
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          ## Web demo deployed
+
+          The POC is live at the URL above — openable on any phone or
+          desktop browser, nothing to install. On an iPhone, "Add to Home
+          Screen" in Safari gives it an icon and a full-screen launch.
+          EOF
