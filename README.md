@@ -26,6 +26,7 @@ or *iOS TestFlight* → *Run workflow*.
 | You want | Do this |
 | --- | --- |
 | **iPhone, today, free Apple account** | `cd mobile && npx expo start`, scan the QR in **Expo Go** (add `--tunnel` if the phone and laptop are on different networks) |
+| **Send it to someone remote, free** | They install **Expo Go**, then open `exp://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b?channel-name=demo&runtime-version=exposdk:57.0.0` on the phone. Refresh the published bundle after changes with `eas update --branch demo --environment preview` |
 | **Testers install like a real app** | Finish [APPLE_SETUP.md](APPLE_SETUP.md) ($99/yr Apple Developer Program). Every push then auto-submits to **TestFlight**; internal testers get it minutes after Apple finishes processing |
 | **No iPhone at hand** | Run the *iOS TestFlight* workflow by hand — it publishes an **iOS Simulator** build as a `poc-ios-v*` pre-release, which needs a Mac with Xcode to run |
 

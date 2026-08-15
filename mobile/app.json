@@ -39,6 +39,12 @@
         "projectId": "5f4765ed-b590-4c19-bf19-046570f3cf8b"
       }
     },
-    "owner": "tripathiayushman"
+    "owner": "tripathiayushman",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b"
+    }
   }
 }

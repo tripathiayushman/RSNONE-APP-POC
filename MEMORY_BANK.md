@@ -370,6 +370,21 @@ the shared `src/`). Three things landed:
   live demo-critical build path, so it waits until after the client meeting.
   See *Open / not done*.
 
+### The client demo channel (EAS Update)
+
+For sending the app to a remote person with no Apple spend: `eas update
+--branch demo` publishes the JS bundle to EAS, and the `demo` **channel**
+(channels don't auto-create; `eas channel:create demo` linked it) serves it
+to **Expo Go** at
+`exp://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b?channel-name=demo&runtime-version=exposdk:57.0.0`
+— verified anonymously fetchable, no Expo account needed on the phone. This
+required `runtimeVersion: { policy: "sdkVersion" }` in `app.json` (the
+`eas update` default of `appVersion` produces runtime `1.0.0`, which Expo Go
+cannot open — it only opens `exposdk:57.0.0`). The `updates.url` +
+`runtimeVersion` keys are inert for the standalone APK/TestFlight builds:
+the `expo-updates` package is not installed, so binaries ship without an
+updates client and nothing self-updates.
+
 ### The human steps still pending
 
 Written up in [`APPLE_SETUP.md`](./APPLE_SETUP.md) — a standalone runbook in
