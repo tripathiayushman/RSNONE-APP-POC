@@ -1,0 +1,277 @@
+name: iOS TestFlight
+
+# Builds the iOS app on EAS. What happens depends on one line in
+# mobile/eas.json and on how the workflow was started:
+#
+#   * TestFlight — when submit.production.ios.ascAppId holds a real App Store
+#                  Connect app id, every push to main (and any manual run)
+#                  builds with `eas build --auto-submit`: EAS signs with the
+#                  credentials stored on its servers and hands the build
+#                  straight to TestFlight. No GitHub Release is cut on this
+#                  path: TestFlight is the distribution channel.
+#   * Simulator  — while submit.production.ios is not filled in yet, iOS
+#                  builds are MANUAL ONLY (Actions → iOS TestFlight → Run
+#                  workflow). A simulator build needs zero Apple credentials,
+#                  but it still consumes an EAS build, and on the free tier
+#                  (concurrency 1, monthly quota) an automatic one would queue
+#                  ahead of — and eventually starve — the Android APK build
+#                  that every push already runs. So pushes skip iOS entirely
+#                  until TestFlight is unlocked, and the route job says so.
+#                  Manual simulator builds publish as a PRERELEASE tagged
+#                  poc-ios-v<N> — a different prefix from Android's poc-v,
+#                  because run numbers are per-workflow and the tags must
+#                  never collide; prerelease + make_latest:false keep the
+#                  repo's "Latest release" pointing at the installable APK.
+#
+# Unlike Android there is no runner fallback when EXPO_TOKEN is missing.
+# Apple signing requires an Apple Developer account, so every iOS build has
+# to run on EAS — the route job fails hard instead of degrading. The
+# one-time Apple setup is written up in APPLE_SETUP.md.
+
+on:
+  push:
+    branches: [main]
+    # Docs-only pushes don't change the app.
+    paths-ignore:
+      - '**/*.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ios-testflight
+  cancel-in-progress: true
+
+jobs:
+  # `secrets` can't be read from a job-level `if`, so surface the routing
+  # decision as an output. Needs a checkout because the TestFlight-vs-simulator
+  # choice is read out of mobile/eas.json.
+  route:
+    name: Pick a build path
+    runs-on: ubuntu-latest
+    outputs:
+      testflight: ${{ steps.pick.outputs.testflight }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: pick
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::error::EXPO_TOKEN is not set and iOS has no runner fallback — Apple signing needs an Apple Developer account, so every iOS build must run on EAS. Create a token at https://expo.dev/settings/access-tokens and add it as the EXPO_TOKEN repository secret (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+          # Exit 0: ascAppId is a real numeric id. Exit 1: not filled in yet.
+          # Exit 2: eas.json does not parse — a different problem, so fail the
+          # run here with the true cause instead of routing to the wrong path.
+          RC=0
+          node -e "let id=''; try { id = require('./mobile/eas.json')?.submit?.production?.ios?.ascAppId ?? '' } catch (e) { console.error('::error::mobile/eas.json is not valid JSON: ' + e.message); process.exit(2) } process.exit(/^[0-9]+$/.test(String(id)) ? 0 : 1)" || RC=$?
+          if [ "$RC" -eq 2 ]; then
+            exit 1
+          elif [ "$RC" -eq 0 ]; then
+            echo "testflight=true" >> "$GITHUB_OUTPUT"
+            echo "ascAppId is filled in → building for TestFlight."
+            echo "**Route:** TestFlight — \`submit.production.ios.ascAppId\` is set in \`mobile/eas.json\`." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "testflight=false" >> "$GITHUB_OUTPUT"
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "::notice::TestFlight is not unlocked yet (submit.production.ios.ascAppId is not filled in) → building for the iOS Simulator since this run was started by hand."
+              echo "**Route:** iOS Simulator — manual run, TestFlight not unlocked yet (see \`APPLE_SETUP.md\`)." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "::notice::TestFlight is not unlocked yet (submit.production.ios.ascAppId in mobile/eas.json is not filled in), and simulator builds don't run on push — they would queue ahead of the Android APK build and burn the shared free-tier EAS quota. Start one by hand from Actions → iOS TestFlight → Run workflow, or unlock TestFlight with the one-time Apple setup in APPLE_SETUP.md."
+              echo "**Route:** skipped — TestFlight not unlocked yet, and simulator builds are manual-only to keep the free-tier EAS quota for the Android APK. Run this workflow by hand for a simulator build, or finish \`APPLE_SETUP.md\` to unlock TestFlight." >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+
+  testflight:
+    name: Build and submit to TestFlight
+    needs: route
+    if: needs.route.outputs.testflight == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Expo SDK 57 requires >= 20.19.4.
+          node-version: '20.19.4'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Fail early if the Expo project is not linked
+        run: |
+          node -e "
+            const app = require('./app.json');
+            const id = app?.expo?.extra?.eas?.projectId;
+            if (!id) {
+              console.error('::error::app.json has no extra.eas.projectId. Run \`npx eas init\` inside mobile/ once, then commit app.json.');
+              process.exit(1);
+            }
+            console.log('EAS project linked:', id);
+          "
+
+      # --auto-submit hands the finished build to App Store Connect using the
+      # ASC API key stored on EAS during the one-time `eas submit` in
+      # APPLE_SETUP.md. Build numbers come from EAS remote versioning
+      # (appVersionSource: remote + autoIncrement), not from the repo.
+      - name: Build on EAS and submit to TestFlight
+        run: |
+          eas build \
+            --platform ios \
+            --profile production \
+            --non-interactive \
+            --wait \
+            --auto-submit \
+            --json > build.json
+          cat build.json
+
+      - name: Explain where the build went
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          ## Submitted to TestFlight
+
+          The build was handed to App Store Connect and is processing — that
+          usually takes a few minutes.
+
+          - **Internal testers** (the ASC team, up to 100 people) see it in the
+            TestFlight app minutes after processing finishes. No review.
+          - **External testers** need Beta App Review first — roughly 24–48
+            hours the first time, usually faster after that.
+
+          Manage testers at App Store Connect → your app → TestFlight.
+          EOF
+
+  # Manual-only while TestFlight is locked: an automatic simulator build on
+  # every push would share the free-tier EAS queue and quota with the Android
+  # APK build that pushes already run (see the header comment).
+  simulator:
+    name: Build for the iOS Simulator
+    needs: route
+    if: needs.route.outputs.testflight == 'false' && github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Expo SDK 57 requires >= 20.19.4.
+          node-version: '20.19.4'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Fail early if the Expo project is not linked
+        run: |
+          node -e "
+            const app = require('./app.json');
+            const id = app?.expo?.extra?.eas?.projectId;
+            if (!id) {
+              console.error('::error::app.json has no extra.eas.projectId. Run \`npx eas init\` inside mobile/ once, then commit app.json.');
+              process.exit(1);
+            }
+            console.log('EAS project linked:', id);
+          "
+
+      # The preview profile sets ios.simulator: true, which is what lets this
+      # build run unsigned — no Apple account involved anywhere.
+      - name: Build on EAS and wait
+        run: |
+          eas build \
+            --platform ios \
+            --profile preview \
+            --non-interactive \
+            --wait \
+            --json > build.json
+          cat build.json
+
+      - name: Download the simulator app
+        id: app
+        run: |
+          URL=$(node -e "
+            const b = require('./build.json');
+            const build = Array.isArray(b) ? b[0] : b;
+            const url = build?.artifacts?.buildUrl || build?.artifacts?.applicationArchiveUrl;
+            if (!url) { console.error('No build URL in build.json'); process.exit(1); }
+            console.log(url);
+          ")
+          FILE="rsn-one-poc-ios-sim-build${{ github.run_number }}.tar.gz"
+          curl -fL -o "$FILE" "$URL"
+          test -s "$FILE" || { echo "Download is empty"; ls -la; exit 1; }
+          echo "name=$FILE" >> "$GITHUB_OUTPUT"
+          echo "size=$(du -h "$FILE" | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-app
+          path: mobile/rsn-one-poc-ios-sim-build${{ github.run_number }}.tar.gz
+          retention-days: 30
+
+      # Tagged poc-ios-v<N>, never poc-v<N>: run numbers are per-workflow, so
+      # reusing Android's prefix would sooner or later land this tarball on an
+      # existing Android release. prerelease + make_latest:false keep the
+      # repo's "Latest release" (and auto-release-notes ranges) anchored to
+      # the phone-installable Android APKs.
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: poc-ios-v${{ github.run_number }}
+          name: RSN One POC (iOS Simulator) — build ${{ github.run_number }}
+          files: mobile/${{ steps.app.outputs.name }}
+          generate_release_notes: true
+          prerelease: true
+          make_latest: false
+          body: |
+            **Download `${{ steps.app.outputs.name }}`** below — it runs in the
+            iOS Simulator, not on a phone.
+
+            You need a Mac with Xcode installed: untar the archive, boot a
+            simulator (`open -a Simulator`), then drag the extracted `.app`
+            onto the simulator window to install it. For a real device or
+            TestFlight, finish the Apple setup in `APPLE_SETUP.md`.
+
+            | | |
+            | --- | --- |
+            | Commit | `${{ github.sha }}` |
+            | Size | ${{ steps.app.outputs.size }} |
+            | Bundle id | `com.rsnone.poc` |
+            | Built by | EAS (preview profile, simulator) |
+
+            This is a prototype: no backend, no database. State resets when the
+            app is reopened.
+
+      - name: Link the release
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          ## Simulator build published
+
+          [poc-ios-v${{ github.run_number }}](https://github.com/${{ github.repository }}/releases/tag/poc-ios-v${{ github.run_number }})
+          — a Mac with Xcode is needed to run it (see the release notes).
+          EOF

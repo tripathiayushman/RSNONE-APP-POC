@@ -10,7 +10,10 @@
     "backgroundColor": "#190f0c",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rsnone.poc"
+      "bundleIdentifier": "com.rsnone.poc",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.rsnone.poc",
