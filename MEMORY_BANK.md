@@ -10,7 +10,7 @@
 > workflow. Append a dated entry if you do substantial work; otherwise treat
 > the entries below as a point-in-time record.
 
-**Last updated: 2026-08-03.**
+**Last updated: 2026-08-15.**
 
 ---
 
@@ -258,6 +258,143 @@ briefed to Codex for image generation as a result.
 
 ---
 
+## 2026-08-15 — iOS pipeline: TestFlight, with a simulator fallback
+
+**Commits:** (uncommitted at time of writing) · **Files:**
+`.github/workflows/ios-testflight.yml` (new), `APPLE_SETUP.md` (new),
+`mobile/eas.json`, `mobile/app.json`, `mobile/assets/icon.png` (flattened),
+both Android workflow ymls (hardening), `README.md`,
+`LLM_PROJECT_CONTEXT.md`, this file, plus an iOS-readiness pass over 13
+files in `mobile/src/`
+
+The owner asked for the app on iPhones. The docs previously closed that door —
+"Apple doesn't allow sideloading without a paid developer account; use Expo
+Go" — which was true about sideloading but framed the wrong conclusion:
+**TestFlight is Apple's sanctioned distribution channel**, and EAS reaches it
+from CI with no Mac anywhere in the loop.
+
+### The shape
+
+[`ios-testflight.yml`](./.github/workflows/ios-testflight.yml) keeps the
+Android workflow's philosophy — pushing works before anything is configured,
+and configuration is an upgrade — but the mechanics differ in two places:
+
+1. **No runner fallback.** Android degrades to Gradle when `EXPO_TOKEN` is
+   missing; iOS can't, because Apple signing requires the Developer account.
+   The route job hard-fails on the missing secret, with an error naming the
+   token URL and the exact secrets path. Every job still runs on
+   `ubuntu-latest` — EAS does the actual macOS build in its cloud, so the
+   10×-minute `macos-*` runners are never used.
+2. **The route switch is a file, not a secret.** The route job reads
+   `mobile/eas.json`: while `submit.production.ios.ascAppId` is not filled
+   in yet, **pushes skip the iOS build** and only a manual dispatch builds
+   the `preview` profile for the **iOS Simulator** (`ios.simulator: true`,
+   zero Apple credentials). Once a real App Store Connect id is pasted in,
+   every push builds `production` and `--auto-submit`s to **TestFlight**.
+   A malformed `eas.json` fails the route step with the parse error (exit 2
+   in the check) instead of being mistaken for "not filled in" — the
+   conflation would surface exactly when someone hand-pastes the id.
+
+   Simulator-on-push was built first and then deliberately removed: both
+   workflows fire on every push and both build on the same free-tier EAS
+   account (concurrency 1, shared monthly quota), so an automatic simulator
+   build — whose artifact needs a Mac to even open — would queue ahead of
+   and eventually starve the demo-critical Android APK build. The route job
+   says all this in its run summary instead of building.
+
+Two deliberate asymmetries with Android:
+
+- **The TestFlight path cuts no GitHub Release.** TestFlight is the channel;
+  a Release would be a second place to look, and skipping it keeps the iOS
+  workflow entirely clear of Android's release tags.
+- **Simulator releases are tagged `poc-ios-v<N>`, never `poc-v<N>`.** Run
+  numbers are per-workflow, so reusing Android's prefix would sooner or later
+  land an iOS tarball on an existing Android release. They are also marked
+  `prerelease: true` + `make_latest: false`, so the repo's **Latest release**
+  (and the range GitHub computes auto-release-notes against) stays anchored
+  to the phone-installable Android APKs; the Android release name now says
+  **(Android)** so the two series read apart at a glance.
+
+Supporting config: `eas.json` gained `ios.simulator: true` on `preview` and an
+empty `submit.production` profile. The `ios` block (`ascAppId`/`appleTeamId`)
+ships **absent**, not placeholder-filled: eas-cli schema-validates the values
+(digits-only app id, ten-character team id), so placeholders would make the
+first `eas submit` — the very command meant to produce the real id — error out
+before it prompts. No comment keys either, a lesson already paid for on
+Android (EAS rejects unknown keys). `app.json`
+gained `ios.infoPlist.ITSAppUsesNonExemptEncryption: false` so TestFlight
+never stalls on the export-compliance question, and deliberately **no**
+`buildNumber` — EAS remote versioning (`appVersionSource: remote` +
+`autoIncrement`) owns build numbers, and a local value would fight it.
+
+### The iOS-readiness pass
+
+An audit ahead of the first real iOS build fixed what would have read as
+broken on an iPhone. The big one: nine screens (11 `<Screen>` usages —
+`Correspondence` and `OrderDetail` have two branches each) rendered
+`<Screen>` with its default edges *and* a `BottomNav` — exactly the double
+bottom-inset trap `LLM_PROJECT_CONTEXT.md` §3 documents — which floats the
+tab bar ~34 pt above the display bottom on anything with a home indicator.
+All nine now pass `edges={["top"]}`. Cosmetic iOS fixes alongside:
+`overflow: 'hidden'` removed from `Plate` and `Panel` (it sets
+`masksToBounds`, clipping every shadow; nothing actually overflowed), opaque
+backgrounds added under the shadow-casting gradients in `FilterSheet` and
+`Button` so iOS gets a fast rect shadow path, and a `fontWeight: "300"`
+dropped in `SalonRooms` (alongside a runtime-loaded `_300Light` face it can
+make iOS fall back to San Francisco). One of those backgrounds was itself a
+regression caught in review: `Panel`'s gradient is deliberately translucent
+(the screen gradient shows through it, per the Figma mockup), so its new
+solid fill is `Platform.select`-gated to iOS — Android and web keep the
+translucent composite they always had. The app icon was also flattened to
+opaque RGB (its alpha channel was all-255, so the pixels are identical):
+App Store Connect rejects icons that carry an alpha channel.
+
+### The Android pipeline, hardened in the same review
+
+The review pass that caught the Panel regression also audited the Android
+side, since the iOS work touches files it consumes (`eas.json`, `app.json`,
+the shared `src/`). Three things landed:
+
+- **The README's install-over promise was false across build paths.** The
+  two public releases prove it: `poc-v4` is Gradle-built (RN template debug
+  keystore, versionCode 4), `poc-v5` is EAS-built (EAS-managed keystore,
+  versionCode 1) — installing one over the other fails on both signature
+  mismatch *and* versionCode downgrade. The README and the local-fallback
+  workflow's header now carry the one-time-uninstall caveat.
+- **The versionCode stamp is now self-verifying** in both Gradle workflows:
+  the `sed` is followed by a `grep -q` that fails the run if the prebuild
+  template ever changes shape, instead of silently shipping versionCode 1
+  that a phone then rejects as a downgrade.
+- **Deferred, deliberately:** adding `autoIncrement` to the `preview`
+  profile (so successive EAS APKs stop sharing one versionCode) edits the
+  live demo-critical build path, so it waits until after the client meeting.
+  See *Open / not done*.
+
+### The human steps still pending
+
+Written up in [`APPLE_SETUP.md`](./APPLE_SETUP.md) — a standalone runbook in
+the mold of `ASSETS.md`. None of it blocks day-to-day work; until it's done,
+pushes skip iOS and a simulator build is one manual dispatch away.
+
+1. Enroll in the Apple Developer Program ($99/year; approval can take ~48 h)
+   and note the ten-character Team ID.
+2. One interactive `eas build --platform ios --profile production` from any
+   machine (Windows fine) — registers `com.rsnone.poc` and stores the
+   distribution cert + provisioning profile **on EAS servers**, which is why
+   CI needs no Apple secrets.
+3. One interactive `eas submit --platform ios --latest` — creates the App
+   Store Connect record, stores the ASC API key on EAS, prints the numeric
+   ASC App ID.
+4. Paste the ASC App ID and Team ID into `mobile/eas.json`, commit, push.
+   From then on every push to `main` lands on TestFlight.
+5. Confirm the `EXPO_TOKEN` repository secret exists (the Android EAS path
+   uses the same one, so it may already).
+6. Add testers in App Store Connect → TestFlight: internal (up to 100 ASC
+   team members, minutes after processing, no review) for a same-day demo;
+   external needs Beta App Review, ~24–48 h the first time.
+
+---
+
 ## Standing decisions
 
 | | |
@@ -268,6 +405,8 @@ briefed to Codex for image generation as a result.
 | **Don't add dependencies casually** | It's a throwaway demo; the dep list is deliberately short. |
 | **Keep the voice** | Understated, editorial, no emoji. Read `products.ts` before writing copy. |
 | **Repo is public** | Made public 2026-08-03 so Actions is free and Release links are shareable. |
+| **iOS builds only on EAS** | No runner fallback exists — Apple signing needs the Developer account. TestFlight is the channel once `APPLE_SETUP.md` is done; the simulator Release is the fallback, not sideloading. |
+| **Build numbers are EAS-remote** | `appVersionSource: remote` + `autoIncrement`. Never add a `buildNumber` to `app.json` — a local value collides with what EAS assigns. |
 
 ---
 
@@ -277,6 +416,16 @@ briefed to Codex for image generation as a result.
 - `Withdraw`, `Add a Card` are `disabled` (reads as roadmap); `Invoice, PDF` has
   no handler.
 - Search caps at 8 results.
-- No iOS distribution. Apple doesn't allow sideloading without a paid developer
-  account; use Expo Go for an iPhone.
+- The one-time Apple setup ([`APPLE_SETUP.md`](./APPLE_SETUP.md)) is not done:
+  the `submit.production.ios` block in `mobile/eas.json` is still absent, so
+  pushes skip iOS and TestFlight stays locked; simulator builds are manual.
+- `eas.json`'s `preview` profile has no `autoIncrement`, so successive EAS
+  Android APKs share one versionCode. Add it **after** the client meeting
+  (it edits the live demo build path), then confirm the next Android run
+  stays green and the APK's versionCode incremented.
+- The `borderBottomWidth`-on-`Text` underline pattern (9 usages across
+  `Panel`, `Bag`, `Settings`, `Account`, and friends) should render under the
+  New Architecture but is unverified on a real iOS device. Check the first
+  TestFlight build; if the underlines are missing, wrap in a border-carrying
+  `View` — `CtaLine` in `Button.tsx` is the reference pattern.
 - No tests. Deliberate for a demo — `tsc` + a bundle are the gate.

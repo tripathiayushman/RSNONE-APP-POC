@@ -13,14 +13,21 @@ catalogue in NPR, the real photography, and the real logo.
 **Download the APK from [Releases](../../releases)** — every push to `main`
 builds one and publishes it. Open it on an Android phone, allow the
 install-from-unknown-sources prompt, done. Each build is signed with the same
-keystore, so a new one installs over the old one.
+keystore, so a new one installs over the old one. (One exception: EAS builds
+and Gradle-fallback builds are signed with *different* keystores, so switching
+between them — including updating a phone that still has a pre-EAS build —
+needs a one-time uninstall first.)
 
-You can also trigger a build by hand from the **Actions** tab → *Android APK* →
-*Run workflow*.
+You can also trigger a build by hand from the **Actions** tab — *Android APK*
+or *iOS TestFlight* → *Run workflow*.
 
-> iOS has no equivalent — Apple does not allow installing outside the App Store
-> without a paid developer account. For an iPhone in the meeting, run
-> `npx expo start` and open it in **Expo Go**.
+**On an iPhone**, pick by goal:
+
+| You want | Do this |
+| --- | --- |
+| **iPhone, today, free Apple account** | `cd mobile && npx expo start`, scan the QR in **Expo Go** (add `--tunnel` if the phone and laptop are on different networks) |
+| **Testers install like a real app** | Finish [APPLE_SETUP.md](APPLE_SETUP.md) ($99/yr Apple Developer Program). Every push then auto-submits to **TestFlight**; internal testers get it minutes after Apple finishes processing |
+| **No iPhone at hand** | Run the *iOS TestFlight* workflow by hand — it publishes an **iOS Simulator** build as a `poc-ios-v*` pre-release, which needs a Mac with Xcode to run |
 
 ## Run it locally
 
@@ -72,8 +79,40 @@ artifact instead of cutting a Release, so it can't collide with the release tags
 
 Neither path needs signing secrets: on the Gradle path the React Native template
 signs `release` with the keystore it ships, which is fine for a prototype and
-keeps the signature stable so builds install over each other. The generated
+keeps the signature stable so builds install over each other — *within* the
+Gradle path. EAS builds are signed with a different, EAS-managed keystore, so
+crossing paths on the same phone needs an uninstall first. The generated
 `android/` directory is gitignored; CI recreates it each run.
+
+## How the iOS build works
+
+[`ios-testflight.yml`](.github/workflows/ios-testflight.yml) also picks one of
+two paths automatically — but the switch is a line in `mobile/eas.json`, not a
+secret: whether `submit.production.ios.ascAppId` holds a real App Store
+Connect app id or is not filled in yet.
+
+| | When | Produces |
+| --- | --- | --- |
+| **TestFlight** | `ascAppId` is a real ASC app id | On every push: a signed `production` build, auto-submitted to TestFlight. No Release is cut — TestFlight *is* the channel |
+| **Simulator** | it's not filled in yet — **manual runs only** | An unsigned `preview` build on a `poc-ios-v*` pre-release — zero Apple credentials needed, but a Mac with Xcode to run it |
+
+Both paths build on EAS. While TestFlight is locked, pushes skip iOS entirely
+rather than building for the Simulator: an automatic simulator build would
+share the free-tier EAS queue and monthly quota with the Android APK build
+that every push already runs, and the tarball is only usable on a Mac anyway.
+Simulator releases are marked pre-release so the repo's **Latest release**
+always stays the installable Android APK.
+
+Unlike Android there is **no runner fallback**: Apple signing requires a
+Developer account, so the workflow hard-fails without the `EXPO_TOKEN` secret
+rather than degrading. Signing credentials live on EAS servers — stored during
+a one-time interactive build — so CI never holds an Apple secret. The tag
+prefix is deliberately not Android's `poc-v`: run numbers are per-workflow,
+and shared tags would eventually collide.
+
+The one-time human steps — Developer Program enrollment, the interactive
+credential build, the first `eas submit` that yields the `ascAppId` to paste
+into `mobile/eas.json` — are written up in [APPLE_SETUP.md](APPLE_SETUP.md).
 
 ## What it demonstrates
 
@@ -150,6 +189,7 @@ RSN-One-Figma-Mockups.html   the original design reference
 LLM_PROJECT_CONTEXT.md       how the app is built — read this first
 MEMORY_BANK.md               how it was developed, and why
 ASSETS.md                    image provenance and the asset hook
+APPLE_SETUP.md               the one-time Apple/TestFlight setup
 ```
 
 ## Docs
@@ -160,3 +200,5 @@ ASSETS.md                    image provenance and the asset hook
 - **[MEMORY_BANK.md](MEMORY_BANK.md)** — the development history and the
   reasoning behind each decision, including what was *rejected* and why.
 - **[ASSETS.md](ASSETS.md)** — where every image came from.
+- **[APPLE_SETUP.md](APPLE_SETUP.md)** — the one-time human steps that unlock
+  the TestFlight path of the iOS workflow.

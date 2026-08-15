@@ -4,7 +4,7 @@
 > things that will bite you. If you are an agent picking this repo up, read this
 > first, then [`MEMORY_BANK.md`](./MEMORY_BANK.md) for *why* it is this way.
 >
-> Last verified against the code: **2026-08-03**.
+> Last verified against the code: **2026-08-15**.
 
 ---
 
@@ -195,20 +195,62 @@ splash keeps the full wordmark.
 
 ## 6. Building and releasing
 
-`.github/workflows/android-release.yml` — `route → (eas | gradle) → release`.
+### Android — `.github/workflows/android-release.yml`
+
+`route → (eas | gradle) → release`.
 
 - If the `EXPO_TOKEN` secret exists → build on **EAS** (`preview` profile,
   `buildType: apk`).
 - If it doesn't → build with **Gradle** on the runner (`expo prebuild` +
   `assembleRelease`). No Expo account or signing secrets needed; the React
   Native template signs `release` with the keystore it ships, which keeps the
-  signature stable so builds install over each other.
+  signature stable so builds install over each other — *within* the Gradle
+  path. EAS builds are signed with a different, EAS-managed keystore, so
+  switching a phone between the two paths needs a one-time uninstall first.
 
-Either way an APK is attached to a GitHub Release. `android-release-local.yml` is
-a manual-dispatch job to force the Gradle path when EAS is configured but slow.
+Either way an APK is attached to a GitHub Release (tags `poc-v<N>`).
+`android-release-local.yml` is a manual-dispatch job to force the Gradle path
+when EAS is configured but slow.
 
 The generated `android/` directory is **gitignored** — CI recreates it. Don't
 commit it.
+
+### iOS — `.github/workflows/ios-testflight.yml`
+
+`route → (testflight | simulator)`, triggered by pushes to `main` (docs-only
+pushes are ignored) and by manual dispatch. Every iOS build runs on EAS —
+there is **no runner fallback**, because Apple signing requires a Developer
+account — so the route job hard-fails without `EXPO_TOKEN`. All jobs stay on
+`ubuntu-latest`; EAS does the macOS build in its cloud.
+
+The path choice is a line in `mobile/eas.json`, not a secret:
+
+- While `submit.production.ios.ascAppId` is not filled in yet → **pushes skip
+  the iOS build entirely** (the route job's summary says why): an automatic
+  simulator build would share the free-tier EAS queue and monthly quota with
+  the Android APK build that every push already runs. A **manual dispatch**
+  builds the `preview` profile for the **iOS Simulator** (`ios.simulator:
+  true` — zero Apple credentials) and publishes the `.tar.gz` as a
+  **pre-release** tagged `poc-ios-v<N>` with `make_latest: false`, so the
+  repo's Latest release stays the installable Android APK. The prefix
+  deliberately differs from Android's `poc-v`: run numbers are per-workflow,
+  so shared tags would collide. A malformed `eas.json` fails the route step
+  with the parse error rather than being mistaken for "not filled in".
+- Once `ascAppId` holds a real App Store Connect id → every push builds the
+  `production` profile and `--auto-submit`s to **TestFlight**. No Release is
+  cut on this path — TestFlight is the channel. Internal testers see the
+  build minutes after Apple finishes processing; external testers wait on
+  Beta App Review.
+
+The one-time human steps that flip the switch — Developer Program enrollment,
+an interactive `eas build` that stores the signing credentials on EAS servers,
+a first `eas submit` that yields the `ascAppId` — are in
+[`APPLE_SETUP.md`](./APPLE_SETUP.md). CI never holds an Apple credential.
+
+Build numbers come from EAS remote versioning (`appVersionSource: remote` +
+`autoIncrement`) — **never** add a `buildNumber` to `app.json`. `app.json`
+also sets `ios.infoPlist.ITSAppUsesNonExemptEncryption: false` so TestFlight
+builds don't stall on the export-compliance question; don't remove it.
 
 **Expo project:** `@tripathiayushman/rsn-one`
 (`projectId` in `app.json` → `extra.eas.projectId`).
