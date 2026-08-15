@@ -388,7 +388,20 @@ required `runtimeVersion: { policy: "sdkVersion" }` in `app.json` (the
 cannot open — it only opens `exposdk:57.0.0`). The `updates.url` +
 `runtimeVersion` keys are inert for the standalone APK/TestFlight builds:
 the `expo-updates` package is not installed, so binaries ship without an
-updates client and nothing self-updates.
+updates client and nothing self-updates. ⚠️ Running `eas update` AUTO-INSTALLS
+`expo-updates` into `package.json`/`package-lock.json` — revert that diff
+after publishing (it happened silently once and nearly shipped), or future
+APK/TestFlight binaries would embed an updates client the POC deliberately
+does not have. **Client-access reality check (learned 2026-08-15):** Expo Go
+403s published updates for accounts without project access and personal
+accounts cannot invite members, so a client demo needs the update published
+under an account the client can sign in WITH — the throwaway `rsnone` Expo
+account owns a mirror project `@rsnone/rsn-one` (`088f96b9-bbaf-4a80-8cdf-347510d034f5`,
+branch+channel `demo`, published from this tree with owner/projectId
+temporarily swapped then restored). Republish the mirror after app changes:
+log eas-cli into `rsnone`, swap `owner`/`projectId`/`updates.url` in
+`mobile/app.json` to the mirror, `eas update --branch demo --environment
+preview`, then `git checkout -- mobile/app.json`.
 
 ### The human steps still pending
 
