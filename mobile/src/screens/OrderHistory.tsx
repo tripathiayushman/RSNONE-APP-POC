@@ -44,7 +44,7 @@ export default function OrderHistory({ navigation }: Props) {
   };
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <TopBar variant="sub" title="Acquisitions" onBack={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>

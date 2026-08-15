@@ -62,7 +62,7 @@ export default function Settings({ navigation }: Props) {
   };
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <TopBar variant="sub" title="Settings" onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Text style={styles.eyebrow}>The Quiet Machinery</Text>

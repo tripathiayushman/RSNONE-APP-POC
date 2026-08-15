@@ -46,7 +46,7 @@ export default function SalonRooms({ navigation }: Props) {
   };
 
   return (
-    <Screen salon>
+    <Screen salon edges={["top"]}>
       <View style={styles.header}>
         <BrandMark width={96} />
         <Tag label="Salon" variant="brass" />
@@ -157,7 +157,6 @@ const styles = StyleSheet.create({
   },
   countdownValue: {
     fontFamily: fonts.displayLight,
-    fontWeight: "300",
     fontSize: 26,
     letterSpacing: 2,
     color: colors.cream,

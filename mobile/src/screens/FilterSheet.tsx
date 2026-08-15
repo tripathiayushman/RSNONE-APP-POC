@@ -141,6 +141,8 @@ const styles = StyleSheet.create({
     borderTopColor: tokens.colors.brass,
     paddingHorizontal: 24,
     paddingTop: 10,
+    // Solid bg under the opaque sheet gradient so iOS can use a fast shadow path.
+    backgroundColor: "#26160f",
     ...tokens.shadows.sheet,
   },
   grab: {

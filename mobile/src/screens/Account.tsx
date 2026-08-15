@@ -36,7 +36,7 @@ export default function Account({ navigation }: Props) {
   };
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <TopBar icons={[{ icon: "search", onPress: () => navigation.navigate('Search') }]} />
 

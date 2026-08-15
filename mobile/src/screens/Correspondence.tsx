@@ -73,7 +73,7 @@ export default function Correspondence({ navigation }: Props) {
 
   if (items.length === 0) {
     return (
-      <Screen>
+      <Screen edges={["top"]}>
         <TopBar variant="sub" title="Correspondence" onBack={() => navigation.goBack()} />
         <View style={styles.grow}>
           <PullQuote
@@ -105,7 +105,7 @@ export default function Correspondence({ navigation }: Props) {
     unreadCount === 0 ? "all read" : `${numberWord(unreadCount)} unread`;
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <TopBar variant="sub" title="Correspondence" onBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Text style={styles.eyebrow}>Letters from the House</Text>

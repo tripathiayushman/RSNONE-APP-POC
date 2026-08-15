@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as tokens from "../theme/tokens";
 import { Radio } from "./SelectControls";
@@ -60,7 +60,13 @@ const styles = StyleSheet.create({
     borderColor: tokens.colors.hairline,
     padding: 18,
     position: "relative",
-    overflow: "hidden",
+    // No overflow:"hidden" — on iOS it clips the layer shadow, and the
+    // absoluteFill gradient is exactly bounds-sized so nothing bleeds. The
+    // solid background gives iOS a fast shadow path; it is iOS-only because
+    // the panel gradient is deliberately translucent (the screen gradient
+    // shows through it, per the Figma mockup), and an unconditional fill
+    // would darken panels on Android and web, which rendered correctly.
+    backgroundColor: Platform.select({ ios: tokens.colors.walnutDeep, default: undefined }),
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.25,

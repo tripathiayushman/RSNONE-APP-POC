@@ -62,7 +62,7 @@ export function Button({ label, variant = 'primary', disabled = false, onPress, 
             locations={gradient.locations}
             start={gradient.start}
             end={gradient.end}
-            style={[styles.base, shadows.cta]}
+            style={[styles.base, styles.primaryFill, shadows.cta]}
           >
             <Text style={[styles.label, styles.primaryLabel]}>{label}</Text>
           </LinearGradient>
@@ -103,6 +103,8 @@ const styles = StyleSheet.create({
     color: colors.cream,
   },
   primaryLabel: { color: colors.walnutDeep, fontFamily: fonts.bodyMedium },
+  // Solid bg under the opaque CTA gradient so iOS can use a fast shadow path.
+  primaryFill: { backgroundColor: colors.brass },
   secondaryBorder: { borderWidth: 1, borderColor: colors.brass },
   secondaryLabel: { color: colors.brass },
   secondaryPressedLabel: { color: colors.roseGlow },

@@ -21,7 +21,7 @@ export default function ShelfEmpty({ navigation }: Props) {
   };
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <TopBar
         icons={[
           { icon: "search", onPress: () => navigation.navigate("Search") },

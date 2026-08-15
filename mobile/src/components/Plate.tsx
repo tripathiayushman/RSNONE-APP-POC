@@ -109,7 +109,10 @@ const styles = StyleSheet.create({
   base: {
     borderWidth: 1,
     borderColor: colors.hairline,
-    overflow: 'hidden',
+    // No overflow:'hidden' — on iOS it clips the layer shadow. Nothing bleeds
+    // anyway: the image/gradient fills are exactly bounds-sized, and Image clips
+    // its own cover content. The solid background gives iOS a fast shadow path.
+    backgroundColor: colors.walnutDeep,
     position: 'relative',
     flexShrink: 0,
   },

@@ -24,7 +24,7 @@ export default function CorrespondenceEmpty({ navigation }: Props) {
   };
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <TopBar variant="sub" title="Correspondence" onBack={() => navigation.goBack()} />
       <View style={styles.grow}>
         <PullQuote

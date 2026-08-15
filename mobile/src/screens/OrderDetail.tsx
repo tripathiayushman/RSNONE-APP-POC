@@ -49,7 +49,7 @@ export default function OrderDetail({ navigation, route }: Props) {
 
   if (!order) {
     return (
-      <Screen>
+      <Screen edges={["top"]}>
         <TopBar variant="sub" title="Order" onBack={() => navigation.goBack()} />
         <View style={styles.notFound}>
           <Text style={styles.notFoundText}>This order could not be found in the registry.</Text>
@@ -67,7 +67,7 @@ export default function OrderDetail({ navigation, route }: Props) {
   const duties = total - subtotal;
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <TopBar variant="sub" title={`Order ${order.id}`} onBack={() => navigation.goBack()} />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
