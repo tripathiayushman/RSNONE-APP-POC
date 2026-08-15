@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   scrim: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(6,3,2,0.55)',
   },
   captionRow: {

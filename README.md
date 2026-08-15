@@ -27,7 +27,7 @@ or *iOS TestFlight* → *Run workflow*.
 | --- | --- |
 | **iPhone, today, free Apple account** | `cd mobile && npx expo start`, scan the QR in **Expo Go** (add `--tunnel` if the phone and laptop are on different networks) |
 | **Send it to someone remote, free** | Send the **[web demo](https://tripathiayushman.github.io/RSNONE-APP-POC/)** — the same app via react-native-web, redeployed on every push. Nothing to install, no accounts; on an iPhone, Safari → *Add to Home Screen* gives it an icon and full-screen launch |
-| **Your own / team phones, native** | Sign in to **Expo Go** with an account that has project access, then open `exp://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b?channel-name=demo&runtime-version=exposdk:57.0.0`. ⚠️ Outsiders get a 403 — Expo Go gates published updates by account access, and personal accounts can't invite members. Refresh with `eas update --branch demo --environment preview` |
+| **Your own / team phones, native** | Sign in to **Expo Go** with an account that has project access, then open `exp://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b?channel-name=demo&runtime-version=exposdk:54.0.0`. ⚠️ Outsiders get a 403 — Expo Go gates published updates by account access, and personal accounts can't invite members. Refresh with `eas update --branch demo --environment preview` |
 | **Testers install like a real app** | Finish [APPLE_SETUP.md](APPLE_SETUP.md) ($99/yr Apple Developer Program). Every push then auto-submits to **TestFlight**; internal testers get it minutes after Apple finishes processing |
 | **No iPhone at hand** | Run the *iOS TestFlight* workflow by hand — it publishes an **iOS Simulator** build as a `poc-ios-v*` pre-release, which needs a Mac with Xcode to run |
 
@@ -38,6 +38,13 @@ cd mobile
 npm install
 npx expo start          # then press w for web, or scan the QR in Expo Go
 ```
+
+> ⚠️ **The app is pinned to Expo SDK 54 — do not upgrade it** while Expo Go is
+> a demo channel. Apple-store Expo Go has been frozen at SDK 54 since Sept
+> 2025 (newer SDKs ship Expo Go for *simulators only*), so an SDK 55+ app
+> shows "Not compatible with this version of Expo Go" on every physical
+> iPhone, for everyone, permanently. The app was downgraded 57 → 54 on
+> 2026-08-15 for exactly this reason.
 
 Verify a change:
 

@@ -375,7 +375,7 @@ the shared `src/`). Three things landed:
 `eas update --branch demo` publishes the JS bundle to EAS, and the `demo`
 **channel** (channels don't auto-create; `eas channel:create demo` linked it)
 serves it to **Expo Go** at
-`exp://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b?channel-name=demo&runtime-version=exposdk:57.0.0`.
+`exp://u.expo.dev/5f4765ed-b590-4c19-bf19-046570f3cf8b?channel-name=demo&runtime-version=exposdk:54.0.0` (54 since the same-day SDK downgrade below).
 **Scope learned the hard way:** the raw manifest is publicly fetchable
 (HTTP 200 anonymously), but **Expo Go itself 403s any signed-in account
 without access to the owning project** — and a personal Expo account cannot
@@ -385,7 +385,7 @@ outside client. The client-facing channel is the **web demo on GitHub Pages**
 prefixed via `experiments.baseUrl`). This
 required `runtimeVersion: { policy: "sdkVersion" }` in `app.json` (the
 `eas update` default of `appVersion` produces runtime `1.0.0`, which Expo Go
-cannot open — it only opens `exposdk:57.0.0`). The `updates.url` +
+cannot open — it only opens the `exposdk:<sdk>` runtime it ships). The `updates.url` +
 `runtimeVersion` keys are inert for the standalone APK/TestFlight builds:
 the `expo-updates` package is not installed, so binaries ship without an
 updates client and nothing self-updates. ⚠️ Running `eas update` AUTO-INSTALLS
@@ -425,6 +425,37 @@ pushes skip iOS and a simulator build is one manual dispatch away.
 6. Add testers in App Store Connect → TestFlight: internal (up to 100 ASC
    team members, minutes after processing, no review) for a same-day demo;
    external needs Beta App Review, ~24–48 h the first time.
+
+---
+
+## 2026-08-15 — SDK 57 → 54 downgrade: store Expo Go is frozen at 54
+
+**Files:** `mobile/package.json`, `mobile/package-lock.json`,
+`mobile/src/components/Plate.tsx`, workflow comments, README
+
+The first on-device iOS test of the client-demo flow failed with *"Not
+compatible with this version of Expo Go"* — and the cause is structural, not
+stale software: **Apple's App Store ships Expo Go 54.0.2, released Sept 2025,
+and it has never been updated since** (verified across the US/IN/NP
+storefronts). Expo still publishes per-SDK Expo Go clients for **simulators
+only** (`iosClientVersion` 55/56/57 exist on `api.expo.dev/v2/versions`), so
+the SDK-57 app could never have run in Expo Go on any physical iPhone, for
+any account — the 403-vs-access saga above was only the first gate.
+
+The fix: downgrade the app to the last store-runnable SDK. `npx expo install
+expo@^54.0.0` + `npx expo install --fix` → `expo ~54.0.36`, React `19.1.0`,
+RN `0.81.5`, TS `~5.9.2`. One source fix: RN 0.81's types make
+`StyleSheet.absoluteFill` an opaque registered style, so `Plate.tsx`'s scrim
+spread became `...StyleSheet.absoluteFillObject` (same values, spreadable
+type). Gates green: `tsc` 0 errors, `expo export` iOS + web. The `rsnone`
+mirror republished at runtime `exposdk:54.0.0`; the `eas update`
+auto-install of `expo-updates` happened again and was reverted again (see
+the warning in the demo-channel section).
+
+**Do not upgrade the SDK past 54 while Expo Go is a demo channel** — the
+README carries the same warning. TestFlight/simulator/APK/web paths do not
+care about the Expo Go freeze; when TestFlight becomes the client channel
+(post-$99), the SDK can move forward again.
 
 ---
 

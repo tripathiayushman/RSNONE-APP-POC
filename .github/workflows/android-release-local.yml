@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # Expo SDK 57 requires >= 20.19.4.
+          # Node pin from the SDK-57 era; SDK 54 runs fine on it too.
           node-version: '20.19.4'
           cache: npm
           cache-dependency-path: mobile/package-lock.json
