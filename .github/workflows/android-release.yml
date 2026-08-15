@@ -10,7 +10,10 @@ name: Android APK
 #   * Gradle — the fallback when it isn't. Runs `expo prebuild` +
 #             `assembleRelease` on the runner, no Expo account or secrets at
 #             all. The React Native template signs `release` with the keystore
-#             it ships, so the signature stays stable between builds.
+#             it ships, so the signature stays stable between Gradle builds.
+#             (EAS builds are signed with a different, EAS-managed keystore —
+#             a phone switching between the two paths needs a one-time
+#             uninstall; see android-release-local.yml.)
 #
 # Either way a Release is cut, so pushing works out of the box and adding the
 # token later is an upgrade rather than a prerequisite.
@@ -161,7 +164,7 @@ jobs:
       - name: Stamp the build number
         run: |
           sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
-          grep -n "versionCode" android/app/build.gradle
+          grep -q "versionCode ${{ github.run_number }}$" android/app/build.gradle || { echo "::error::versionCode stamp did not apply — prebuild template changed?"; exit 1; }
 
       - name: Assemble release APK
         run: |
@@ -203,7 +206,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.tag || format('poc-v{0}', github.run_number) }}
-          name: RSN One POC — build ${{ github.run_number }}
+          name: RSN One POC (Android) — build ${{ github.run_number }}
           files: ${{ steps.apk.outputs.name }}
           generate_release_notes: true
           body: |

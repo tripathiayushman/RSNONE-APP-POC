@@ -6,6 +6,11 @@ name: Android APK (Gradle fallback)
 # absent, so this is only needed when EAS *is* configured but you don't want to
 # wait for it — a queued free-tier build the morning of a demo, say.
 #
+# One caveat when reaching for it that morning: this APK is signed with the RN
+# template's debug keystore, while EAS builds are signed with the EAS-managed
+# one. A phone that already has an EAS-built APK can't install this one over
+# it (signature mismatch) — uninstall the app first, then install this build.
+#
 # Manual only, and it uploads a workflow artifact rather than creating a
 # Release, so it can never collide with the tags android-release.yml publishes.
 # Download it from the run's "Artifacts" section.
@@ -53,7 +58,7 @@ jobs:
       - name: Stamp the build number
         run: |
           sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
-          grep -n "versionCode" android/app/build.gradle
+          grep -q "versionCode ${{ github.run_number }}$" android/app/build.gradle || { echo "::error::versionCode stamp did not apply — prebuild template changed?"; exit 1; }
 
       - name: Assemble release APK
         # The React Native template signs `release` with the debug keystore it
