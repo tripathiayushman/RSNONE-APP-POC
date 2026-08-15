@@ -58,21 +58,15 @@ export default function Account({ navigation }: Props) {
 
         <Text style={styles.groupLbl}>Your Membership</Text>
         <View>
-          <LinkRow
-            number="01"
-            label="Membership"
+          <LinkRow            label="Membership"
             value={member.memberNo}
             onPress={() => navigation.navigate('Membership')}
           />
-          <LinkRow
-            number="02"
-            label="Wallet"
+          <LinkRow            label="Wallet"
             value={formatCny(walletBalanceMinor)}
             onPress={() => navigation.navigate('Wallet')}
           />
-          <LinkRow
-            number="03"
-            label="Invitations"
+          <LinkRow            label="Invitations"
             value={`${activeReferralCount} admitted`}
             tag={{ label: member.referralCode, variant: 'brass' }}
             onPress={() => navigation.navigate('Referrals')}
@@ -81,33 +75,23 @@ export default function Account({ navigation }: Props) {
 
         <Text style={styles.groupLbl}>Your Records</Text>
         <View>
-          <LinkRow
-            number="01"
-            label="Acquisitions"
+          <LinkRow            label="Acquisitions"
             value={`${orders.length} orders`}
             onPress={() => navigation.navigate('OrderHistory')}
           />
-          <LinkRow
-            number="02"
-            label="The Shelf"
+          <LinkRow            label="The Shelf"
             value={`${shelf.items.length} saved`}
             onPress={() => navigation.navigate('Shelf')}
           />
-          <LinkRow
-            number="03"
-            label="Correspondence"
+          <LinkRow            label="Correspondence"
             tag={unreadCorrespondence > 0 ? { label: `${unreadCorrespondence} New`, variant: 'brass' } : undefined}
             onPress={() => navigation.navigate('Correspondence')}
           />
-          <LinkRow
-            number="04"
-            label="Addresses"
+          <LinkRow            label="Addresses"
             value={addressCities}
             onPress={() => navigation.navigate('Addresses')}
           />
-          <LinkRow
-            number="05"
-            label="Payment"
+          <LinkRow            label="Payment"
             value="Cash on delivery"
             onPress={() => navigation.navigate('PaymentMethods')}
           />
